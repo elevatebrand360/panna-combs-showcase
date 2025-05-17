@@ -103,22 +103,24 @@ const ProductDetail = () => {
                 )}
                 <span className="text-white">{product.name}</span>
               </div>
-              <h1 className="text-center font-playfair">{product.name}</h1>
+              <h1 className="text-center font-playfair text-2xl md:text-3xl lg:text-4xl">{product.name}</h1>
             </div>
           </div>
         </div>
 
         <div className="container mx-auto py-8 px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            <div className="overflow-hidden rounded-lg">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="overflow-hidden rounded-lg shadow-sm">
               <ProductSlider images={images} productName={product.name} />
             </div>
             
             <div>
               <div className="mb-6">
-                <h2 className="text-3xl font-bold mb-2 text-brand-DEFAULT">{product.name}</h2>
-                <p className="text-muted-foreground">Product Code: {product.productCode}</p>
-                <p className="text-muted-foreground">Category: {product.category}</p>
+                <h2 className="text-2xl md:text-3xl font-bold mb-2 text-brand-DEFAULT">{product.name}</h2>
+                <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
+                  <p className="text-muted-foreground">Product Code: <span className="font-medium">{product.productCode}</span></p>
+                  <p className="text-muted-foreground">Category: <span className="font-medium">{product.category}</span></p>
+                </div>
               </div>
               
               <div className="border-t border-b py-6 my-6">

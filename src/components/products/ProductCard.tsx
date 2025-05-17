@@ -17,25 +17,25 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
 
   return (
     <Card className="overflow-hidden border-0 shadow-md transition-shadow hover:shadow-lg">
-      <div className="aspect-square overflow-hidden">
+      <div className="relative aspect-square overflow-hidden">
         <img
           src={imageUrl}
           alt={product.name}
           className="w-full h-full object-cover transition-transform hover:scale-105"
         />
-      </div>
-      <CardContent className="p-4">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="bg-brand-DEFAULT text-white text-xs font-medium px-2 py-0.5 rounded">
+        <div className="absolute top-2 left-2">
+          <span className="bg-brand-DEFAULT text-white text-xs font-medium px-2 py-0.5 rounded-full">
             #{index + 1}
           </span>
-          <h3 className="text-lg font-medium text-brand-dark">{product.name}</h3>
         </div>
-        <p className="text-sm text-muted-foreground mb-2">
+      </div>
+      <CardContent className="p-4">
+        <h3 className="text-lg font-medium text-brand-dark line-clamp-1">{product.name}</h3>
+        <p className="text-sm text-muted-foreground mb-2 line-clamp-1">
           {product.category}
         </p>
         <p className="text-xs text-muted-foreground mb-4">
-          Product Code: {product.productCode}
+          Code: {product.productCode}
         </p>
         <Button asChild variant="outline" className="w-full">
           <Link to={`/products/${product.slug}`}>View Details</Link>

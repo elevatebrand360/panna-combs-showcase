@@ -54,37 +54,41 @@
   }
 
   h1 {
-    @apply text-4xl sm:text-5xl md:text-6xl font-bold;
+    @apply text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold;
   }
 
   h2 {
-    @apply text-3xl sm:text-4xl md:text-5xl font-semibold;
+    @apply text-2xl sm:text-3xl md:text-4xl font-semibold;
   }
 
   h3 {
-    @apply text-2xl sm:text-3xl font-semibold;
-  }
-
-  h4 {
     @apply text-xl sm:text-2xl font-semibold;
   }
 
+  h4 {
+    @apply text-lg sm:text-xl font-semibold;
+  }
+
   h5 {
-    @apply text-lg sm:text-xl font-medium;
+    @apply text-base sm:text-lg font-medium;
   }
 
   p {
-    @apply leading-7;
+    @apply leading-relaxed text-sm md:text-base;
+  }
+  
+  a {
+    @apply transition-colors duration-200;
   }
 }
 
 @layer components {
   .product-grid {
-    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6;
+    @apply grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6;
   }
   
   .section-padding {
-    @apply py-12 md:py-16 lg:py-20;
+    @apply py-8 md:py-12 lg:py-16;
   }
   
   .page-container {
@@ -92,3 +96,21 @@
   }
 }
 
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .container {
+    @apply px-3;
+  }
+  
+  h1 {
+    @apply text-2xl;
+  }
+  
+  h2 {
+    @apply text-xl;
+  }
+  
+  .section-padding {
+    @apply py-6;
+  }
+}

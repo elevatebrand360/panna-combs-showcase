@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Carousel, 
   CarouselContent, 
@@ -7,6 +7,7 @@ import {
   CarouselNext, 
   CarouselPrevious 
 } from "@/components/ui/carousel";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 interface ProductSliderProps {
   images: string[];
@@ -15,10 +16,22 @@ interface ProductSliderProps {
 
 const ProductSlider = ({ images, productName }: ProductSliderProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   return (
     <div className="w-full">
-      <Carousel className="w-full">
+      <Carousel 
+        className="w-full" 
+        opts={{ 
+          loop: true,
+          align: "start",
+        }}
+        onSelect={(api) => {
+          if (api) {
+            setCurrentIndex(api.selectedScrollSnap());
+          }
+        }}
+      >
         <CarouselContent>
           {images.map((image, index) => (
             <CarouselItem key={index}>
@@ -26,27 +39,42 @@ const ProductSlider = ({ images, productName }: ProductSliderProps) => {
                 <img
                   src={image}
                   alt={`${productName} - Image ${index + 1}`}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-contain"
                 />
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
+        
+        {/* Navigation controls */}
         <div className="flex items-center justify-center gap-2 mt-2">
-          <CarouselPrevious className="static transform-none" />
+          <div className="hidden md:block">
+            <CarouselPrevious className="static transform-none" />
+          </div>
+          
           <div className="flex gap-2">
             {images.map((_, index) => (
               <button
                 key={index}
                 className={`h-2 w-2 rounded-full transition-colors ${
-                  currentIndex === index ? "bg-primary" : "bg-gray-300"
+                  currentIndex === index ? "bg-brand-DEFAULT" : "bg-gray-300"
                 }`}
                 onClick={() => setCurrentIndex(index)}
               />
             ))}
           </div>
-          <CarouselNext className="static transform-none" />
+          
+          <div className="hidden md:block">
+            <CarouselNext className="static transform-none" />
+          </div>
         </div>
+        
+        {/* Mobile swipe indicator */}
+        {isMobile && (
+          <div className="text-center text-xs text-muted-foreground mt-2">
+            Swipe to view more images ({currentIndex + 1}/{images.length})
+          </div>
+        )}
       </Carousel>
     </div>
   );

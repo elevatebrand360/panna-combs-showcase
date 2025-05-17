@@ -7,6 +7,7 @@ import ProductCard from "@/components/products/ProductCard";
 import { getProductsByCategory, getCategoryBySlug, Product } from "@/lib/products";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Search, X } from "lucide-react";
 
 // Define enhanced product interface to make image optional
 interface EnhancedProduct extends Omit<Product, 'image'> {
@@ -75,7 +76,7 @@ const ProductCategory = () => {
     <>
       <Navbar />
       <main>
-        <div className="bg-brand-DEFAULT text-white py-16 px-4">
+        <div className="bg-brand-DEFAULT text-white py-12 px-4">
           <div className="container mx-auto">
             <div className="flex flex-col items-center">
               <Link 
@@ -84,36 +85,40 @@ const ProductCategory = () => {
               >
                 ← Back to all categories
               </Link>
-              <h1 className="text-center font-playfair">{category.name}</h1>
-              <p className="text-center mt-4 max-w-2xl mx-auto">
+              <h1 className="text-center font-playfair text-3xl md:text-4xl lg:text-5xl">{category.name}</h1>
+              <p className="text-center mt-4 max-w-2xl mx-auto text-sm md:text-base">
                 {category.description}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="container mx-auto py-12 px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-10">
-            <h2 className="mb-4 md:mb-0 text-brand-dark">Products</h2>
+        <div className="container mx-auto py-8 md:py-12 px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-6 md:mb-10">
+            <h2 className="mb-4 md:mb-0 text-brand-dark text-2xl md:text-3xl">Products</h2>
             <div className="w-full md:w-1/3">
-              <div className="flex gap-2">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input 
                   placeholder="Search products..." 
                   value={searchQuery} 
                   onChange={(e) => setSearchQuery(e.target.value)} 
-                  className="max-w-md"
+                  className="pl-9 pr-9 max-w-md"
                 />
                 {searchQuery && (
-                  <Button variant="outline" onClick={() => setSearchQuery("")}>
-                    Clear
-                  </Button>
+                  <button 
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
                 )}
               </div>
             </div>
           </div>
           
           {filteredProducts.length > 0 ? (
-            <div className="product-grid">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
               {filteredProducts.map((product, index) => (
                 <ProductCard 
                   key={product.id} 
