@@ -4,19 +4,14 @@ import { useParams, Link } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ProductCard from "@/components/products/ProductCard";
-import { getProductsByCategory, getCategoryBySlug } from "@/lib/products";
+import { getProductsByCategory, getCategoryBySlug, Product } from "@/lib/products";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-interface EnhancedProduct {
-  id: number;
-  name: string;
-  description: string;
-  category: string;
+// Define enhanced product interface to make image optional
+interface EnhancedProduct extends Omit<Product, 'image'> {
   image?: string;
   imageUrls?: string[];
-  productCode: string;
-  slug: string;
 }
 
 const ProductCategory = () => {
@@ -120,7 +115,14 @@ const ProductCategory = () => {
           {filteredProducts.length > 0 ? (
             <div className="product-grid">
               {filteredProducts.map((product, index) => (
-                <ProductCard key={product.id} product={product} index={index} />
+                <ProductCard 
+                  key={product.id} 
+                  product={{
+                    ...product,
+                    image: product.image || (product.imageUrls && product.imageUrls[0]) || ""
+                  } as Product} 
+                  index={index} 
+                />
               ))}
             </div>
           ) : (
