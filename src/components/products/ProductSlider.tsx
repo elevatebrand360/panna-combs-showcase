@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { 
   Carousel, 
   CarouselContent, 
@@ -8,6 +8,7 @@ import {
   CarouselPrevious 
 } from "@/components/ui/carousel";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import type { EmblaCarouselType } from "embla-carousel-react";
 
 interface ProductSliderProps {
   images: string[];
@@ -26,10 +27,8 @@ const ProductSlider = ({ images, productName }: ProductSliderProps) => {
           loop: true,
           align: "start",
         }}
-        onSelect={(api) => {
-          if (api && typeof api.selectedScrollSnap === 'function') {
-            setCurrentIndex(api.selectedScrollSnap());
-          }
+        onSelect={(api: EmblaCarouselType) => {
+          setCurrentIndex(api.selectedScrollSnap());
         }}
       >
         <CarouselContent>
