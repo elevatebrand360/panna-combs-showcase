@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { 
   Carousel, 
   CarouselContent, 
@@ -8,7 +8,7 @@ import {
   CarouselPrevious 
 } from "@/components/ui/carousel";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import type { UseEmblaCarouselType } from "embla-carousel-react";
+import { type CarouselApi } from "@/components/ui/carousel";
 
 interface ProductSliderProps {
   images: string[];
@@ -17,7 +17,26 @@ interface ProductSliderProps {
 
 const ProductSlider = ({ images, productName }: ProductSliderProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const isMobile = useMediaQuery("(max-width: 768px)");
+  
+  // Setup callback to handle carousel events
+  const onApiChange = useCallback((api: CarouselApi) => {
+    if (!api) return;
+    
+    setCarouselApi(api);
+    
+    api.on("select", () => {
+      setCurrentIndex(api.selectedScrollSnap());
+    });
+  }, []);
+  
+  // Function to handle dot indicator clicks
+  const handleDotClick = useCallback((index: number) => {
+    if (carouselApi) {
+      carouselApi.scrollTo(index);
+    }
+  }, [carouselApi]);
 
   return (
     <div className="w-full">
@@ -27,9 +46,7 @@ const ProductSlider = ({ images, productName }: ProductSliderProps) => {
           loop: true,
           align: "start",
         }}
-        onSelect={(api: UseEmblaCarouselType[1]) => {
-          setCurrentIndex(api.selectedScrollSnap());
-        }}
+        setApi={onApiChange}
       >
         <CarouselContent>
           {images.map((image, index) => (
@@ -58,7 +75,7 @@ const ProductSlider = ({ images, productName }: ProductSliderProps) => {
                 className={`h-2 w-2 rounded-full transition-colors ${
                   currentIndex === index ? "bg-brand-DEFAULT" : "bg-gray-300"
                 }`}
-                onClick={() => setCurrentIndex(index)}
+                onClick={() => handleDotClick(index)}
               />
             ))}
           </div>
