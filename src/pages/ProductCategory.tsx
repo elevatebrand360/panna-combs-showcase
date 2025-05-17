@@ -8,22 +8,57 @@ import { getProductsByCategory, getCategoryBySlug } from "@/lib/products";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
+interface EnhancedProduct {
+  id: number;
+  name: string;
+  description: string;
+  category: string;
+  image?: string;
+  imageUrls?: string[];
+  productCode: string;
+  slug: string;
+}
+
 const ProductCategory = () => {
   const { categorySlug } = useParams<{ categorySlug: string }>();
   const [searchQuery, setSearchQuery] = useState("");
+  const [allProducts, setAllProducts] = useState<EnhancedProduct[]>([]);
   
   const category = categorySlug ? getCategoryBySlug(categorySlug) : null;
-  const categoryProducts = categorySlug ? getProductsByCategory(categorySlug) : [];
   
-  const filteredProducts = categoryProducts.filter(product => 
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.productCode.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   useEffect(() => {
     // Scroll to top when category changes
     window.scrollTo(0, 0);
+    
+    // Get hardcoded products
+    const hardcodedProducts = categorySlug ? getProductsByCategory(categorySlug) : [];
+    
+    // Get products from database (localStorage)
+    let databaseProducts: EnhancedProduct[] = [];
+    const storedProducts = localStorage.getItem("panna-products");
+    
+    if (storedProducts) {
+      const parsedProducts = JSON.parse(storedProducts);
+      databaseProducts = parsedProducts.filter((p: EnhancedProduct) => {
+        const productCategory = p.category;
+        const matchingCategory = getCategoryBySlug(categorySlug || "");
+        return matchingCategory && productCategory === matchingCategory.name;
+      });
+    }
+    
+    // Combine both sources
+    const combined = [
+      ...hardcodedProducts,
+      ...databaseProducts
+    ];
+    
+    setAllProducts(combined);
   }, [categorySlug]);
+  
+  const filteredProducts = allProducts.filter(product => 
+    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    product.productCode.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   if (!category) {
     return (
@@ -54,7 +89,7 @@ const ProductCategory = () => {
               >
                 ← Back to all categories
               </Link>
-              <h1 className="text-center">{category.name}</h1>
+              <h1 className="text-center font-playfair">{category.name}</h1>
               <p className="text-center mt-4 max-w-2xl mx-auto">
                 {category.description}
               </p>
@@ -64,7 +99,7 @@ const ProductCategory = () => {
 
         <div className="container mx-auto py-12 px-4">
           <div className="flex flex-col md:flex-row justify-between items-center mb-10">
-            <h2 className="mb-4 md:mb-0">Products</h2>
+            <h2 className="mb-4 md:mb-0 text-brand-dark">Products</h2>
             <div className="w-full md:w-1/3">
               <div className="flex gap-2">
                 <Input 
@@ -84,8 +119,8 @@ const ProductCategory = () => {
           
           {filteredProducts.length > 0 ? (
             <div className="product-grid">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
+              {filteredProducts.map((product, index) => (
+                <ProductCard key={product.id} product={product} index={index} />
               ))}
             </div>
           ) : (

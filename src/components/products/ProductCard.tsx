@@ -6,20 +6,31 @@ import { Product } from "@/lib/products";
 
 interface ProductCardProps {
   product: Product;
+  index: number;
 }
 
-const ProductCard = ({ product }: ProductCardProps) => {
+const ProductCard = ({ product, index }: ProductCardProps) => {
+  // Get the imageUrls if it exists, otherwise use the single image
+  const imageUrl = 'imageUrls' in product ? 
+    (product.imageUrls as string[])[0] : 
+    product.image;
+
   return (
     <Card className="overflow-hidden border-0 shadow-md transition-shadow hover:shadow-lg">
       <div className="aspect-square overflow-hidden">
         <img
-          src={product.image}
+          src={imageUrl}
           alt={product.name}
           className="w-full h-full object-cover transition-transform hover:scale-105"
         />
       </div>
       <CardContent className="p-4">
-        <h3 className="text-lg font-medium mb-1">{product.name}</h3>
+        <div className="flex items-center gap-2 mb-1">
+          <span className="bg-brand-DEFAULT text-white text-xs font-medium px-2 py-0.5 rounded">
+            #{index + 1}
+          </span>
+          <h3 className="text-lg font-medium text-brand-dark">{product.name}</h3>
+        </div>
         <p className="text-sm text-muted-foreground mb-2">
           {product.category}
         </p>
