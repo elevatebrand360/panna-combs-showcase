@@ -27,7 +27,7 @@ const ProductSlider = ({ images, productName }: ProductSliderProps) => {
           align: "start",
         }}
         onSelect={(api) => {
-          if (api) {
+          if (api && typeof api.selectedScrollSnap === 'function') {
             setCurrentIndex(api.selectedScrollSnap());
           }
         }}
