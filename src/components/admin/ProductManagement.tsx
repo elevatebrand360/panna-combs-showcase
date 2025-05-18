@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, ChangeEvent } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { productCategories } from "@/lib/products";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Upload } from "lucide-react";
 
 const ProductManagement = () => {
   const { toast } = useToast();
@@ -23,7 +24,9 @@ const ProductManagement = () => {
     slug: ""
   });
   
+  const [imageFiles, setImageFiles] = useState<(File | null)[]>([null, null, null, null]);
   const [imageErrors, setImageErrors] = useState<boolean[]>([false, false, false, false]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>(["", "", "", ""]);
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
 
   useEffect(() => {
@@ -49,36 +52,53 @@ const ProductManagement = () => {
     }));
   };
 
-  const isValidImageUrl = (url: string): boolean => {
-    if (!url) return true; // Empty URLs are considered valid during typing
-    const lowerCaseUrl = url.toLowerCase();
-    return lowerCaseUrl.endsWith('.jpg') || 
-           lowerCaseUrl.endsWith('.jpeg') || 
-           lowerCaseUrl.endsWith('.png');
+  const isValidImageFile = (file: File | null): boolean => {
+    if (!file) return false;
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    return validTypes.includes(file.type);
   };
 
-  const handleImageUrlChange = (index: number, value: string) => {
-    const updatedImageUrls = [...newProduct.imageUrls];
-    updatedImageUrls[index] = value;
-    
+  const handleImageFileChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0] ? e.target.files[0] : null;
+    const updatedFiles = [...imageFiles];
+    updatedFiles[index] = file;
+
     // Update error state for this image
-    const isValid = isValidImageUrl(value);
+    const isValid = isValidImageFile(file);
     const updatedErrors = [...imageErrors];
-    updatedErrors[index] = !isValid && value !== "";
+    updatedErrors[index] = !isValid && file !== null;
     
-    setNewProduct(prev => ({
-      ...prev,
-      imageUrls: updatedImageUrls
-    }));
+    // Create preview URL
+    const updatedPreviews = [...imagePreviews];
+    if (file && isValid) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updatedPreviews[index] = reader.result as string;
+        setImagePreviews(updatedPreviews);
+      };
+      reader.readAsDataURL(file);
+      
+      // Update image URLs in newProduct (converting to base64)
+      const updatedImageUrls = [...newProduct.imageUrls];
+      updatedImageUrls[index] = "processing..."; // Temporary placeholder until base64 is ready
+      setNewProduct(prev => ({
+        ...prev,
+        imageUrls: updatedImageUrls
+      }));
+    } else {
+      updatedPreviews[index] = "";
+    }
     
+    setImageFiles(updatedFiles);
     setImageErrors(updatedErrors);
+    setImagePreviews(updatedPreviews);
   };
 
   const generateSlug = (name: string) => {
     return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
   };
 
-  const handleAddProduct = () => {
+  const handleAddProduct = async () => {
     if (!newProduct.name || !newProduct.description || !newProduct.category || !newProduct.productCode) {
       toast({
         title: "Missing fields",
@@ -88,45 +108,75 @@ const ProductManagement = () => {
       return;
     }
 
-    // Check if all image URLs are valid format
-    if (newProduct.imageUrls.some((url, index) => !url || !isValidImageUrl(url))) {
+    // Check if all images are provided and valid
+    if (imageFiles.some((file, index) => file === null)) {
       toast({
-        title: "Invalid image URLs",
-        description: "Please provide all four images in JPG or PNG format only",
+        title: "Missing images",
+        description: "Please provide all four images",
         variant: "destructive"
       });
       return;
     }
 
-    const slug = generateSlug(newProduct.name);
-    const id = Date.now();
-    
-    const product = {
-      ...newProduct,
-      id,
-      slug,
-      date: new Date().toISOString()
-    };
-    
-    const updatedProducts = [...products, product];
-    setProducts(updatedProducts);
-    localStorage.setItem("panna-products", JSON.stringify(updatedProducts));
-    
-    toast({
-      title: "Product added",
-      description: `${product.name} has been added successfully`
-    });
-    
-    // Reset form
-    setNewProduct({
-      name: "",
-      description: "",
-      category: "",
-      productCode: "",
-      imageUrls: ["", "", "", ""],
-      slug: ""
-    });
-    setImageErrors([false, false, false, false]);
+    // Check if all image files are valid format
+    if (imageFiles.some((file, index) => !isValidImageFile(file))) {
+      toast({
+        title: "Invalid image files",
+        description: "Please provide all images in JPG or PNG format only",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Convert all image files to base64
+    try {
+      const updatedImageUrls = [...newProduct.imageUrls];
+      
+      for (let i = 0; i < imageFiles.length; i++) {
+        if (imageFiles[i]) {
+          updatedImageUrls[i] = imagePreviews[i]; // Use the preview (which is base64)
+        }
+      }
+
+      const slug = generateSlug(newProduct.name);
+      const id = Date.now();
+      
+      const product = {
+        ...newProduct,
+        imageUrls: updatedImageUrls,
+        id,
+        slug,
+        date: new Date().toISOString()
+      };
+      
+      const updatedProducts = [...products, product];
+      setProducts(updatedProducts);
+      localStorage.setItem("panna-products", JSON.stringify(updatedProducts));
+      
+      toast({
+        title: "Product added",
+        description: `${product.name} has been added successfully`
+      });
+      
+      // Reset form
+      setNewProduct({
+        name: "",
+        description: "",
+        category: "",
+        productCode: "",
+        imageUrls: ["", "", "", ""],
+        slug: ""
+      });
+      setImageFiles([null, null, null, null]);
+      setImageErrors([false, false, false, false]);
+      setImagePreviews(["", "", "", ""]);
+    } catch (error) {
+      toast({
+        title: "Error adding product",
+        description: "An error occurred while processing images",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleDeleteProduct = (id: number) => {
@@ -207,33 +257,38 @@ const ProductManagement = () => {
               Product Images (4 required - JPG or PNG only)
             </label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {newProduct.imageUrls.map((url, index) => (
-                <div key={index}>
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div key={index} className="space-y-2">
                   <div className="relative">
-                    <Input
-                      value={url}
-                      onChange={(e) => handleImageUrlChange(index, e.target.value)}
-                      placeholder={`Image ${index + 1} URL (JPG or PNG only)`}
-                      className={`mb-2 ${imageErrors[index] ? 'border-red-500' : ''}`}
-                    />
+                    <div className={`border-2 ${imageErrors[index] ? 'border-red-500' : 'border-gray-300'} border-dashed rounded-md p-6 flex flex-col items-center justify-center hover:border-primary transition-colors`}>
+                      <Upload className={`${imageFiles[index] ? 'text-primary' : 'text-gray-400'} mb-2`} size={24} />
+                      <label htmlFor={`image-${index}`} className="cursor-pointer text-center">
+                        <span className="text-sm font-medium text-primary block">Upload image {index + 1}</span>
+                        <span className="text-xs text-muted-foreground block mt-1">JPG or PNG only</span>
+                      </label>
+                      <input
+                        id={`image-${index}`}
+                        type="file"
+                        className="hidden"
+                        accept="image/jpeg,image/jpg,image/png"
+                        onChange={(e) => handleImageFileChange(index, e)}
+                      />
+                    </div>
                     {imageErrors[index] && (
-                      <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-red-500">
+                      <div className="absolute right-2 top-2 text-red-500">
                         <AlertCircle size={16} />
                       </div>
                     )}
                   </div>
                   {imageErrors[index] && (
-                    <p className="text-xs text-red-500 mb-2">JPG or PNG format only</p>
+                    <p className="text-xs text-red-500">JPG or PNG format only</p>
                   )}
-                  {url && !imageErrors[index] && (
+                  {imagePreviews[index] && (
                     <div className="h-24 w-full bg-gray-100 rounded overflow-hidden">
                       <img 
-                        src={url} 
+                        src={imagePreviews[index]} 
                         alt={`Preview ${index + 1}`} 
                         className="h-full w-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = "https://placehold.co/600x400?text=Invalid+Image";
-                        }}
                       />
                     </div>
                   )}
