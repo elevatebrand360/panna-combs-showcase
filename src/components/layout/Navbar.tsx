@@ -13,26 +13,26 @@ const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/60 backdrop-blur-lg">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center">
           <Link to="/" className="flex items-center">
-            <span className="font-bold text-2xl text-brand-DEFAULT">PANNA COMBS</span>
+            <span className="font-bold text-xl md:text-2xl text-brand-DEFAULT">PANNA COMBS</span>
           </Link>
         </div>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-6">
-          <Link to="/" className="text-sm font-medium hover:text-brand-DEFAULT transition-colors">
+          <Link to="/" className="text-sm font-medium hover:scale-105 hover:text-brand-DEFAULT transition-all">
             Home
           </Link>
-          <Link to="/about" className="text-sm font-medium hover:text-brand-DEFAULT transition-colors">
+          <Link to="/about" className="text-sm font-medium hover:scale-105 hover:text-brand-DEFAULT transition-all">
             About Us
           </Link>
-          <Link to="/products" className="text-sm font-medium hover:text-brand-DEFAULT transition-colors">
+          <Link to="/products" className="text-sm font-medium hover:scale-105 hover:text-brand-DEFAULT transition-all">
             Products
           </Link>
-          <Link to="/contact" className="text-sm font-medium hover:text-brand-DEFAULT transition-colors">
+          <Link to="/contact" className="text-sm font-medium hover:scale-105 hover:text-brand-DEFAULT transition-all">
             Contact
           </Link>
         </nav>
@@ -46,7 +46,7 @@ const Navbar = () => {
       {/* Mobile Nav */}
       <div
         className={cn(
-          "fixed inset-0 top-16 z-50 flex flex-col gap-4 bg-background p-6 md:hidden",
+          "fixed inset-0 top-16 z-50 flex flex-col gap-4 bg-background/95 backdrop-blur-lg p-6 md:hidden",
           isMenuOpen ? "animate-fade-in" : "animate-fade-out pointer-events-none hidden"
         )}
       >

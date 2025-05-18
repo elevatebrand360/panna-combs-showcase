@@ -44,6 +44,14 @@
     @apply border-border;
   }
 
+  html {
+    cursor: url('/lovable-uploads/2784273c-3c32-48e2-81a3-1ede95b00213.png'), auto;
+  }
+  
+  a, button, input[type="submit"], select, .clickable {
+    cursor: pointer;
+  }
+
   body {
     @apply bg-background text-foreground font-poppins;
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -94,6 +102,52 @@
   .page-container {
     @apply container mx-auto px-4 sm:px-6;
   }
+  
+  /* Glass effect */
+  .glass-effect {
+    @apply backdrop-blur-md bg-white/30 border border-white/30;
+  }
+  
+  /* Hover animations */
+  .hover-scale {
+    @apply transition-transform duration-300 hover:scale-105;
+  }
+  
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+  }
+  
+  .hover-bright {
+    @apply transition-all duration-300 hover:brightness-110;
+  }
+}
+
+/* Animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(10px); }
+}
+
+@keyframes scale-in {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+.animate-fade-out {
+  animation: fade-out 0.3s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.2s ease-out forwards;
 }
 
 /* Mobile optimizations */

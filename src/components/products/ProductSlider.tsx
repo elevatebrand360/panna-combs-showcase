@@ -51,7 +51,7 @@ const ProductSlider = ({ images, productName }: ProductSliderProps) => {
         <CarouselContent>
           {images.map((image, index) => (
             <CarouselItem key={index}>
-              <div className="aspect-square w-full overflow-hidden rounded-md">
+              <div className="aspect-square w-full overflow-hidden rounded-md hover:scale-105 transition-transform duration-300">
                 <img
                   src={image}
                   alt={`${productName} - Image ${index + 1}`}
@@ -65,15 +65,15 @@ const ProductSlider = ({ images, productName }: ProductSliderProps) => {
         {/* Navigation controls */}
         <div className="flex items-center justify-center gap-2 mt-2">
           <div className="hidden md:block">
-            <CarouselPrevious className="static transform-none" />
+            <CarouselPrevious className="static transform-none hover:bg-brand-DEFAULT/20 transition-colors" />
           </div>
           
           <div className="flex gap-2">
             {images.map((_, index) => (
               <button
                 key={index}
-                className={`h-2 w-2 rounded-full transition-colors ${
-                  currentIndex === index ? "bg-brand-DEFAULT" : "bg-gray-300"
+                className={`h-2 w-2 rounded-full transition-all hover:scale-125 ${
+                  currentIndex === index ? "bg-brand-DEFAULT w-4" : "bg-gray-300"
                 }`}
                 onClick={() => handleDotClick(index)}
               />
@@ -81,7 +81,7 @@ const ProductSlider = ({ images, productName }: ProductSliderProps) => {
           </div>
           
           <div className="hidden md:block">
-            <CarouselNext className="static transform-none" />
+            <CarouselNext className="static transform-none hover:bg-brand-DEFAULT/20 transition-colors" />
           </div>
         </div>
         
