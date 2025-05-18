@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -7,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { productCategories } from "@/lib/products";
+import { AlertCircle } from "lucide-react";
 
 const ProductManagement = () => {
   const { toast } = useToast();
@@ -23,6 +23,7 @@ const ProductManagement = () => {
     slug: ""
   });
   
+  const [imageErrors, setImageErrors] = useState<boolean[]>([false, false, false, false]);
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
 
   useEffect(() => {
@@ -48,13 +49,29 @@ const ProductManagement = () => {
     }));
   };
 
+  const isValidImageUrl = (url: string): boolean => {
+    if (!url) return true; // Empty URLs are considered valid during typing
+    const lowerCaseUrl = url.toLowerCase();
+    return lowerCaseUrl.endsWith('.jpg') || 
+           lowerCaseUrl.endsWith('.jpeg') || 
+           lowerCaseUrl.endsWith('.png');
+  };
+
   const handleImageUrlChange = (index: number, value: string) => {
     const updatedImageUrls = [...newProduct.imageUrls];
     updatedImageUrls[index] = value;
+    
+    // Update error state for this image
+    const isValid = isValidImageUrl(value);
+    const updatedErrors = [...imageErrors];
+    updatedErrors[index] = !isValid && value !== "";
+    
     setNewProduct(prev => ({
       ...prev,
       imageUrls: updatedImageUrls
     }));
+    
+    setImageErrors(updatedErrors);
   };
 
   const generateSlug = (name: string) => {
@@ -71,11 +88,11 @@ const ProductManagement = () => {
       return;
     }
 
-    // Ensure all image URLs are filled
-    if (newProduct.imageUrls.some(url => !url)) {
+    // Check if all image URLs are valid format
+    if (newProduct.imageUrls.some((url, index) => !url || !isValidImageUrl(url))) {
       toast({
-        title: "Missing images",
-        description: "Please provide all four image URLs",
+        title: "Invalid image URLs",
+        description: "Please provide all four images in JPG or PNG format only",
         variant: "destructive"
       });
       return;
@@ -109,6 +126,7 @@ const ProductManagement = () => {
       imageUrls: ["", "", "", ""],
       slug: ""
     });
+    setImageErrors([false, false, false, false]);
   };
 
   const handleDeleteProduct = (id: number) => {
@@ -185,17 +203,29 @@ const ProductManagement = () => {
           </div>
           
           <div>
-            <label className="block text-sm font-medium mb-3">Product Images (4 required)</label>
+            <label className="block text-sm font-medium mb-3">
+              Product Images (4 required - JPG or PNG only)
+            </label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {newProduct.imageUrls.map((url, index) => (
                 <div key={index}>
-                  <Input
-                    value={url}
-                    onChange={(e) => handleImageUrlChange(index, e.target.value)}
-                    placeholder={`Image ${index + 1} URL`}
-                    className="mb-2"
-                  />
-                  {url && (
+                  <div className="relative">
+                    <Input
+                      value={url}
+                      onChange={(e) => handleImageUrlChange(index, e.target.value)}
+                      placeholder={`Image ${index + 1} URL (JPG or PNG only)`}
+                      className={`mb-2 ${imageErrors[index] ? 'border-red-500' : ''}`}
+                    />
+                    {imageErrors[index] && (
+                      <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-red-500">
+                        <AlertCircle size={16} />
+                      </div>
+                    )}
+                  </div>
+                  {imageErrors[index] && (
+                    <p className="text-xs text-red-500 mb-2">JPG or PNG format only</p>
+                  )}
+                  {url && !imageErrors[index] && (
                     <div className="h-24 w-full bg-gray-100 rounded overflow-hidden">
                       <img 
                         src={url} 
