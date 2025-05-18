@@ -23,22 +23,22 @@ const Navbar = () => {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-6">
-          <Link to="/" className="text-sm font-medium hover:scale-105 hover:text-brand-DEFAULT transition-all">
+          <Link to="/" className="text-sm font-medium hover:scale-105 hover:text-brand-DEFAULT transition-all clickable">
             Home
           </Link>
-          <Link to="/about" className="text-sm font-medium hover:scale-105 hover:text-brand-DEFAULT transition-all">
+          <Link to="/about" className="text-sm font-medium hover:scale-105 hover:text-brand-DEFAULT transition-all clickable">
             About Us
           </Link>
-          <Link to="/products" className="text-sm font-medium hover:scale-105 hover:text-brand-DEFAULT transition-all">
+          <Link to="/products" className="text-sm font-medium hover:scale-105 hover:text-brand-DEFAULT transition-all clickable">
             Products
           </Link>
-          <Link to="/contact" className="text-sm font-medium hover:scale-105 hover:text-brand-DEFAULT transition-all">
+          <Link to="/contact" className="text-sm font-medium hover:scale-105 hover:text-brand-DEFAULT transition-all clickable">
             Contact
           </Link>
         </nav>
 
         {/* Mobile Menu Button */}
-        <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleMenu}>
+        <Button variant="ghost" size="icon" className="md:hidden clickable" onClick={toggleMenu}>
           {isMenuOpen ? <X /> : <Menu />}
         </Button>
       </div>
@@ -52,28 +52,28 @@ const Navbar = () => {
       >
         <Link 
           to="/" 
-          className="text-lg font-medium hover:text-brand-DEFAULT transition-colors"
+          className="text-lg font-medium hover:text-brand-DEFAULT transition-colors clickable"
           onClick={() => setIsMenuOpen(false)}
         >
           Home
         </Link>
         <Link 
           to="/about" 
-          className="text-lg font-medium hover:text-brand-DEFAULT transition-colors"
+          className="text-lg font-medium hover:text-brand-DEFAULT transition-colors clickable"
           onClick={() => setIsMenuOpen(false)}
         >
           About Us
         </Link>
         <Link 
           to="/products" 
-          className="text-lg font-medium hover:text-brand-DEFAULT transition-colors"
+          className="text-lg font-medium hover:text-brand-DEFAULT transition-colors clickable"
           onClick={() => setIsMenuOpen(false)}
         >
           Products
         </Link>
         <Link 
           to="/contact" 
-          className="text-lg font-medium hover:text-brand-DEFAULT transition-colors"
+          className="text-lg font-medium hover:text-brand-DEFAULT transition-colors clickable"
           onClick={() => setIsMenuOpen(false)}
         >
           Contact
