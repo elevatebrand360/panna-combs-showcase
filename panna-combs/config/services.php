@@ -35,10 +35,4 @@ return [
         ],
     ],
 
-    'cloudinary' => [
-        'cloud' => env('dvjyzsknc'),
-        'key' => env('883678459375621'),
-        'secret' => env('vUMfnQRGDD-u1NcU0oxdvYCk6g8'),
-    ],
-
 ];

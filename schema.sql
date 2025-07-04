@@ -108,4 +108,4 @@ VALUES ('Classic Ladies Comb', 'LC001', 'A classic 9-inch hair comb', 1, '+12345
 
 -- Insert product images
 INSERT INTO product_images (product_id, image_url, display_order)
-VALUES (1, 'https://example.com/comb1.jpg', 1); 
+VALUES (1, 'https://firebasestorage.googleapis.com/v0/b/your-bucket/o/images%2Ffilename.jpg?alt=media&token=...', 1);

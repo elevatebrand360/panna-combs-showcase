@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -41,6 +41,7 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'description' => 'required|string',
             'whatsapp_number' => 'required|string|regex:/^\+?[1-9]\d{1,14}$/',
+            'contact_person' => 'required|string|min:3|max:100',
             'email' => 'required|email',
             'images' => 'required|array|min:1|max:4',
             'images.*' => 'image|mimes:jpg,jpeg,png|max:2048',
@@ -49,24 +50,21 @@ class ProductController extends Controller
         try {
             DB::beginTransaction();
 
-            // Create the product
             $product = Product::create([
                 'name' => $validated['name'],
                 'product_code' => $validated['product_code'],
-                'description' => $validated['description'],
                 'category_id' => $validated['category_id'],
+                'description' => $validated['description'],
                 'whatsapp_number' => $validated['whatsapp_number'],
                 'contact_person' => $validated['contact_person'],
                 'email' => $validated['email'],
             ]);
 
-            $imageUrls = [];
             foreach ($request->file('images') as $image) {
-                $uploadedFileUrl = Cloudinary::upload($image->getRealPath())->getSecurePath();
-                $imageUrls[] = $uploadedFileUrl;
+                $path = Storage::disk('backblaze')->putFile('images', $image);
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'image_url' => $uploadedFileUrl,
+                    'image_url' => $path,
                 ]);
             }
 
@@ -138,14 +136,11 @@ class ProductController extends Controller
                 foreach ($request->file('images') as $index => $image) {
                     if ($currentImageCount >= 4) break;
 
-                    $uploadedFileUrl = Cloudinary::upload($image->getRealPath(), [
-                        'folder' => 'panna-combs/products',
-                        'resource_type' => 'image'
-                    ])->getSecurePath();
+                    $path = Storage::disk('backblaze')->putFile('images', $image);
 
                     ProductImage::create([
                         'product_id' => $product->id,
-                        'image_url' => $uploadedFileUrl,
+                        'image_url' => $path,
                         'display_order' => $currentImageCount + 1,
                     ]);
 
@@ -168,12 +163,6 @@ class ProductController extends Controller
     {
         try {
             DB::beginTransaction();
-
-            // Delete images from Cloudinary
-            foreach ($product->images as $image) {
-                $publicId = basename(parse_url($image->image_url, PHP_URL_PATH), '.jpg');
-                Cloudinary::destroy($publicId);
-            }
 
             // Delete the product (this will cascade delete images from DB)
             $product->delete();
