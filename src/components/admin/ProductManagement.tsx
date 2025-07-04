@@ -1,4 +1,3 @@
-
 import { useState, useEffect, ChangeEvent } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -8,6 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/components/ui/use-toast";
 import { productCategories } from "@/lib/products";
 import { AlertCircle, Upload } from "lucide-react";
+import { uploadImage, addProduct, getProducts } from "@/lib/firebase-crud";
+import { db } from "@/lib/firebase";
+import { doc, deleteDoc } from "firebase/firestore";
 
 const ProductManagement = () => {
   const { toast } = useToast();
@@ -30,11 +32,8 @@ const ProductManagement = () => {
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
 
   useEffect(() => {
-    // Load products from localStorage
-    const storedProducts = localStorage.getItem("panna-products");
-    if (storedProducts) {
-      setProducts(JSON.parse(storedProducts));
-    }
+    // Load products from Firestore
+    getProducts().then(setProducts);
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -77,14 +76,6 @@ const ProductManagement = () => {
         setImagePreviews(updatedPreviews);
       };
       reader.readAsDataURL(file);
-      
-      // Update image URLs in newProduct (converting to base64)
-      const updatedImageUrls = [...newProduct.imageUrls];
-      updatedImageUrls[index] = "processing..."; // Temporary placeholder until base64 is ready
-      setNewProduct(prev => ({
-        ...prev,
-        imageUrls: updatedImageUrls
-      }));
     } else {
       updatedPreviews[index] = "";
     }
@@ -109,7 +100,7 @@ const ProductManagement = () => {
     }
 
     // Check if all images are provided and valid
-    if (imageFiles.some((file, index) => file === null)) {
+    if (imageFiles.some((file) => file === null)) {
       toast({
         title: "Missing images",
         description: "Please provide all four images",
@@ -118,8 +109,7 @@ const ProductManagement = () => {
       return;
     }
 
-    // Check if all image files are valid format
-    if (imageFiles.some((file, index) => !isValidImageFile(file))) {
+    if (imageFiles.some((file) => !isValidImageFile(file))) {
       toast({
         title: "Invalid image files",
         description: "Please provide all images in JPG or PNG format only",
@@ -128,36 +118,37 @@ const ProductManagement = () => {
       return;
     }
 
-    // Convert all image files to base64
+    setLoading(true);
     try {
-      const updatedImageUrls = [...newProduct.imageUrls];
-      
+      // Upload all images to Firebase Storage and get URLs
+      const uploadedImageUrls: string[] = [];
       for (let i = 0; i < imageFiles.length; i++) {
         if (imageFiles[i]) {
-          updatedImageUrls[i] = imagePreviews[i]; // Use the preview (which is base64)
+          const url = await uploadImage(imageFiles[i]!);
+          uploadedImageUrls[i] = url;
         }
       }
 
       const slug = generateSlug(newProduct.name);
-      const id = Date.now();
-      
       const product = {
         ...newProduct,
-        imageUrls: updatedImageUrls,
-        id,
+        imageUrls: uploadedImageUrls,
         slug,
         date: new Date().toISOString()
       };
-      
-      const updatedProducts = [...products, product];
-      setProducts(updatedProducts);
-      localStorage.setItem("panna-products", JSON.stringify(updatedProducts));
-      
+
+      await addProduct({
+        name: product.name,
+        price: 0, // Add price field if needed
+        imageUrl: uploadedImageUrls[0], // Main image
+        // Add other fields as needed
+      });
+
       toast({
         title: "Product added",
         description: `${product.name} has been added successfully`
       });
-      
+
       // Reset form
       setNewProduct({
         name: "",
@@ -170,24 +161,35 @@ const ProductManagement = () => {
       setImageFiles([null, null, null, null]);
       setImageErrors([false, false, false, false]);
       setImagePreviews(["", "", "", ""]);
+
+      // Refresh products from Firestore
+      getProducts().then(setProducts);
     } catch (error) {
       toast({
         title: "Error adding product",
-        description: "An error occurred while processing images",
+        description: "An error occurred while uploading images or saving product data",
         variant: "destructive"
       });
     }
+    setLoading(false);
   };
 
-  const handleDeleteProduct = (id: number) => {
-    const updatedProducts = products.filter(product => product.id !== id);
-    setProducts(updatedProducts);
-    localStorage.setItem("panna-products", JSON.stringify(updatedProducts));
-    
-    toast({
-      title: "Product deleted",
-      description: "Product has been removed successfully"
-    });
+  const handleDeleteProduct = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, "products", id));
+      toast({
+        title: "Product deleted",
+        description: "Product has been removed successfully"
+      });
+      // Refresh products from Firestore
+      getProducts().then(setProducts);
+    } catch (error) {
+      toast({
+        title: "Error deleting product",
+        description: "An error occurred while deleting the product",
+        variant: "destructive"
+      });
+    }
   };
 
   const filteredProducts = selectedProduct 

@@ -1,28 +1,31 @@
-import React from 'react';
+import './bootstrap';
+import '../css/app.css';
+import React, { useState } from 'react';
 import ProductGrid from './components/ProductGrid';
 import CategoryFilter from './components/CategoryFilter';
-import { useState } from 'react';
 
 export default function App() {
     const [selectedCategory, setSelectedCategory] = useState(null);
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <header className="bg-white shadow">
-                <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <h1 className="text-3xl font-bold text-gray-900">Panna Combs Showcase</h1>
+        <div className="min-h-screen bg-gray-50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="text-center mb-8">
+                    <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                        Panna Combs Showcase
+                    </h1>
+                    <p className="text-lg text-gray-600">
+                        Discover our premium collection of combs and hair accessories
+                    </p>
                 </div>
-            </header>
 
-            <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                <div className="px-4 py-6 sm:px-0">
-                    <CategoryFilter
-                        selectedCategory={selectedCategory}
-                        onCategoryChange={setSelectedCategory}
-                    />
-                    <ProductGrid categoryId={selectedCategory} />
-                </div>
-            </main>
+                <CategoryFilter 
+                    selectedCategory={selectedCategory} 
+                    onCategoryChange={setSelectedCategory} 
+                />
+
+                <ProductGrid categoryId={selectedCategory} />
+            </div>
         </div>
     );
 } 
