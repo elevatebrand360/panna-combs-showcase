@@ -67,14 +67,13 @@ export async function addProduct(product: {
 export async function getProducts() {
   try {
     console.log("Fetching products from Firestore...");
-    
     const querySnapshot = await getDocs(collection(db, "products"));
     const products = querySnapshot.docs.map(doc => ({ 
       id: doc.id, 
       ...doc.data() 
     }));
-    
     console.log("Products fetched successfully:", products.length, "products");
+    console.log("Fetched products:", products);
     return products;
   } catch (error) {
     console.error("Failed to fetch products:", error);

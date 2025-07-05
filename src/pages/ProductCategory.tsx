@@ -25,20 +25,15 @@ const ProductCategory = () => {
   const category = categorySlug ? getCategoryBySlug(categorySlug) : null;
   
   useEffect(() => {
-    // Scroll to top when category changes
     window.scrollTo(0, 0);
-    
     const loadProducts = async () => {
       try {
         setLoading(true);
         setError(null);
-        
         const firebaseData = await getProducts();
-        const filtered = firebaseData.filter((p: any) => {
-          const productCategory = p.category;
-          const matchingCategory = getCategoryBySlug(categorySlug || "");
-          return matchingCategory && productCategory === matchingCategory.name;
-        }).map((p: any) => ({
+        console.log("UI Fetched products:", firebaseData);
+        // Show all products, no filtering
+        const filtered = firebaseData.map((p: any) => ({
           id: p.id,
           name: p.name,
           description: p.description,
@@ -47,7 +42,6 @@ const ProductCategory = () => {
           slug: p.slug,
           imageUrls: p.imageUrls || []
         }));
-        
         setAllProducts(filtered);
       } catch (err) {
         setError("Failed to load products from database.");
@@ -56,7 +50,6 @@ const ProductCategory = () => {
         setLoading(false);
       }
     };
-    
     loadProducts();
   }, [categorySlug]);
   
