@@ -31,11 +31,15 @@ const ProductCategory = () => {
         setLoading(true);
         setError(null);
         const firebaseData = await getProducts();
-        console.log("UI Fetched products:", firebaseData);
+        const matchingCategory = getCategoryBySlug(categorySlug || "");
+        console.log("Current categorySlug:", categorySlug);
+        console.log("Expected category name:", matchingCategory?.name);
+        firebaseData.forEach((p: any) => {
+          console.log("Product:", p.name, "| category in Firestore:", p.category);
+        });
         // Robust category filtering
         const filtered = firebaseData.filter((p: any) => {
           const productCategory = (p.category || "").toLowerCase().trim();
-          const matchingCategory = getCategoryBySlug(categorySlug || "");
           return matchingCategory && productCategory === matchingCategory.name.toLowerCase().trim();
         }).map((p: any) => ({
           id: p.id,
