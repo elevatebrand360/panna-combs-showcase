@@ -40,7 +40,12 @@ const ProductCategory = () => {
         // Robust category filtering
         const filtered = firebaseData.filter((p: any) => {
           const productCategory = (p.category || "").toLowerCase().trim();
-          return matchingCategory && productCategory === matchingCategory.name.toLowerCase().trim();
+          const expectedCategory = matchingCategory ? matchingCategory.name.toLowerCase().trim() : "";
+          const isMatch = productCategory === expectedCategory;
+          if (!isMatch) {
+            console.log(`Product '${p.name}' (category: '${p.category}') does NOT match current category ('${expectedCategory}')`);
+          }
+          return isMatch;
         }).map((p: any) => ({
           id: p.id,
           name: p.name,
