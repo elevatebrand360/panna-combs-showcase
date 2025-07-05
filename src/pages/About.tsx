@@ -1,6 +1,9 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ProductManagement from "@/components/admin/ProductManagement";
+
+console.log("DEBUG: ProductManagement component loaded at", new Date().toISOString());
 
 const About = () => {
   const handleDeleteClick = (id: string) => {
