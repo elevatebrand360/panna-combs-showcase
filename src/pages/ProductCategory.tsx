@@ -1,10 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ProductCard from "@/components/products/ProductCard";
-import { getProductsByCategory, getCategoryBySlug, Product } from "@/lib/products";
+import { getProducts } from "@/lib/firebase-crud";
+import { getCategoryBySlug, Product } from "@/lib/products";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
@@ -19,36 +19,38 @@ const ProductCategory = () => {
   const { categorySlug } = useParams<{ categorySlug: string }>();
   const [searchQuery, setSearchQuery] = useState("");
   const [allProducts, setAllProducts] = useState<EnhancedProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
   const category = categorySlug ? getCategoryBySlug(categorySlug) : null;
   
   useEffect(() => {
-    // Scroll to top when category changes
     window.scrollTo(0, 0);
-    
-    // Get hardcoded products
-    const hardcodedProducts = categorySlug ? getProductsByCategory(categorySlug) : [];
-    
-    // Get products from database (localStorage)
-    let databaseProducts: EnhancedProduct[] = [];
-    const storedProducts = localStorage.getItem("panna-products");
-    
-    if (storedProducts) {
-      const parsedProducts = JSON.parse(storedProducts);
-      databaseProducts = parsedProducts.filter((p: EnhancedProduct) => {
-        const productCategory = p.category;
-        const matchingCategory = getCategoryBySlug(categorySlug || "");
-        return matchingCategory && productCategory === matchingCategory.name;
-      });
-    }
-    
-    // Combine both sources
-    const combined = [
-      ...hardcodedProducts,
-      ...databaseProducts
-    ];
-    
-    setAllProducts(combined);
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const firebaseData = await getProducts();
+        console.log("UI Fetched products:", firebaseData);
+        // Show all products, no filtering
+        const filtered = firebaseData.map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          description: p.description,
+          category: p.category,
+          productCode: p.productCode,
+          slug: p.slug,
+          imageUrls: p.imageUrls || []
+        }));
+        setAllProducts(filtered);
+      } catch (err) {
+        setError("Failed to load products from database.");
+        setAllProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProducts();
   }, [categorySlug]);
   
   const filteredProducts = allProducts.filter(product => 
@@ -66,6 +68,30 @@ const ProductCategory = () => {
           <Button asChild>
             <Link to="/products">Back to Products</Link>
           </Button>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <div className="container mx-auto py-20 px-4 text-center">
+          <h2>Loading products...</h2>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Navbar />
+        <div className="container mx-auto py-20 px-4 text-center">
+          <h2 className="text-red-500">{error}</h2>
         </div>
         <Footer />
       </>
@@ -121,7 +147,7 @@ const ProductCategory = () => {
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
               {filteredProducts.map((product, index) => (
                 <ProductCard 
-                  key={product.id} 
+                  key={product.id || `firebase-${index}`} 
                   product={{
                     ...product,
                     image: product.image || (product.imageUrls && product.imageUrls[0]) || ""

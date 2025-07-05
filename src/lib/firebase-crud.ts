@@ -5,22 +5,30 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 // Upload an image to Firebase Storage and return its public download URL
 export async function uploadImage(file: File): Promise<string> {
   try {
-    console.log("Starting image upload for:", file.name, "Size:", file.size);
-    
+    console.log("Starting image upload for:", file.name, "Size:", file.size, "Type:", file.type);
+    // Extra validation
+    if (!(file instanceof File)) {
+      throw new Error("Provided object is not a File instance");
+    }
     // Check file size (5MB limit for client SDK)
     if (file.size > 5 * 1024 * 1024) {
       throw new Error("File size exceeds 5MB limit");
     }
-    
+    // Check file type
+    const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+    if (!validTypes.includes(file.type)) {
+      throw new Error("Invalid file type: " + file.type);
+    }
+    // Log first few bytes for debugging
+    const arrayBuffer = await file.slice(0, 16).arrayBuffer();
+    const bytes = Array.from(new Uint8Array(arrayBuffer));
+    console.log("First 16 bytes of file:", bytes);
     const storageRef = ref(storage, `images/${file.name}-${Date.now()}`);
     console.log("Uploading to storage path:", storageRef.fullPath);
-    
     const snapshot = await uploadBytes(storageRef, file);
     console.log("Upload successful, getting download URL...");
-    
     const downloadURL = await getDownloadURL(storageRef);
     console.log("Download URL obtained:", downloadURL);
-    
     return downloadURL;
   } catch (error) {
     console.error("Image upload failed:", error);
@@ -59,14 +67,13 @@ export async function addProduct(product: {
 export async function getProducts() {
   try {
     console.log("Fetching products from Firestore...");
-    
     const querySnapshot = await getDocs(collection(db, "products"));
     const products = querySnapshot.docs.map(doc => ({ 
       id: doc.id, 
       ...doc.data() 
     }));
-    
     console.log("Products fetched successfully:", products.length, "products");
+    console.log("Fetched products:", products);
     return products;
   } catch (error) {
     console.error("Failed to fetch products:", error);

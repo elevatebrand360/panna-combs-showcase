@@ -1,53 +1,45 @@
-
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ContactSection from "@/components/products/ContactSection";
 import ProductSlider from "@/components/products/ProductSlider";
-import { getProductBySlug, getCategoryBySlug, productCategories } from "@/lib/products";
+import { getCategoryBySlug, productCategories, Product } from "@/lib/products";
+import { getProducts } from "@/lib/firebase-crud";
 import { Button } from "@/components/ui/button";
 
 const ProductDetail = () => {
   const { productSlug } = useParams<{ productSlug: string }>();
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  
+  const [error, setError] = useState<string | null>(null);
+
   const category = product 
     ? getCategoryBySlug(productCategories.find(cat => cat.name === product.category)?.slug || "") 
     : null;
-  
+
   useEffect(() => {
-    // Scroll to top when product changes
     window.scrollTo(0, 0);
-    
-    // First, check for product in database (localStorage)
-    const storedProducts = localStorage.getItem("panna-products");
-    if (storedProducts) {
-      const products = JSON.parse(storedProducts);
-      const foundProduct = products.find((p: any) => p.slug === productSlug);
-      
-      if (foundProduct) {
-        setProduct(foundProduct);
+    const loadProduct = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const firebaseProducts = await getProducts();
+        const foundProduct = firebaseProducts.find((p: any) => p.slug === productSlug);
+        if (foundProduct) {
+          setProduct(foundProduct);
+        } else {
+          setProduct(null);
+          setError("Product not found.");
+        }
+      } catch (err) {
+        setError("Failed to load product from database.");
+        setProduct(null);
+      } finally {
         setLoading(false);
-        return;
       }
-    }
-    
-    // If not found in database, check the hardcoded products
-    const hardcodedProduct = productSlug ? getProductBySlug(productSlug) : null;
-    if (hardcodedProduct) {
-      // Convert hardcoded product to have the same format as database products
-      const convertedProduct = {
-        ...hardcodedProduct,
-        imageUrls: [hardcodedProduct.image, hardcodedProduct.image, hardcodedProduct.image, hardcodedProduct.image]
-      };
-      setProduct(convertedProduct);
-    } else {
-      setProduct(null);
-    }
-    
-    setLoading(false);
+    };
+    loadProduct();
   }, [productSlug]);
 
   if (loading) {
@@ -61,8 +53,8 @@ const ProductDetail = () => {
       </>
     );
   }
-  
-  if (!product) {
+
+  if (error || !product) {
     return (
       <>
         <Navbar />
@@ -78,7 +70,6 @@ const ProductDetail = () => {
     );
   }
 
-  // Use imageUrls if available, otherwise use the single image property
   const images = product.imageUrls || [product.image, product.image, product.image, product.image];
 
   return (

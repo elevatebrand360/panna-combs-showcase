@@ -15,18 +15,33 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 
-// Use this instead of getFirestore(app) if your region is not default:
+// Initialize analytics only in production
+let analytics;
+if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+  try {
+    analytics = getAnalytics(app);
+  } catch (error) {
+    console.warn('Analytics initialization failed:', error);
+  }
+}
+
+// Initialize Firestore
 const db = initializeFirestore(app, { 
   // e.g., host: "your-region-firestore.googleapis.com", ssl: true 
 });
-const storage = getStorage(app);
 
-// Only connect to emulator in development
+// Only connect to emulator in development and only if emulator is running
 if (window.location.hostname === "localhost") {
-  connectFirestoreEmulator(db, "localhost", 8080);
+  try {
+    connectFirestoreEmulator(db, "localhost", 8080);
+    console.log("Connected to Firestore emulator");
+  } catch (error) {
+    console.log("Firestore emulator not running, using production Firestore");
+  }
 }
+
+const storage = getStorage(app);
 
 export { app, analytics, db, storage };
 
