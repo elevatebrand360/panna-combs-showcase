@@ -7,9 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/components/ui/use-toast";
 import { productCategories } from "@/lib/products";
 import { AlertCircle, Upload } from "lucide-react";
-import { uploadImage, addProduct, getProducts } from "@/lib/firebase-crud";
-import { db } from "@/lib/firebase";
-import { doc, deleteDoc } from "firebase/firestore";
+import { uploadImage, addProduct, getProducts, deleteProduct } from "@/lib/firebase-crud";
 
 const ProductManagement = () => {
   const { toast } = useToast();
@@ -33,8 +31,22 @@ const ProductManagement = () => {
 
   useEffect(() => {
     // Load products from Firestore
-    getProducts().then(setProducts);
+    loadProducts();
   }, []);
+
+  const loadProducts = async () => {
+    try {
+      const productsData = await getProducts();
+      setProducts(productsData);
+    } catch (error) {
+      console.error("Failed to load products:", error);
+      toast({
+        title: "Error loading products",
+        description: "Failed to load products from database",
+        variant: "destructive"
+      });
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -120,12 +132,16 @@ const ProductManagement = () => {
 
     setLoading(true);
     try {
+      console.log("Starting product addition process...");
+      
       // Upload all images to Firebase Storage and get URLs
       const uploadedImageUrls: string[] = [];
       for (let i = 0; i < imageFiles.length; i++) {
         if (imageFiles[i]) {
+          console.log(`Uploading image ${i + 1}...`);
           const url = await uploadImage(imageFiles[i]!);
           uploadedImageUrls[i] = url;
+          console.log(`Image ${i + 1} uploaded successfully:`, url);
         }
       }
 
@@ -137,12 +153,8 @@ const ProductManagement = () => {
         date: new Date().toISOString()
       };
 
-      await addProduct({
-        name: product.name,
-        price: 0, // Add price field if needed
-        imageUrl: uploadedImageUrls[0], // Main image
-        // Add other fields as needed
-      });
+      console.log("Submitting product data:", product);
+      await addProduct(product);
 
       toast({
         title: "Product added",
@@ -163,11 +175,12 @@ const ProductManagement = () => {
       setImagePreviews(["", "", "", ""]);
 
       // Refresh products from Firestore
-      getProducts().then(setProducts);
+      await loadProducts();
     } catch (error) {
+      console.error("Error adding product:", error);
       toast({
         title: "Error adding product",
-        description: "An error occurred while uploading images or saving product data",
+        description: error instanceof Error ? error.message : "An error occurred while uploading images or saving product data",
         variant: "destructive"
       });
     }
@@ -176,17 +189,18 @@ const ProductManagement = () => {
 
   const handleDeleteProduct = async (id: string) => {
     try {
-      await deleteDoc(doc(db, "products", id));
+      await deleteProduct(id);
       toast({
         title: "Product deleted",
         description: "Product has been removed successfully"
       });
       // Refresh products from Firestore
-      getProducts().then(setProducts);
+      await loadProducts();
     } catch (error) {
+      console.error("Error deleting product:", error);
       toast({
         title: "Error deleting product",
-        description: "An error occurred while deleting the product",
+        description: error instanceof Error ? error.message : "An error occurred while deleting the product",
         variant: "destructive"
       });
     }
@@ -300,7 +314,9 @@ const ProductManagement = () => {
           </div>
           
           <div className="flex justify-end">
-            <Button onClick={handleAddProduct}>Add Product</Button>
+            <Button onClick={handleAddProduct} disabled={loading}>
+              {loading ? "Adding Product..." : "Add Product"}
+            </Button>
           </div>
         </TabsContent>
         

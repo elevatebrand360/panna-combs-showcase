@@ -1,8 +1,8 @@
 [
   {
-    "origin": ["http://192.168.0.157:8080"],
-    "method": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    "responseHeader": ["Content-Type", "Authorization"],
-    "maxAgeSeconds": 3600
+    "origin": ["http://localhost:3000", "http://localhost:8082", "http://10.26.216.45:8082"],
+    "method": ["GET", "POST", "PUT", "DELETE"],
+    "maxAgeSeconds": 3600,
+    "responseHeader": ["Content-Type", "Authorization"]
   }
 ] 
