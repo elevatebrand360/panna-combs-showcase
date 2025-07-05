@@ -1,73 +1,85 @@
-# Welcome to your Lovable project
+# Panna Combs Showcase
 
-## Project info
+A premium hair combs product showcase and admin panel built with React, Firebase, and Firestore.
 
-**URL**: https://lovable.dev/projects/c378b828-1a6b-41f9-8fce-f6271a5408a8
+## Project Overview
 
-## How can I edit this code?
+This project is a modern web application for Panna Combs, featuring:
+- A public-facing product showcase website
+- An admin panel for managing products and images
+- Integration with Firebase Firestore and Storage for data and image hosting
 
-There are several ways of editing your application.
+## Features
 
-**Use Lovable**
+- **Product Listing:** Browse products by category, view product details, and images
+- **Admin Panel:** Add, edit, and delete products with image uploads
+- **Category Filtering:** Products are shown in their correct categories
+- **Firebase Integration:** Uses Firestore for product data and Storage for images
+- **Responsive Design:** Works on desktop and mobile
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/c378b828-1a6b-41f9-8fce-f6271a5408a8) and start prompting.
+## Tech Stack
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Frontend:** React, TypeScript, Vite
+- **UI:** Custom components, Tailwind CSS
+- **Backend/Data:** Firebase Firestore, Firebase Storage
+- **Hosting:** Vercel/Netlify (static frontend), Firebase (data/images)
 
-**Use your preferred IDE**
+## Getting Started
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
+- Node.js (v16+ recommended)
+- npm or yarn
+- Firebase project (with Firestore and Storage enabled)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/panna-combs-showcase.git
+   cd panna-combs-showcase
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+3. Configure Firebase:
+   - Copy your Firebase config to `src/lib/firebase.ts`.
+   - Make sure your Firestore and Storage rules allow the required access.
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### Running Locally
+```bash
 npm run dev
+# or
+yarn dev
 ```
+- Visit [http://localhost:3000](http://localhost:3000) in your browser.
 
-**Edit a file directly in GitHub**
+### Building for Production
+```bash
+npm run build
+# or
+yarn build
+```
+- The output will be in the `dist/` folder.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Deploying
+- Deploy the `dist/` folder to Vercel, Netlify, or your preferred static hosting.
+- Set up your custom domain (e.g., pannacombs.com).
 
-**Use GitHub Codespaces**
+## Admin Panel
+- Visit `/admin` on your deployed site.
+- Use the admin password (set in code or via environment variable) to log in.
+- Add, edit, or delete products and images.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Troubleshooting
+- **Blank page or errors:** Check the browser console for errors and ensure your Firebase config is correct.
+- **Products not showing:** Make sure Firestore rules allow public reads and your frontend is using the correct Firebase project.
+- **Image upload issues:** Check Storage rules and CORS settings.
+- **Category filter not working:** Ensure product `category` fields in Firestore match the display names in your frontend.
 
-## What technologies are used for this project?
+## Contributing
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/c378b828-1a6b-41f9-8fce-f6271a5408a8) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## License
+[MIT](LICENSE)
