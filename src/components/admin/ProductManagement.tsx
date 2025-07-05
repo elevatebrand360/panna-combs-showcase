@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { productCategories } from "@/lib/products";
 import { AlertCircle, Upload } from "lucide-react";
 import { uploadImage, addProduct, getProducts, deleteProduct } from "@/lib/firebase-crud";
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
 
 const ProductManagement = () => {
   const { toast } = useToast();
@@ -28,6 +29,8 @@ const ProductManagement = () => {
   const [imageErrors, setImageErrors] = useState<boolean[]>([false, false, false, false]);
   const [imagePreviews, setImagePreviews] = useState<string[]>(["", "", "", ""]);
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     // Load products from Firestore
@@ -187,14 +190,29 @@ const ProductManagement = () => {
     setLoading(false);
   };
 
+  const handleDeleteClick = (id: string) => {
+    console.log("Delete button clicked for product ID:", id);
+    setProductToDelete(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDeleteProduct = async () => {
+    if (productToDelete) {
+      console.log("Confirmed delete for product ID:", productToDelete);
+      await handleDeleteProduct(productToDelete);
+      setProductToDelete(null);
+      setDeleteDialogOpen(false);
+    }
+  };
+
   const handleDeleteProduct = async (id: string) => {
     try {
+      console.log("Calling deleteProduct for ID:", id);
       await deleteProduct(id);
       toast({
         title: "Product deleted",
         description: "Product has been removed successfully"
       });
-      // Refresh products from Firestore
       await loadProducts();
     } catch (error) {
       console.error("Error deleting product:", error);
@@ -206,8 +224,8 @@ const ProductManagement = () => {
     }
   };
 
-  const filteredProducts = selectedProduct 
-    ? products.filter(p => p.category === selectedProduct)
+  const filteredProducts = selectedProduct
+    ? products.filter(p => p.category && p.category.toLowerCase() === selectedProduct.toLowerCase())
     : products;
 
   return (
@@ -329,11 +347,13 @@ const ProductManagement = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="">All Categories</SelectItem>
-                {productCategories.map(category => (
-                  <SelectItem key={category.id} value={category.name}>
-                    {category.name}
-                  </SelectItem>
-                ))}
+                {productCategories
+                  .filter(category => category.name && category.name.trim() !== "")
+                  .map(category => (
+                    <SelectItem key={category.id} value={category.name}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>
@@ -361,7 +381,7 @@ const ProductManagement = () => {
                         <Button 
                           variant="destructive" 
                           size="sm"
-                          onClick={() => handleDeleteProduct(product.id)}
+                          onClick={() => handleDeleteClick(product.id)}
                         >
                           Delete
                         </Button>
@@ -370,6 +390,17 @@ const ProductManagement = () => {
                   ))}
                 </tbody>
               </table>
+              <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure you want to delete this product?</AlertDialogTitle>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel onClick={() => setDeleteDialogOpen(false)}>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={confirmDeleteProduct} className="bg-red-600 hover:bg-red-700">Delete</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           ) : (
             <div className="text-center py-10 border rounded-lg">

@@ -31,9 +31,22 @@ const ProductCategory = () => {
         setLoading(true);
         setError(null);
         const firebaseData = await getProducts();
-        console.log("UI Fetched products:", firebaseData);
-        // Show all products, no filtering
-        const filtered = firebaseData.map((p: any) => ({
+        const matchingCategory = getCategoryBySlug(categorySlug || "");
+        console.log("Current categorySlug:", categorySlug);
+        console.log("Expected category name:", matchingCategory?.name);
+        firebaseData.forEach((p: any) => {
+          console.log("Product:", p.name, "| category in Firestore:", p.category);
+        });
+        // Robust category filtering
+        const filtered = firebaseData.filter((p: any) => {
+          const productCategory = (p.category || "").toLowerCase().trim();
+          const expectedCategory = matchingCategory ? matchingCategory.name.toLowerCase().trim() : "";
+          const isMatch = productCategory === expectedCategory;
+          if (!isMatch) {
+            console.log(`Product '${p.name}' (category: '${p.category}') does NOT match current category ('${expectedCategory}')`);
+          }
+          return isMatch;
+        }).map((p: any) => ({
           id: p.id,
           name: p.name,
           description: p.description,
