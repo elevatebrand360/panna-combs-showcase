@@ -1,9 +1,42 @@
-
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const About = () => {
+  const handleDeleteClick = (id: string) => {
+    console.log("Delete button clicked for product ID:", id);
+    setProductToDelete(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDeleteProduct = async () => {
+    if (productToDelete) {
+      console.log("Confirmed delete for product ID:", productToDelete);
+      await handleDeleteProduct(productToDelete);
+      setProductToDelete(null);
+      setDeleteDialogOpen(false);
+    }
+  };
+
+  const handleDeleteProduct = async (id: string) => {
+    try {
+      console.log("Calling deleteProduct for ID:", id);
+      await deleteProduct(id);
+      toast({
+        title: "Product deleted",
+        description: "Product has been removed successfully"
+      });
+      await loadProducts();
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      toast({
+        title: "Error deleting product",
+        description: error instanceof Error ? error.message : "An error occurred while deleting the product",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <>
       <Navbar />
