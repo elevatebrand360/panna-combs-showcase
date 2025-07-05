@@ -32,8 +32,12 @@ const ProductCategory = () => {
         setError(null);
         const firebaseData = await getProducts();
         console.log("UI Fetched products:", firebaseData);
-        // Show all products, no filtering
-        const filtered = firebaseData.map((p: any) => ({
+        // Robust category filtering
+        const filtered = firebaseData.filter((p: any) => {
+          const productCategory = (p.category || "").toLowerCase().trim();
+          const matchingCategory = getCategoryBySlug(categorySlug || "");
+          return matchingCategory && productCategory === matchingCategory.name.toLowerCase().trim();
+        }).map((p: any) => ({
           id: p.id,
           name: p.name,
           description: p.description,
