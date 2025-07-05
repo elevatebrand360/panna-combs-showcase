@@ -1,6 +1,6 @@
 [
   {
-    "origin": ["http://localhost:3000", "http://localhost:8082", "http://10.26.216.45:8082"],
+    "origin": ["http://localhost:3000", "http://localhost:8082", "http://10.26.216.45:8082", "https://pannacombs.com", "http://pannacombs.com"],
     "method": ["GET", "POST", "PUT", "DELETE"],
     "maxAgeSeconds": 3600,
     "responseHeader": ["Content-Type", "Authorization"]
