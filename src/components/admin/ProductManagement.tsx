@@ -224,8 +224,8 @@ const ProductManagement = () => {
     }
   };
 
-  const filteredProducts = selectedProduct 
-    ? products.filter(p => p.category === selectedProduct)
+  const filteredProducts = selectedProduct
+    ? products.filter(p => p.category && p.category.toLowerCase() === selectedProduct.toLowerCase())
     : products;
 
   return (
