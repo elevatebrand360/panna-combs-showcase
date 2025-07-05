@@ -191,12 +191,14 @@ const ProductManagement = () => {
   };
 
   const handleDeleteClick = (id: string) => {
+    console.log("Delete button clicked for product ID:", id);
     setProductToDelete(id);
     setDeleteDialogOpen(true);
   };
 
   const confirmDeleteProduct = async () => {
     if (productToDelete) {
+      console.log("Confirmed delete for product ID:", productToDelete);
       await handleDeleteProduct(productToDelete);
       setProductToDelete(null);
       setDeleteDialogOpen(false);
@@ -205,12 +207,12 @@ const ProductManagement = () => {
 
   const handleDeleteProduct = async (id: string) => {
     try {
+      console.log("Calling deleteProduct for ID:", id);
       await deleteProduct(id);
       toast({
         title: "Product deleted",
         description: "Product has been removed successfully"
       });
-      // Refresh products from Firestore
       await loadProducts();
     } catch (error) {
       console.error("Error deleting product:", error);
