@@ -347,11 +347,13 @@ const ProductManagement = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="">All Categories</SelectItem>
-                {productCategories.map(category => (
-                  <SelectItem key={category.id} value={category.name}>
-                    {category.name}
-                  </SelectItem>
-                ))}
+                {productCategories
+                  .filter(category => category.name && category.name.trim() !== "")
+                  .map(category => (
+                    <SelectItem key={category.id} value={category.name}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>
