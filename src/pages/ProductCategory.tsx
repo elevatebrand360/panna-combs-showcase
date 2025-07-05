@@ -3,8 +3,8 @@ import { useParams, Link } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ProductCard from "@/components/products/ProductCard";
-import { getProductsByCategory, getCategoryBySlug, Product } from "@/lib/products";
 import { getProducts } from "@/lib/firebase-crud";
+import { getCategoryBySlug, Product } from "@/lib/products";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
@@ -20,6 +20,7 @@ const ProductCategory = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [allProducts, setAllProducts] = useState<EnhancedProduct[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
   const category = categorySlug ? getCategoryBySlug(categorySlug) : null;
   
@@ -30,40 +31,27 @@ const ProductCategory = () => {
     const loadProducts = async () => {
       try {
         setLoading(true);
+        setError(null);
         
-        // Get hardcoded products
-        const hardcodedProducts = categorySlug ? getProductsByCategory(categorySlug) : [];
+        const firebaseData = await getProducts();
+        const filtered = firebaseData.filter((p: any) => {
+          const productCategory = p.category;
+          const matchingCategory = getCategoryBySlug(categorySlug || "");
+          return matchingCategory && productCategory === matchingCategory.name;
+        }).map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          description: p.description,
+          category: p.category,
+          productCode: p.productCode,
+          slug: p.slug,
+          imageUrls: p.imageUrls || []
+        }));
         
-        // Get products from Firebase
-        let firebaseProducts: EnhancedProduct[] = [];
-        try {
-          const firebaseData = await getProducts();
-          firebaseProducts = firebaseData.filter((p: any) => {
-            const productCategory = p.category;
-            const matchingCategory = getCategoryBySlug(categorySlug || "");
-            return matchingCategory && productCategory === matchingCategory.name;
-          }).map((p: any) => ({
-            id: p.id,
-            name: p.name,
-            description: p.description,
-            category: p.category,
-            productCode: p.productCode,
-            slug: p.slug,
-            imageUrls: p.imageUrls || []
-          }));
-        } catch (error) {
-          console.error("Error fetching Firebase products:", error);
-        }
-        
-        // Combine both sources
-        const combined = [
-          ...hardcodedProducts,
-          ...firebaseProducts
-        ];
-        
-        setAllProducts(combined);
-      } catch (error) {
-        console.error("Error loading products:", error);
+        setAllProducts(filtered);
+      } catch (err) {
+        setError("Failed to load products from database.");
+        setAllProducts([]);
       } finally {
         setLoading(false);
       }
@@ -99,6 +87,18 @@ const ProductCategory = () => {
         <Navbar />
         <div className="container mx-auto py-20 px-4 text-center">
           <h2>Loading products...</h2>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Navbar />
+        <div className="container mx-auto py-20 px-4 text-center">
+          <h2 className="text-red-500">{error}</h2>
         </div>
         <Footer />
       </>
