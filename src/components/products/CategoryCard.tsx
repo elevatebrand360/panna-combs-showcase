@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,7 +19,7 @@ const CategoryCard = ({ category }: CategoryCardProps) => {
         <h3 className="text-xl font-medium mb-2 text-center text-brand-dark">{category.name}</h3>
         <p className="text-sm text-muted-foreground mb-4 text-center line-clamp-3">{category.description}</p>
         <Button asChild className="w-full">
-          <Link to={`/products/category/${category.slug}`}>View Products</Link>
+          <Link to={`/category/${category.slug}`}>View Products</Link>
         </Button>
       </CardContent>
     </Card>
