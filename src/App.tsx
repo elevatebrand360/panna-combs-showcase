@@ -1,10 +1,12 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import { shouldRedirectToHome } from "@/utils/reloadHandler";
 
 // Lazy load all pages
 const Index = lazy(() => import("./pages/Index"));
@@ -26,23 +28,21 @@ const PageLoader = () => (
   </div>
 );
 
-// Error boundary component
-const ErrorFallback = ({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) => (
-  <div className="min-h-screen flex items-center justify-center bg-white">
-    <div className="text-center max-w-md mx-auto px-4">
-      <h1 className="text-2xl font-bold text-red-600 mb-4">Something went wrong</h1>
-      <p className="text-muted-foreground mb-6">
-        We're sorry, but there was an error loading this page. Please try again.
-      </p>
-      <button
-        onClick={resetErrorBoundary}
-        className="bg-brand-DEFAULT text-white px-6 py-3 rounded-md hover:bg-brand-dark transition-colors"
-      >
-        Try Again
-      </button>
-    </div>
-  </div>
-);
+// Reload handler component
+const ReloadHandler = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if we should redirect to home due to page reload
+    if (shouldRedirectToHome()) {
+      console.log('Page reload detected, redirecting to home page');
+      navigate('/', { replace: true });
+    }
+  }, [location.pathname, navigate]);
+
+  return null;
+};
 
 // Create a client with optimized settings
 const queryClient = new QueryClient({
@@ -59,28 +59,31 @@ const queryClient = new QueryClient({
 const App = () => {
   return (
     <React.StrictMode>
-      <HelmetProvider>
-        <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Suspense fallback={<PageLoader />}>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/products" element={<Products />} />
-                  <Route path="/category/:categorySlug" element={<ProductCategory />} />
-                  <Route path="/products/:productSlug" element={<ProductDetail />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/admin" element={<Admin />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Suspense>
-            </BrowserRouter>
-          </TooltipProvider>
-        </QueryClientProvider>
-      </HelmetProvider>
+      <ErrorBoundary>
+        <HelmetProvider>
+          <QueryClientProvider client={queryClient}>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <ReloadHandler />
+                <Suspense fallback={<PageLoader />}>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/products" element={<Products />} />
+                    <Route path="/category/:categorySlug" element={<ProductCategory />} />
+                    <Route path="/products/:productSlug" element={<ProductDetail />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/admin" element={<Admin />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Suspense>
+              </BrowserRouter>
+            </TooltipProvider>
+          </QueryClientProvider>
+        </HelmetProvider>
+      </ErrorBoundary>
     </React.StrictMode>
   );
 };

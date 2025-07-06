@@ -24,6 +24,16 @@ RewriteEngine On
 </FilesMatch>
 
 # Handle SPA routing - redirect all requests to index.html except for existing files
+# This ensures that page reloads work properly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /index.html [QSA,L]
+
+# Additional rule to handle direct access to routes
+RewriteCond %{REQUEST_URI} !^/assets/
+RewriteCond %{REQUEST_URI} !^/favicon\.ico$
+RewriteCond %{REQUEST_URI} !^/logo\.png$
+RewriteCond %{REQUEST_URI} !^/manifest\.json$
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ /index.html [QSA,L]
