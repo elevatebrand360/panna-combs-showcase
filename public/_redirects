@@ -1,4 +1,4 @@
-# Netlify redirects for SPA
+# Netlify redirects for SPA - Handle all routes and reloads
 /*    /index.html   200
 
 # Force proper MIME types for JavaScript files
@@ -17,4 +17,7 @@
 *.woff    /:splat.woff   200
 *.woff2    /:splat.woff2   200
 *.ttf    /:splat.ttf   200
-*.eot    /:splat.eot   200 
+*.eot    /:splat.eot   200
+
+# Handle 404s gracefully
+/404    /index.html   200 

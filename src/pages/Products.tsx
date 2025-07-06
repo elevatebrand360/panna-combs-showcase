@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CategoryCard from "@/components/products/CategoryCard";
@@ -10,10 +10,58 @@ import SEO from "@/components/SEO";
 
 const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [categories, setCategories] = useState(productCategories);
   
-  const filteredCategories = productCategories.filter(category => 
+  useEffect(() => {
+    // Add a small delay to ensure proper loading
+    const timer = setTimeout(() => {
+      try {
+        // Verify that categories are loaded
+        if (productCategories && productCategories.length > 0) {
+          setCategories(productCategories);
+          console.log("Products page loaded successfully, categories count:", productCategories.length);
+        } else {
+          console.warn("No categories found, using fallback");
+          setError("No product categories available");
+        }
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Error loading products:", err);
+        setError("Failed to load products");
+        setIsLoading(false);
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Debug logging
+  useEffect(() => {
+    console.log("Products page mounted");
+    console.log("Available categories:", categories.length);
+  }, [categories]);
+
+  const filteredCategories = categories.filter(category => 
     category.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  if (error) {
+    return (
+      <>
+        <Navbar />
+        <div className="container mx-auto py-20 px-4 text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Error Loading Products</h1>
+          <p className="text-muted-foreground mb-8">{error}</p>
+          <Button onClick={() => window.location.reload()}>
+            Try Again
+          </Button>
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
@@ -36,49 +84,58 @@ const Products = () => {
         </div>
         
         <div className="container mx-auto py-8 md:py-12 px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-6 md:mb-10">
-            <h2 className="mb-4 md:mb-0 text-2xl md:text-3xl">Product Categories</h2>
-            <div className="w-full md:w-1/3">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input 
-                  placeholder="Search categories..." 
-                  value={searchQuery} 
-                  onChange={(e) => setSearchQuery(e.target.value)} 
-                  className="pl-9 pr-9 max-w-md"
-                />
-                {searchQuery && (
-                  <button 
-                    onClick={() => setSearchQuery("")}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-          
-          {filteredCategories.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              {filteredCategories.map(category => (
-                <CategoryCard key={category.id} category={category} />
-              ))}
+          {isLoading ? (
+            <div className="text-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-DEFAULT mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading products...</p>
             </div>
           ) : (
-            <div className="text-center py-10">
-              <h3 className="text-xl font-medium mb-2">No categories found</h3>
-              <p className="text-muted-foreground">
-                Try a different search term or browse all categories.
-              </p>
-              <Button 
-                variant="outline" 
-                onClick={() => setSearchQuery("")} 
-                className="mt-4"
-              >
-                Show All Categories
-              </Button>
-            </div>
+            <>
+              <div className="flex flex-col md:flex-row justify-between items-center mb-6 md:mb-10">
+                <h2 className="mb-4 md:mb-0 text-2xl md:text-3xl">Product Categories</h2>
+                <div className="w-full md:w-1/3">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                    <Input 
+                      placeholder="Search categories..." 
+                      value={searchQuery} 
+                      onChange={(e) => setSearchQuery(e.target.value)} 
+                      className="pl-9 pr-9 max-w-md"
+                    />
+                    {searchQuery && (
+                      <button 
+                        onClick={() => setSearchQuery("")}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              {filteredCategories.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                  {filteredCategories.map(category => (
+                    <CategoryCard key={category.id} category={category} />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-10">
+                  <h3 className="text-xl font-medium mb-2">No categories found</h3>
+                  <p className="text-muted-foreground">
+                    Try a different search term or browse all categories.
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setSearchQuery("")} 
+                    className="mt-4"
+                  >
+                    Show All Categories
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </main>
