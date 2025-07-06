@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -7,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Facebook, Instagram, Phone, Mail, MapPin } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import SEO from "@/components/SEO";
 
 const Contact = () => {
   const { toast } = useToast();
@@ -47,6 +47,12 @@ const Contact = () => {
 
   return (
     <>
+      <SEO 
+        title="Contact Panna Combs - Hair Comb Manufacturer Kolkata | Get Quote"
+        description="Contact Panna Combs - Leading hair comb manufacturer in Kolkata. Call +913326441277 or email pannacombs@gmail.com for wholesale orders and inquiries."
+        keywords="contact Panna Combs, comb manufacturer contact, wholesale combs Kolkata, comb factory Howrah, Panna Combs phone number"
+        canonical="https://pannacombs.com/contact"
+      />
       <Navbar />
       <main>
         <div className="bg-brand-DEFAULT text-white py-16 px-4">

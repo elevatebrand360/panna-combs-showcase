@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -7,6 +6,7 @@ import { productCategories } from "@/lib/products";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -17,6 +17,12 @@ const Products = () => {
 
   return (
     <>
+      <SEO 
+        title="Hair Combs Collection - Premium Combs Manufacturer Kolkata | Panna Combs"
+        description="Browse our complete collection of premium hair combs. Ladies combs, gents combs, salon combs, and premium styling combs. Best quality combs manufacturer in Kolkata since 1980."
+        keywords="hair combs collection, ladies combs, gents combs, salon combs, premium combs, styling combs, comb manufacturer Kolkata, wholesale combs"
+        canonical="https://pannacombs.com/products"
+      />
       <Navbar />
       <main>
         <div className="bg-brand-DEFAULT text-white py-12 px-4">
