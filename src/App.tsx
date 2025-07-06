@@ -18,8 +18,29 @@ const Admin = lazy(() => import("./pages/Admin"));
 
 // Loading component
 const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center">
-    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-DEFAULT"></div>
+  <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-brand-DEFAULT mx-auto mb-4"></div>
+      <p className="text-muted-foreground text-lg">Loading...</p>
+    </div>
+  </div>
+);
+
+// Error boundary component
+const ErrorFallback = ({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) => (
+  <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="text-center max-w-md mx-auto px-4">
+      <h1 className="text-2xl font-bold text-red-600 mb-4">Something went wrong</h1>
+      <p className="text-muted-foreground mb-6">
+        We're sorry, but there was an error loading this page. Please try again.
+      </p>
+      <button
+        onClick={resetErrorBoundary}
+        className="bg-brand-DEFAULT text-white px-6 py-3 rounded-md hover:bg-brand-dark transition-colors"
+      >
+        Try Again
+      </button>
+    </div>
   </div>
 );
 

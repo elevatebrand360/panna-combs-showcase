@@ -44,7 +44,9 @@ const FeaturedProducts = () => {
                   variant="outline" 
                   className="w-full bg-blue-600 text-white hover:bg-blue-700 border-blue-600 font-semibold"
                 >
-                  <Link to={`/category/${category.slug}`}>View Details</Link>
+                  <Link to={`/category/${category.slug}`} onClick={() => console.log('Navigating to category:', category.slug)}>
+                    View Details
+                  </Link>
                 </Button>
               </CardContent>
             </Card>
@@ -57,7 +59,13 @@ const FeaturedProducts = () => {
             size="lg"
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
           >
-            <Link to="/products">View All Products</Link>
+            <Link 
+              to="/products" 
+              onClick={() => console.log('Navigating to products page')}
+              onMouseEnter={() => console.log('Hovering over View All Products button')}
+            >
+              View All Products
+            </Link>
           </Button>
         </div>
       </div>
