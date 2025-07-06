@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import HeroSlider from "@/components/home/HeroSlider";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
@@ -18,11 +17,11 @@ const Index = () => {
         <AboutPreview />
         <ContactCta />
         
-        <div className="container mx-auto px-4 py-6 text-center">
-          <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-            <span>Are you an administrator?</span>
-            <Button variant="link" asChild className="h-auto p-0">
-              <Link to="/admin" className="text-brand-DEFAULT hover:text-brand-light">
+        <div className="container mx-auto px-4 py-8 text-center bg-blue-50/30">
+          <div className="inline-flex items-center gap-3 text-base text-muted-foreground bg-white/80 backdrop-blur-sm px-6 py-3 rounded-full shadow-sm">
+            <span className="font-medium">Are you an administrator?</span>
+            <Button variant="link" asChild className="h-auto p-0 text-blue-600 hover:text-blue-700 font-semibold">
+              <Link to="/admin" className="text-blue-600 hover:text-blue-700 underline-offset-4">
                 Login to admin panel
               </Link>
             </Button>
