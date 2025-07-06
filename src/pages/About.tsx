@@ -1,45 +1,8 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ProductManagement from "@/components/admin/ProductManagement";
-
-console.log("DEBUG: ProductManagement component loaded at", new Date().toISOString());
 
 const About = () => {
-  const handleDeleteClick = (id: string) => {
-    console.log("Delete button clicked for product ID:", id);
-    setProductToDelete(id);
-    setDeleteDialogOpen(true);
-  };
-
-  const confirmDeleteProduct = async () => {
-    if (productToDelete) {
-      console.log("Confirmed delete for product ID:", productToDelete);
-      await handleDeleteProduct(productToDelete);
-      setProductToDelete(null);
-      setDeleteDialogOpen(false);
-    }
-  };
-
-  const handleDeleteProduct = async (id: string) => {
-    try {
-      console.log("Calling deleteProduct for ID:", id);
-      await deleteProduct(id);
-      toast({
-        title: "Product deleted",
-        description: "Product has been removed successfully"
-      });
-      await loadProducts();
-    } catch (error) {
-      console.error("Error deleting product:", error);
-      toast({
-        title: "Error deleting product",
-        description: error instanceof Error ? error.message : "An error occurred while deleting the product",
-        variant: "destructive"
-      });
-    }
-  };
-
   return (
     <>
       <Navbar />
@@ -62,20 +25,24 @@ const About = () => {
             <TabsContent value="about" className="mt-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 <div>
-                  <h2 className="text-3xl font-bold mb-4">Our Story</h2>
-                  <p className="mb-4">
-                    Founded in 1980, Panna Combs has established itself as a premier manufacturer of high-quality combs in India. 
-                    What began as a small family business has grown into a trusted name in the comb manufacturing industry, serving 
-                    customers across India and exporting internationally.
-                  </p>
-                  <p className="mb-4">
-                    Over the decades, we have maintained our commitment to quality while expanding our product range to meet the diverse 
-                    needs of our customers. Each comb that leaves our factory is crafted with precision and care, ensuring durability and comfort.
-                  </p>
-                  <p>
-                    Today, Panna Combs continues its legacy of excellence under the leadership of the founding family, blending traditional 
-                    craftsmanship with modern manufacturing techniques to deliver products of outstanding quality.
-                  </p>
+                  <h2 className="text-3xl font-bold mb-6">Our Legacy</h2>
+                  <div className="space-y-6 text-lg leading-relaxed">
+                    <p>
+                      Panna Combs was born from the vision of Late Sri Dhanraj Ji Kothari, a pioneering entrepreneur whose belief was simple yet profound: that everyday essentials should embody uncompromising quality.
+                    </p>
+                    
+                    <p>
+                      Hailing from Churu, Rajasthan, he set out on a journey that led him to Patna, where he laid the cornerstone of what would become our family's enduring enterprise in comb manufacturing.
+                    </p>
+                    
+                    <p>
+                      As the business grew, so did his commitment to excellence—a commitment that eventually brought Panna Combs to Kolkata, where our name became synonymous with craftsmanship and trust.
+                    </p>
+                    
+                    <p>
+                      Today, this proud legacy lives on through his sons—Nirmal Kothari, Prakash Kothari, and Praven Kothari—and the next generation, Nitesh Kothari and Nitin Kothari, who carry forward his passion for creating combs that seamlessly blend tradition, innovation, and care.
+                    </p>
+                  </div>
                 </div>
                 
                 <div className="relative">
@@ -146,28 +113,26 @@ const About = () => {
             <TabsContent value="founders" className="mt-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 <div>
-                  <h2 className="text-3xl font-bold mb-4">Our Founding Fathers</h2>
-                  <p className="mb-6">
-                    Panna Combs was established by visionary entrepreneurs who saw an opportunity to create 
-                    high-quality combs that would stand the test of time. Their dedication to craftsmanship 
-                    and business ethics laid the foundation for what Panna Combs is today.
-                  </p>
-                  
-                  <div className="mb-6">
-                    <h3 className="text-xl font-semibold mb-2">Mr. Narayan Kothari</h3>
-                    <p className="text-muted-foreground">
-                      The visionary founder who started Panna Combs with a small workshop and a 
-                      big dream. His attention to detail and insistence on quality set the standards 
-                      that we continue to uphold.
+                  <h2 className="text-3xl font-bold mb-6">Our Founding Fathers</h2>
+                  <div className="space-y-6 text-lg leading-relaxed">
+                    <p>
+                      At the heart of Panna Combs is the enduring spirit of our Founding Fathers, whose dedication, vision, and integrity shaped who we are today.
                     </p>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2">The Kothari Family</h3>
-                    <p className="text-muted-foreground">
-                      Over the decades, multiple generations of the Kothari family have contributed 
-                      to the growth and success of Panna Combs, each adding their unique expertise 
-                      while maintaining the core values established by the founder.
+                    
+                    <p>
+                      It all began with Late Sri Dhanraj Ji Kothari, whose entrepreneurial foresight transformed a simple idea into a thriving enterprise. His belief that quality should never be compromised laid the foundation for everything we do.
+                    </p>
+                    
+                    <p>
+                      Carrying forward his legacy, his sons—Nirmal Kothari, Prakash Kothari, and Praven Kothari—worked tirelessly to expand the business, uphold the family values, and earn the trust of customers across generations.
+                    </p>
+                    
+                    <p>
+                      Together, they not only built a brand but also nurtured a culture rooted in hard work, respect, and an unwavering commitment to excellence.
+                    </p>
+                    
+                    <p>
+                      Today, their example continues to inspire the next generation, ensuring that every comb we create reflects the same care and craftsmanship envisioned by our Founding Fathers.
                     </p>
                   </div>
                 </div>

@@ -91,6 +91,9 @@ const Footer = () => {
         
         <div className="border-t border-white/20 mt-12 pt-8 text-center">
           <p className="text-white/80 text-lg">© {new Date().getFullYear()} Panna Combs. All rights reserved.</p>
+          <p className="text-white/60 text-sm mt-2">
+            <a href="https://www.elevatebrand360.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/80 transition-colors">Developed by Elevate Brand 360</a>
+          </p>
         </div>
       </div>
     </footer>
