@@ -7,18 +7,19 @@ import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-ro
 import { HelmetProvider } from "react-helmet-async";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { shouldRedirectToHome } from "@/utils/reloadHandler";
+import { performanceMonitor, optimizeImages, preloadCriticalResources } from "@/lib/performance";
 
-// Lazy load all pages
-const Index = lazy(() => import("./pages/Index"));
-const About = lazy(() => import("./pages/About"));
-const Products = lazy(() => import("./pages/Products"));
-const ProductCategory = lazy(() => import("./pages/ProductCategory"));
-const ProductDetail = lazy(() => import("./pages/ProductDetail"));
-const Contact = lazy(() => import("./pages/Contact"));
-const NotFound = lazy(() => import("./pages/NotFound"));
-const Admin = lazy(() => import("./pages/Admin"));
+// Lazy load all pages with better error handling
+const Index = lazy(() => import("./pages/Index").catch(() => ({ default: () => <div>Error loading page</div> })));
+const About = lazy(() => import("./pages/About").catch(() => ({ default: () => <div>Error loading page</div> })));
+const Products = lazy(() => import("./pages/Products").catch(() => ({ default: () => <div>Error loading page</div> })));
+const ProductCategory = lazy(() => import("./pages/ProductCategory").catch(() => ({ default: () => <div>Error loading page</div> })));
+const ProductDetail = lazy(() => import("./pages/ProductDetail").catch(() => ({ default: () => <div>Error loading page</div> })));
+const Contact = lazy(() => import("./pages/Contact").catch(() => ({ default: () => <div>Error loading page</div> })));
+const NotFound = lazy(() => import("./pages/NotFound").catch(() => ({ default: () => <div>Error loading page</div> })));
+const Admin = lazy(() => import("./pages/Admin").catch(() => ({ default: () => <div>Error loading page</div> })));
 
-// Loading component
+// Loading component with performance optimization
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-white">
     <div className="text-center">
@@ -44,14 +45,48 @@ const ReloadHandler = () => {
   return null;
 };
 
-// Create a client with optimized settings
+// Performance optimization component
+const PerformanceOptimizer = () => {
+  useEffect(() => {
+    // Optimize images after DOM is loaded
+    const optimizeAfterLoad = () => {
+      optimizeImages();
+      preloadCriticalResources();
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', optimizeAfterLoad);
+    } else {
+      optimizeAfterLoad();
+    }
+
+    // Log performance report after page load
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        performanceMonitor.logPerformanceReport();
+      }, 1000);
+    });
+
+    return () => {
+      document.removeEventListener('DOMContentLoaded', optimizeAfterLoad);
+    };
+  }, []);
+
+  return null;
+};
+
+// Create a client with optimized settings for better performance
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes (replaces cacheTime in v5)
-      retry: 1,
+      staleTime: 10 * 60 * 1000, // 10 minutes - increased for better caching
+      gcTime: 15 * 60 * 1000, // 15 minutes - increased for better caching
+      retry: 2, // Increased retry attempts
       refetchOnWindowFocus: false,
+      refetchOnReconnect: true,
+    },
+    mutations: {
+      retry: 1,
     },
   },
 });
@@ -67,6 +102,7 @@ const App = () => {
               <Sonner />
               <BrowserRouter>
                 <ReloadHandler />
+                <PerformanceOptimizer />
                 <Suspense fallback={<PageLoader />}>
                   <Routes>
                     <Route path="/" element={<Index />} />

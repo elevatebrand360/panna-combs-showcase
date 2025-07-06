@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CategoryCard from "@/components/products/CategoryCard";
@@ -7,17 +7,29 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
 import SEO from "@/components/SEO";
+import { debounce } from "@/lib/performance";
 
 const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [categories, setCategories] = useState(productCategories);
+  const [isInitialized, setIsInitialized] = useState(false);
   
+  // Debounced search to improve performance
+  const debouncedSearch = useMemo(
+    () => debounce((query: string) => {
+      setSearchQuery(query);
+    }, 300),
+    []
+  );
+
   useEffect(() => {
-    // Add a small delay to ensure proper loading
-    const timer = setTimeout(() => {
+    const initializePage = async () => {
       try {
+        // Add a small delay to ensure proper loading
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         // Verify that categories are loaded
         if (productCategories && productCategories.length > 0) {
           setCategories(productCategories);
@@ -26,26 +38,40 @@ const Products = () => {
           console.warn("No categories found, using fallback");
           setError("No product categories available");
         }
+        
         setIsLoading(false);
+        setIsInitialized(true);
       } catch (err) {
         console.error("Error loading products:", err);
         setError("Failed to load products");
         setIsLoading(false);
+        setIsInitialized(true);
       }
-    }, 100);
+    };
 
-    return () => clearTimeout(timer);
+    initializePage();
   }, []);
 
   // Debug logging
   useEffect(() => {
-    console.log("Products page mounted");
-    console.log("Available categories:", categories.length);
-  }, [categories]);
+    if (isInitialized) {
+      console.log("Products page fully initialized");
+      console.log("Available categories:", categories.length);
+    }
+  }, [isInitialized, categories]);
 
-  const filteredCategories = categories.filter(category => 
-    category.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Memoized filtered categories for better performance
+  const filteredCategories = useMemo(() => {
+    return categories.filter(category => 
+      category.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [categories, searchQuery]);
+
+  // Handle search input change with debouncing
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    debouncedSearch(value);
+  };
 
   if (error) {
     return (
@@ -54,9 +80,18 @@ const Products = () => {
         <div className="container mx-auto py-20 px-4 text-center">
           <h1 className="text-2xl font-bold text-red-600 mb-4">Error Loading Products</h1>
           <p className="text-muted-foreground mb-8">{error}</p>
-          <Button onClick={() => window.location.reload()}>
-            Try Again
-          </Button>
+          <div className="space-y-3">
+            <Button onClick={() => window.location.reload()}>
+              Try Again
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => window.location.href = '/'}
+              className="ml-3"
+            >
+              Go to Home
+            </Button>
+          </div>
         </div>
         <Footer />
       </>
@@ -88,6 +123,7 @@ const Products = () => {
             <div className="text-center py-20">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-DEFAULT mx-auto mb-4"></div>
               <p className="text-muted-foreground">Loading products...</p>
+              <p className="text-sm text-muted-foreground mt-2">Please wait while we load the product categories</p>
             </div>
           ) : (
             <>
@@ -98,13 +134,15 @@ const Products = () => {
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                     <Input 
                       placeholder="Search categories..." 
-                      value={searchQuery} 
-                      onChange={(e) => setSearchQuery(e.target.value)} 
+                      onChange={handleSearchChange}
                       className="pl-9 pr-9 max-w-md"
                     />
                     {searchQuery && (
                       <button 
-                        onClick={() => setSearchQuery("")}
+                        onClick={() => {
+                          setSearchQuery("");
+                          debouncedSearch("");
+                        }}
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
                       >
                         <X className="h-4 w-4" />
@@ -128,7 +166,10 @@ const Products = () => {
                   </p>
                   <Button 
                     variant="outline" 
-                    onClick={() => setSearchQuery("")} 
+                    onClick={() => {
+                      setSearchQuery("");
+                      debouncedSearch("");
+                    }} 
                     className="mt-4"
                   >
                     Show All Categories
