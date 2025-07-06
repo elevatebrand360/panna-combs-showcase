@@ -1,10 +1,17 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import SEO from "@/components/SEO";
 
 const About = () => {
   return (
     <>
+      <SEO 
+        title="About Panna Combs - Our Legacy & Founding Fathers | Hair Comb Manufacturer Kolkata"
+        description="Discover the legacy of Panna Combs - Leading hair comb manufacturer in Kolkata since 1980. Learn about our founding fathers, family values, and commitment to quality craftsmanship."
+        keywords="Panna Combs history, hair comb manufacturer Kolkata, comb factory Howrah, family business combs, legacy combs, founding fathers Panna Combs"
+        canonical="https://pannacombs.com/about"
+      />
       <Navbar />
       <main>
         <div className="bg-brand-DEFAULT text-white py-16 px-4">

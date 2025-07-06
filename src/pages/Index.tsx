@@ -6,10 +6,17 @@ import ContactCta from "@/components/home/ContactCta";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
+import SEO from "@/components/SEO";
 
 const Index = () => {
   return (
     <>
+      <SEO 
+        title="Panna Combs - Best Hair Combs Manufacturer in Kolkata | Premium Combs Since 1980"
+        description="Panna Combs - Leading hair comb manufacturer in Kolkata since 1980. Premium quality combs for salons, professionals & personal use. Wide range of 5 inch, 7 inch, 9 inch combs. Contact us for wholesale orders."
+        keywords="hair combs, combs manufacturer, combs in Kolkata, Panna Combs, hair styling tools, salon combs, premium combs, wholesale combs, Howrah combs, India combs, best combs Kolkata"
+        canonical="https://pannacombs.com"
+      />
       <Navbar />
       <main className="font-poppins">
         <HeroSlider />
