@@ -26,63 +26,21 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-6">
-          <Link to="/" className="text-sm font-medium text-foreground hover:text-blue-600 transition-colors clickable">
+        {/* Always-visible Nav, horizontally scrollable on mobile */}
+        <nav className="flex items-center gap-4 sm:gap-6 overflow-x-auto scrollbar-none px-2">
+          <Link to="/" className="text-base sm:text-sm font-medium text-foreground hover:text-blue-600 transition-colors clickable py-2 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
             Home
           </Link>
-          <Link to="/about" className="text-sm font-medium text-foreground hover:text-blue-600 transition-colors clickable">
+          <Link to="/about" className="text-base sm:text-sm font-medium text-foreground hover:text-blue-600 transition-colors clickable py-2 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
             About Us
           </Link>
-          <Link to="/products" className="text-sm font-medium text-foreground hover:text-blue-600 transition-colors clickable">
+          <Link to="/products" className="text-base sm:text-sm font-medium text-foreground hover:text-blue-600 transition-colors clickable py-2 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
             Products
           </Link>
-          <Link to="/contact" className="text-sm font-medium text-foreground hover:text-blue-600 transition-colors clickable">
+          <Link to="/contact" className="text-base sm:text-sm font-medium text-foreground hover:text-blue-600 transition-colors clickable py-2 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
             Contact
           </Link>
         </nav>
-
-        {/* Mobile Menu Button */}
-        <Button variant="ghost" size="icon" className="md:hidden clickable text-foreground" onClick={toggleMenu}>
-          {isMenuOpen ? <X /> : <Menu />}
-        </Button>
-      </div>
-
-      {/* Mobile Nav */}
-      <div
-        className={cn(
-          "fixed inset-0 top-16 z-50 flex flex-col gap-4 bg-white/98 backdrop-blur-lg p-6 md:hidden border-t",
-          isMenuOpen ? "animate-fade-in" : "animate-fade-out pointer-events-none hidden"
-        )}
-      >
-        <Link 
-          to="/" 
-          className="text-lg font-medium text-foreground hover:text-blue-600 transition-colors clickable"
-          onClick={() => setIsMenuOpen(false)}
-        >
-          Home
-        </Link>
-        <Link 
-          to="/about" 
-          className="text-lg font-medium text-foreground hover:text-blue-600 transition-colors clickable"
-          onClick={() => setIsMenuOpen(false)}
-        >
-          About Us
-        </Link>
-        <Link 
-          to="/products" 
-          className="text-lg font-medium text-foreground hover:text-blue-600 transition-colors clickable"
-          onClick={() => setIsMenuOpen(false)}
-        >
-          Products
-        </Link>
-        <Link 
-          to="/contact" 
-          className="text-lg font-medium text-foreground hover:text-blue-600 transition-colors clickable"
-          onClick={() => setIsMenuOpen(false)}
-        >
-          Contact
-        </Link>
       </div>
     </header>
   );
