@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -221,7 +220,10 @@ const Admin = () => {
                 Logout
               </Button>
             </div>
-            <ProductManagement />
+            <div>
+              <p>DEBUG: About to render ProductManagement component</p>
+              <ProductManagement />
+            </div>
           </div>
         )}
       </div>
