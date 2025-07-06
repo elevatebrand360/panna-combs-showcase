@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -81,16 +80,22 @@ const HeroSlider = () => {
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url(${slide.image})` }}
           >
-            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
           </div>
           
           <div className="relative h-full flex items-center justify-center text-center">
             <div className="max-w-3xl px-4">
-              <h1 className="text-white mb-2 drop-shadow-md">{slide.title}</h1>
-              <p className="text-white/90 text-lg md:text-xl mb-6 drop-shadow-md">
+              <h1 className="text-white mb-4 drop-shadow-lg font-bold text-4xl md:text-5xl lg:text-6xl">
+                {slide.title}
+              </h1>
+              <p className="text-white/95 text-lg md:text-xl mb-8 drop-shadow-md font-medium">
                 {slide.subtitle}
               </p>
-              <Button asChild size="lg">
+              <Button 
+                asChild 
+                size="lg" 
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+              >
                 <a href={slide.buttonLink}>{slide.buttonText}</a>
               </Button>
             </div>
@@ -100,28 +105,28 @@ const HeroSlider = () => {
 
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white rounded-full p-2 backdrop-blur-sm transition-colors"
+        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white rounded-full p-3 backdrop-blur-sm transition-colors border border-white/30"
         aria-label="Previous slide"
       >
-        <ChevronLeft />
+        <ChevronLeft className="w-6 h-6" />
       </button>
       
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white rounded-full p-2 backdrop-blur-sm transition-colors"
+        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white rounded-full p-3 backdrop-blur-sm transition-colors border border-white/30"
         aria-label="Next slide"
       >
-        <ChevronRight />
+        <ChevronRight className="w-6 h-6" />
       </button>
 
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
             className={cn(
-              "w-2 h-2 rounded-full transition-all",
-              currentSlide === index ? "bg-white w-4" : "bg-white/50"
+              "w-3 h-3 rounded-full transition-all duration-300 border-2 border-white/50",
+              currentSlide === index ? "bg-white w-8" : "bg-white/30 hover:bg-white/50"
             )}
             aria-label={`Go to slide ${index + 1}`}
           />

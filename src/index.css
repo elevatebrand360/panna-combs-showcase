@@ -6,33 +6,34 @@
 
 @layer base {
   :root {
-    --background: 33 33% 98%;
-    --foreground: 30 10% 15%;
+    /* Blue theme with improved contrast ratios */
+    --background: 0 0% 100%;
+    --foreground: 220 15% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 30 10% 15%;
+    --card-foreground: 220 15% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 30 10% 15%;
+    --popover-foreground: 220 15% 15%;
 
-    --primary: 25 65% 30%;
-    --primary-foreground: 30 10% 98%;
+    --primary: 220 85% 45%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 25 30% 90%;
-    --secondary-foreground: 25 65% 30%;
+    --secondary: 220 30% 90%;
+    --secondary-foreground: 220 85% 45%;
 
-    --muted: 25 20% 92%;
-    --muted-foreground: 25 10% 40%;
+    --muted: 220 20% 92%;
+    --muted-foreground: 220 15% 45%;
 
-    --accent: 25 40% 84%;
-    --accent-foreground: 25 65% 30%;
+    --accent: 220 40% 84%;
+    --accent-foreground: 220 85% 45%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 25 20% 85%;
-    --input: 25 20% 85%;
-    --ring: 25 65% 30%;
+    --border: 220 20% 85%;
+    --input: 220 20% 85%;
+    --ring: 220 85% 45%;
 
     --radius: 0.5rem;
   }
@@ -54,10 +55,11 @@
   body {
     @apply bg-background text-foreground font-poppins;
     font-feature-settings: "rlig" 1, "calt" 1;
+    line-height: 1.6;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-medium tracking-tight font-playfair text-brand-dark;
+    @apply font-medium tracking-tight font-playfair text-foreground;
   }
 
   h1 {
@@ -81,11 +83,42 @@
   }
 
   p {
-    @apply leading-relaxed text-sm md:text-base;
+    @apply leading-relaxed text-sm md:text-base text-foreground;
   }
   
   a {
     @apply transition-colors duration-200;
+  }
+
+  /* Ensure proper text contrast on all backgrounds */
+  .text-on-light {
+    @apply text-foreground;
+  }
+
+  .text-on-dark {
+    @apply text-white;
+  }
+
+  .text-on-brand {
+    @apply text-white;
+  }
+
+  /* Improved button contrast with blue theme */
+  .btn-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-700 hover:text-white transition-colors shadow-lg hover:shadow-xl;
+  }
+
+  .btn-secondary {
+    @apply bg-blue-500 text-white hover:bg-blue-600 hover:text-white transition-colors;
+  }
+
+  .btn-outline {
+    @apply border-2 border-blue-600 text-white hover:bg-blue-600 hover:text-white transition-colors;
+  }
+
+  /* Emergency high-contrast button utility */
+  .btn-high-contrast {
+    @apply bg-black text-white border-white hover:bg-blue-800 hover:text-white !important;
   }
 }
 
@@ -102,9 +135,9 @@
     @apply container mx-auto px-4 sm:px-6;
   }
   
-  /* Glass effect */
+  /* Glass effect with better contrast */
   .glass-effect {
-    @apply backdrop-blur-md bg-white/30 border border-white/30;
+    @apply backdrop-blur-md bg-white/80 border border-white/50 shadow-lg;
   }
   
   /* Hover animations */
@@ -118,6 +151,38 @@
   
   .hover-bright {
     @apply transition-all duration-300 hover:brightness-110;
+  }
+
+  /* Text overlay for better readability */
+  .text-overlay {
+    @apply relative;
+  }
+
+  .text-overlay::before {
+    content: '';
+    @apply absolute inset-0 bg-black/50 rounded-lg;
+  }
+
+  .text-overlay > * {
+    @apply relative z-10;
+  }
+
+  /* Card with proper contrast */
+  .card-enhanced {
+    @apply bg-white border border-border shadow-md hover:shadow-lg transition-shadow;
+  }
+
+  /* Section backgrounds */
+  .section-light {
+    @apply bg-background;
+  }
+
+  .section-muted {
+    @apply bg-muted;
+  }
+
+  .section-brand {
+    @apply bg-blue-600 text-white;
   }
 }
 

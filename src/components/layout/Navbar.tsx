@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
@@ -13,32 +12,38 @@ const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/60 backdrop-blur-lg">
+    <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur-lg shadow-sm">
       <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center">
-          <Link to="/" className="flex items-center">
-            <span className="font-bold text-xl md:text-2xl text-brand-DEFAULT">PANNA COMBS</span>
+        <div className="flex items-center gap-4">
+          <Link to="/" className="flex items-center gap-3">
+            <img
+              src="/logo.png"
+              alt="Panna Combs Logo"
+              className="h-12 w-12 md:h-16 md:w-16 object-contain drop-shadow-lg"
+              style={{ minWidth: 48 }}
+            />
+            <span className="font-bold text-xl md:text-2xl text-blue-600 whitespace-nowrap">PANNA COMBS</span>
           </Link>
         </div>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-6">
-          <Link to="/" className="text-sm font-medium hover:scale-105 hover:text-brand-DEFAULT transition-all clickable">
+          <Link to="/" className="text-sm font-medium text-foreground hover:text-blue-600 transition-colors clickable">
             Home
           </Link>
-          <Link to="/about" className="text-sm font-medium hover:scale-105 hover:text-brand-DEFAULT transition-all clickable">
+          <Link to="/about" className="text-sm font-medium text-foreground hover:text-blue-600 transition-colors clickable">
             About Us
           </Link>
-          <Link to="/products" className="text-sm font-medium hover:scale-105 hover:text-brand-DEFAULT transition-all clickable">
+          <Link to="/products" className="text-sm font-medium text-foreground hover:text-blue-600 transition-colors clickable">
             Products
           </Link>
-          <Link to="/contact" className="text-sm font-medium hover:scale-105 hover:text-brand-DEFAULT transition-all clickable">
+          <Link to="/contact" className="text-sm font-medium text-foreground hover:text-blue-600 transition-colors clickable">
             Contact
           </Link>
         </nav>
 
         {/* Mobile Menu Button */}
-        <Button variant="ghost" size="icon" className="md:hidden clickable" onClick={toggleMenu}>
+        <Button variant="ghost" size="icon" className="md:hidden clickable text-foreground" onClick={toggleMenu}>
           {isMenuOpen ? <X /> : <Menu />}
         </Button>
       </div>
@@ -46,34 +51,34 @@ const Navbar = () => {
       {/* Mobile Nav */}
       <div
         className={cn(
-          "fixed inset-0 top-16 z-50 flex flex-col gap-4 bg-background/95 backdrop-blur-lg p-6 md:hidden",
+          "fixed inset-0 top-16 z-50 flex flex-col gap-4 bg-white/98 backdrop-blur-lg p-6 md:hidden border-t",
           isMenuOpen ? "animate-fade-in" : "animate-fade-out pointer-events-none hidden"
         )}
       >
         <Link 
           to="/" 
-          className="text-lg font-medium hover:text-brand-DEFAULT transition-colors clickable"
+          className="text-lg font-medium text-foreground hover:text-blue-600 transition-colors clickable"
           onClick={() => setIsMenuOpen(false)}
         >
           Home
         </Link>
         <Link 
           to="/about" 
-          className="text-lg font-medium hover:text-brand-DEFAULT transition-colors clickable"
+          className="text-lg font-medium text-foreground hover:text-blue-600 transition-colors clickable"
           onClick={() => setIsMenuOpen(false)}
         >
           About Us
         </Link>
         <Link 
           to="/products" 
-          className="text-lg font-medium hover:text-brand-DEFAULT transition-colors clickable"
+          className="text-lg font-medium text-foreground hover:text-blue-600 transition-colors clickable"
           onClick={() => setIsMenuOpen(false)}
         >
           Products
         </Link>
         <Link 
           to="/contact" 
-          className="text-lg font-medium hover:text-brand-DEFAULT transition-colors clickable"
+          className="text-lg font-medium text-foreground hover:text-blue-600 transition-colors clickable"
           onClick={() => setIsMenuOpen(false)}
         >
           Contact
