@@ -7,15 +7,15 @@ const AboutPreview = () => {
       <div className="page-container">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="order-2 lg:order-1">
-            <h2 className="mb-6 text-foreground">About Panna Combs</h2>
-            <p className="mb-6 text-muted-foreground text-lg leading-relaxed">
-              Since 1980, Panna Combs has been dedicated to manufacturing premium quality combs
-              for customers worldwide. Our commitment to excellence and craftsmanship has made us
-              a trusted name in the industry.
-            </p>
-            <p className="mb-8 text-muted-foreground text-lg leading-relaxed">
-              Located in Howrah, India, our factory combines traditional techniques with modern
-              manufacturing processes to create combs that are both durable and comfortable to use.
+            <h2 className="mb-6 text-foreground">Our Legacy</h2>
+            <p className="mb-8 text-muted-foreground text-lg leading-relaxed whitespace-pre-line">
+              Panna Combs was born from the vision of Late Sri Dhanraj Ji Kothari, a pioneering entrepreneur whose belief was simple yet profound: that everyday essentials should embody uncompromising quality.
+
+              Hailing from Churu, Rajasthan, he set out on a journey that led him to Patna, where he laid the cornerstone of what would become our family's enduring enterprise in comb manufacturing.
+
+              As the business grew, so did his commitment to excellence—a commitment that eventually brought Panna Combs to Kolkata, where our name became synonymous with craftsmanship and trust.
+
+              Today, this proud legacy lives on through his sons—Nirmal Kothari, Prakash Kothari, and Praven Kothari—and the next generation, Nitesh Kothari and Nitin Kothari, who carry forward his passion for creating combs that seamlessly blend tradition, innovation, and care.
             </p>
             <div className="space-y-4 sm:space-y-0 sm:space-x-4 flex flex-col sm:flex-row">
               <Button 
