@@ -1,6 +1,6 @@
 import { db, storage } from "./firebase";
 import { collection, addDoc, getDocs, Timestamp, deleteDoc, doc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 
 // Upload an image to Firebase Storage and return its public download URL
 export async function uploadImage(file: File): Promise<string> {
@@ -85,11 +85,14 @@ export async function getProducts() {
 export async function deleteProduct(id: string) {
   try {
     console.log("Deleting product with ID:", id);
-    
-    await deleteDoc(doc(db, "products", id));
+    const productDocRef = doc(db, "products", id);
+    console.log("Deleting product with doc ref:", productDocRef.path);
+
+    console.log("Attempting to delete product with ID:", id);
+    await deleteDoc(productDocRef);
     console.log("Product deleted successfully");
   } catch (error) {
     console.error("Failed to delete product:", error);
     throw error;
   }
-} 
+}
