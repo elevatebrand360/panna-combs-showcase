@@ -25,10 +25,10 @@ const Navbar = () => {
               <img
                 src="/logo.png"
                 alt="Panna Combs Logo"
-                className="h-10 w-10 md:h-12 md:w-12 object-contain drop-shadow-lg"
-                style={{ minWidth: 40 }}
+                className="h-14 w-14 md:h-20 md:w-20 object-contain drop-shadow-lg mr-4"
+                style={{ minWidth: 56 }}
               />
-              <span className="font-bold text-lg md:text-xl lg:text-2xl text-blue-600 whitespace-nowrap">
+              <span className="font-bold text-2xl md:text-3xl lg:text-4xl text-blue-600 whitespace-nowrap">
                 PANNA COMBS
               </span>
             </Link>
