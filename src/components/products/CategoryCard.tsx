@@ -7,22 +7,52 @@ interface CategoryCardProps {
   category: ProductCategory;
 }
 
+const getRandomImageId = (categoryId: number): string => {
+  const imageIds = [
+    "1599771334443-3048259bc702", // Ladies combs
+    "1585751119414-ef2636f8aede", // Gents combs
+    "1601612628452-9e99ced43524", // Premium combs
+    "1550103685-da83caf1f0c8",    // Salon combs
+    "1622429499146-bc47772d8a52", // Fancy combs
+    "1590159763121-7c9fd312190d", // Stylish combs
+    "1580618672591-eb180b1a973f", // Shampoo combs
+    "1522337360788-8b13dee7a37e", // Handle combs
+  ];
+  return imageIds[categoryId % imageIds.length] || imageIds[0];
+};
+
 const CategoryCard = ({ category }: CategoryCardProps) => {
   return (
-    <Card className="overflow-hidden shadow-md hover:shadow-lg transition-shadow border border-muted bg-white/60">
-      <CardContent className="p-6">
-        <div className="flex items-center justify-center mb-4 text-brand-DEFAULT opacity-80">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-          </svg>
+    <Link to={`/category/${category.slug}`} className="block group focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-2xl">
+      <Card className="group relative overflow-hidden border-0 shadow-xl hover:shadow-2xl transition-all duration-300 bg-white rounded-2xl hover:-translate-y-1 cursor-pointer">
+        <div className="h-36 w-full overflow-hidden flex items-center justify-center bg-gradient-to-tr from-blue-100 to-blue-200">
+          <img
+            src={`https://images.unsplash.com/photo-${getRandomImageId(category.id)}?q=80&w=800&auto=format&fit=crop`}
+            alt={category.name}
+            loading="lazy"
+            width={160}
+            height={120}
+            className="w-auto h-28 object-contain group-hover:scale-105 transition-transform duration-300"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = '/placeholder.svg';
+            }}
+          />
         </div>
-        <h3 className="text-xl font-medium mb-2 text-center text-brand-dark">{category.name}</h3>
-        <p className="text-sm text-muted-foreground mb-4 text-center line-clamp-3">{category.description}</p>
-        <Button asChild className="w-full">
-          <Link to={`/category/${category.slug}`}>View Products</Link>
-        </Button>
-      </CardContent>
-    </Card>
+        <CardContent className="p-6 flex flex-col items-center">
+          <h3 className="text-lg font-bold mb-2 text-blue-800 text-center group-hover:text-blue-600 transition-colors">{category.name}</h3>
+          <p className="text-sm text-muted-foreground mb-4 text-center">
+            {category.description}
+          </p>
+          <Button className="w-full bg-blue-600 text-white hover:bg-blue-700 border-blue-600 font-semibold rounded-full shadow group-hover:scale-105 transition-transform" tabIndex={-1} type="button" aria-hidden="true">
+            Explore
+          </Button>
+        </CardContent>
+        <div className="absolute top-4 right-4 bg-white/80 rounded-full px-3 py-1 text-xs font-semibold text-blue-700 shadow">
+          {category.name.split(' ')[0]}
+        </div>
+      </Card>
+    </Link>
   );
 };
 

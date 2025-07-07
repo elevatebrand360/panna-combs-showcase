@@ -17,6 +17,7 @@ const ProductDetail = lazy(() => import("./pages/ProductDetail").catch(() => ({ 
 const Contact = lazy(() => import("./pages/Contact").catch(() => ({ default: () => <div>Error loading page</div> })));
 const NotFound = lazy(() => import("./pages/NotFound").catch(() => ({ default: () => <div>Error loading page</div> })));
 const Admin = lazy(() => import("./pages/Admin").catch(() => ({ default: () => <div>Error loading page</div> })));
+const NetworkDiagnostics = lazy(() => import("./pages/NetworkDiagnostics"));
 
 // Loading component with performance optimization
 const PageLoader = () => (
@@ -94,6 +95,7 @@ const App = () => {
                     <Route path="/products/:productSlug" element={<ProductDetail />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/admin" element={<Admin />} />
+                    <Route path="/network-diagnostics" element={<NetworkDiagnostics />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Suspense>
