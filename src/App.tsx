@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import { shouldRedirectToHome } from "@/utils/reloadHandler";
 import { performanceMonitor, optimizeImages, preloadCriticalResources } from "@/lib/performance";
 
 // Lazy load all pages with better error handling
@@ -28,22 +27,6 @@ const PageLoader = () => (
     </div>
   </div>
 );
-
-// Reload handler component
-const ReloadHandler = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // Check if we should redirect to home due to page reload
-    if (shouldRedirectToHome()) {
-      console.log('Page reload detected, redirecting to home page');
-      navigate('/', { replace: true });
-    }
-  }, [location.pathname, navigate]);
-
-  return null;
-};
 
 // Performance optimization component
 const PerformanceOptimizer = () => {
@@ -101,7 +84,6 @@ const App = () => {
               <Toaster />
               <Sonner />
               <BrowserRouter>
-                <ReloadHandler />
                 <PerformanceOptimizer />
                 <Suspense fallback={<PageLoader />}>
                   <Routes>
