@@ -66,53 +66,73 @@ const About = () => {
             </TabsContent>
             
             <TabsContent value="values" className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="bg-secondary/50 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold mb-3">Quality</h3>
-                  <p>
-                    We are uncompromising in our commitment to quality. Each comb undergoes rigorous 
-                    quality checks to ensure it meets our high standards before reaching customers.
-                  </p>
+              <div className="flex flex-col items-center">
+                <div className="w-full flex flex-col md:flex-row gap-6 mb-6">
+                  <img 
+                    src="/babosa.webp" 
+                    alt="" 
+                    className="w-full md:w-1/2 aspect-square object-cover rounded-lg shadow" 
+                  />
+                  <img 
+                    src="/baisa.jpg" 
+                    alt="" 
+                    className="w-full md:w-1/2 aspect-square object-cover rounded-lg shadow" 
+                  />
                 </div>
-                
-                <div className="bg-secondary/50 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold mb-3">Innovation</h3>
-                  <p>
-                    While respecting traditional craftsmanship, we continuously innovate to improve 
-                    our products and manufacturing processes, incorporating new technologies and designs.
-                  </p>
-                </div>
-                
-                <div className="bg-secondary/50 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold mb-3">Customer Focus</h3>
-                  <p>
-                    Our customers are at the heart of everything we do. We listen to their feedback 
-                    and strive to exceed their expectations with every product.
-                  </p>
-                </div>
-                
-                <div className="bg-secondary/50 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold mb-3">Integrity</h3>
-                  <p>
-                    We conduct our business with honesty and transparency, building trust with 
-                    our customers, employees, and partners over decades.
-                  </p>
-                </div>
-                
-                <div className="bg-secondary/50 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold mb-3">Sustainability</h3>
-                  <p>
-                    We are committed to environmentally responsible manufacturing practices, 
-                    minimizing waste and exploring eco-friendly materials.
-                  </p>
-                </div>
-                
-                <div className="bg-secondary/50 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold mb-3">Community</h3>
-                  <p>
-                    We support our local community in Howrah by providing employment opportunities 
-                    and engaging in community development initiatives.
-                  </p>
+                <div className="max-w-4xl text-center text-lg text-muted-foreground space-y-6">
+                  <div className="mb-8">
+                    <h3 className="text-2xl font-bold text-blue-600 mb-4">Jai Babosa</h3>
+                    <p className="text-lg leading-relaxed">
+                      At Babosa Mandir, our values are rooted in devotion, selfless service, and unwavering faith. Guided by the divine grace of Lord Babosa, we strive to nurture a spiritual community inspired by the life and teachings of Manju Baisa.
+                    </p>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="text-xl font-semibold text-blue-700 mb-2">Devotion and Surrender</h4>
+                        <p className="text-base leading-relaxed">
+                          We believe true devotion begins with surrendering the ego and opening the heart to the boundless love of Babosa Maharaj. Every prayer, Kirtan, and ritual is a step closer to this sacred connection.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h4 className="text-xl font-semibold text-blue-700 mb-2">Divine Service (Seva)</h4>
+                        <p className="text-base leading-relaxed">
+                          Selfless service is at the core of our mission. Manju Baisa's dedication inspires us to serve humanity with compassion, humility, and purity of intent.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h4 className="text-xl font-semibold text-blue-700 mb-2">Spiritual Awakening</h4>
+                        <p className="text-base leading-relaxed">
+                          Through satsang and kirtan, devotees experience Babosa Maharaj's divine presence—often manifesting in Bala Roop—to awaken higher consciousness and inner transformation.
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="text-xl font-semibold text-blue-700 mb-2">Community and Belonging</h4>
+                        <p className="text-base leading-relaxed">
+                          Our Mandirs are spaces of togetherness, where every soul is welcomed with respect, regardless of background. We cherish the bonds formed through shared faith and collective worship.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h4 className="text-xl font-semibold text-blue-700 mb-2">Inspiration to Lead a Spiritual Life</h4>
+                        <p className="text-base leading-relaxed">
+                          Following the example set by Manju Baisa, we encourage everyone to live with integrity, gratitude, and devotion, carrying Babosa's blessings into everyday life.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-8 pt-6 border-t border-gray-200">
+                    <p className="text-lg leading-relaxed font-medium">
+                      Together, these values illuminate our path, sustaining our purpose and guiding every devotee toward divine love and spiritual fulfillment.
+                    </p>
+                  </div>
                 </div>
               </div>
             </TabsContent>
@@ -161,19 +181,6 @@ const About = () => {
                   Located in Duilly, Nimtalla, Andul, Howrah, our factory combines traditional craftsmanship 
                   with modern manufacturing technology to produce combs of exceptional quality.
                 </p>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <img 
-                    src="https://images.unsplash.com/photo-1581873376296-43270eda0566?q=80&w=2060&auto=format&fit=crop" 
-                    alt="Factory Interior" 
-                    className="rounded-lg w-full h-64 object-cover"
-                  />
-                  <img 
-                    src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?q=80&w=2070&auto=format&fit=crop" 
-                    alt="Manufacturing Process" 
-                    className="rounded-lg w-full h-64 object-cover"
-                  />
-                </div>
                 
                 <h3 className="text-2xl font-semibold">Manufacturing Process</h3>
                 <p>
