@@ -8,6 +8,32 @@ interface Props {
 interface State {
   hasError: boolean;
   error?: Error;
+  errorId?: string;
+}
+
+function generateErrorId() {
+  return 'ERR-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+}
+
+async function logErrorRemotely(error: Error, errorInfo: ErrorInfo, errorId: string) {
+  // Example: send error to a remote logging service (replace with your endpoint)
+  try {
+    await fetch('/api/log-error', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        errorId,
+        message: error.message,
+        stack: error.stack,
+        componentStack: errorInfo.componentStack,
+        url: window.location.href,
+        userAgent: navigator.userAgent,
+        time: new Date().toISOString(),
+      }),
+    });
+  } catch (e) {
+    // Ignore logging errors
+  }
 }
 
 class ErrorBoundary extends Component<Props, State> {
@@ -21,15 +47,12 @@ class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  async componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    const errorId = generateErrorId();
+    this.setState({ errorId });
     console.error('Error caught by boundary:', error, errorInfo);
-    
-    // Log error to console for debugging
-    console.error('Error details:', {
-      message: error.message,
-      stack: error.stack,
-      componentStack: errorInfo.componentStack
-    });
+    // Log error to remote endpoint
+    await logErrorRemotely(error, errorInfo, errorId);
   }
 
   handleReload = () => {
@@ -38,7 +61,7 @@ class ErrorBoundary extends Component<Props, State> {
   };
 
   handleRetry = () => {
-    this.setState({ hasError: false, error: undefined });
+    this.setState({ hasError: false, error: undefined, errorId: undefined });
   };
 
   render() {
@@ -49,10 +72,12 @@ class ErrorBoundary extends Component<Props, State> {
             <div className="mb-6">
               <h1 className="text-2xl font-bold text-red-600 mb-2">Oops! Something went wrong</h1>
               <p className="text-muted-foreground">
-                We encountered an unexpected error. This might be due to a page reload or navigation issue.
+                We encountered an unexpected error. Please try again or contact support if the problem persists.
               </p>
+              {this.state.errorId && (
+                <p className="text-xs text-muted-foreground mt-2">Error Code: <span className="font-mono">{this.state.errorId}</span></p>
+              )}
             </div>
-            
             <div className="space-y-3">
               <Button 
                 onClick={this.handleRetry}
@@ -60,7 +85,6 @@ class ErrorBoundary extends Component<Props, State> {
               >
                 Try Again
               </Button>
-              
               <Button 
                 onClick={this.handleReload}
                 variant="outline"
@@ -69,7 +93,6 @@ class ErrorBoundary extends Component<Props, State> {
                 Go to Home Page
               </Button>
             </div>
-            
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <details className="mt-6 text-left">
                 <summary className="cursor-pointer text-sm text-muted-foreground">
@@ -86,7 +109,6 @@ class ErrorBoundary extends Component<Props, State> {
         </div>
       );
     }
-
     return this.props.children;
   }
 }

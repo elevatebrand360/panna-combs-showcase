@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ProductManagement from "@/components/admin/ProductManagement";
@@ -6,6 +6,18 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff, Lock } from "lucide-react";
+
+// Enhanced error boundary for admin panel
+function AdminErrorFallback({ error, onRetry }: { error: Error; onRetry: () => void }) {
+  return (
+    <div className="max-w-lg mx-auto my-12 p-8 bg-white rounded shadow text-center border border-red-200">
+      <h2 className="text-xl font-bold text-red-600 mb-2">Admin Panel Error</h2>
+      <p className="text-muted-foreground mb-4">Something went wrong in the admin panel. Please try again or contact support.</p>
+      <pre className="text-xs bg-gray-100 p-2 rounded overflow-auto mb-4 text-left max-h-40">{error.message}\n{error.stack}</pre>
+      <Button onClick={onRetry} className="bg-blue-600 text-white w-full">Try Again</Button>
+    </div>
+  );
+}
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -15,6 +27,7 @@ const Admin = () => {
   const [isLocked, setIsLocked] = useState(false);
   const [lockTimer, setLockTimer] = useState<number | null>(null);
   const { toast } = useToast();
+  const [adminError, setAdminError] = useState<Error | null>(null);
 
   // Session timeout (15 minutes)
   useEffect(() => {
@@ -212,24 +225,40 @@ const Admin = () => {
               For demo use password: admin123
             </div>
           </div>
+        ) : adminError ? (
+          <AdminErrorFallback error={adminError} onRetry={() => setAdminError(null)} />
         ) : (
-          <div className="glass-effect rounded-lg p-6 shadow-md">
-            <div className="flex justify-between items-center mb-8">
-              <h2 className="text-2xl font-semibold">Product Management</h2>
-              <Button variant="outline" onClick={handleLogout} className="hover-lift">
-                Logout
-              </Button>
+          <ErrorCatcher onError={setAdminError}>
+            <div className="glass-effect rounded-lg p-6 shadow-md">
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="text-2xl font-semibold">Product Management</h2>
+                <Button variant="outline" onClick={handleLogout} className="hover-lift">
+                  Logout
+                </Button>
+              </div>
+              <div>
+                <ProductManagement />
+              </div>
             </div>
-            <div>
-              <p>DEBUG: About to render ProductManagement component</p>
-              <ProductManagement />
-            </div>
-          </div>
+          </ErrorCatcher>
         )}
       </div>
       <Footer />
     </>
   );
 };
+
+// ErrorCatcher: local error boundary for admin panel
+function ErrorCatcher({ children, onError }: { children: ReactNode; onError: (e: Error) => void }) {
+  const [error, setError] = useState<Error | null>(null);
+  useEffect(() => { setError(null); }, [children]);
+  if (error) {
+    onError(error);
+    return null;
+  }
+  return (
+    <>{children}</>
+  );
+}
 
 export default Admin;
