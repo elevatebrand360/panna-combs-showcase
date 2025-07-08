@@ -12,9 +12,9 @@ const Index = () => {
   return (
     <>
       <SEO 
-        title="Panna Combs - Best Hair Combs Manufacturer in Kolkata | Premium Combs Since 1980"
-        description="Panna Combs - Leading hair comb manufacturer in Kolkata since 1980. Premium quality combs for salons, professionals & personal use. Wide range of 5 inch, 7 inch, 9 inch combs. Contact us for wholesale orders."
-        keywords="hair combs, combs manufacturer, combs in Kolkata, Panna Combs, hair styling tools, salon combs, premium combs, wholesale combs, Howrah combs, India combs, best combs Kolkata"
+        title="Panna Combs - Best Hair Combs Manufacturer in Howrah, Kolkata | Premium Combs"
+        description="Panna Combs - Leading hair comb manufacturer in Howrah, Kolkata. Premium quality combs for salons, professionals & personal use. Wide range of 5 inch, 7 inch, 9 inch combs. Contact us for wholesale orders."
+        keywords="hair combs, comb manufacturer, Kolkata combs, Howrah comb factory, salon combs, professional combs, wholesale combs, 5 inch combs, 7 inch combs, 9 inch combs"
         canonical="https://pannacombs.com"
       />
       <Navbar />

@@ -7,50 +7,107 @@ interface CategoryCardProps {
   category: ProductCategory;
 }
 
-const getRandomImageId = (categoryId: number): string => {
-  const imageIds = [
-    "1599771334443-3048259bc702", // Ladies combs
-    "1585751119414-ef2636f8aede", // Gents combs
-    "1601612628452-9e99ced43524", // Premium combs
-    "1550103685-da83caf1f0c8",    // Salon combs
-    "1622429499146-bc47772d8a52", // Fancy combs
-    "1590159763121-7c9fd312190d", // Stylish combs
-    "1580618672591-eb180b1a973f", // Shampoo combs
-    "1522337360788-8b13dee7a37e", // Handle combs
+// Helper functions for dynamic styling
+const getCategoryGradient = (categoryId: number): string => {
+  const gradients = [
+    "from-purple-500 to-pink-500",      // Ladies Hair Comb
+    "from-pink-500 to-rose-500",        // Ladies Fancy Combs
+    "from-rose-500 to-red-500",         // Ladies Stylish Combs
+    "from-blue-500 to-cyan-500",        // Shampoo Combs
+    "from-cyan-500 to-teal-500",        // Ladies Handle Combs
+    "from-indigo-500 to-blue-500",      // Gents Combs
+    "from-violet-500 to-purple-500",    // Premium Combs
+    "from-slate-500 to-gray-500",       // Gents Pocket Combs
+    "from-emerald-500 to-green-500",    // Anti Lice and Tooth Combs
+    "from-amber-500 to-orange-500",     // Export Combs
+    "from-orange-500 to-red-500",       // Family Pack
+    "from-teal-500 to-emerald-500",     // Hair Brush Combs
+    "from-gray-500 to-slate-500",       // Hotel Combs
+    "from-yellow-500 to-amber-500",     // Printed Combs
+    "from-blue-600 to-indigo-600",      // Salon Combs
+    "from-amber-600 to-orange-600",     // Wooden Combs
+    "from-orange-600 to-red-600",       // Handmade Combs
   ];
-  return imageIds[categoryId % imageIds.length] || imageIds[0];
+  return gradients[categoryId - 1] || gradients[0];
+};
+
+const getCategoryIconBg = (categoryId: number): string => {
+  const backgrounds = [
+    "bg-purple-500/80",      // Ladies Hair Comb
+    "bg-pink-500/80",        // Ladies Fancy Combs
+    "bg-rose-500/80",        // Ladies Stylish Combs
+    "bg-blue-500/80",        // Shampoo Combs
+    "bg-cyan-500/80",        // Ladies Handle Combs
+    "bg-indigo-500/80",      // Gents Combs
+    "bg-violet-500/80",      // Premium Combs
+    "bg-slate-500/80",       // Gents Pocket Combs
+    "bg-emerald-500/80",     // Anti Lice and Tooth Combs
+    "bg-amber-500/80",       // Export Combs
+    "bg-orange-500/80",      // Family Pack
+    "bg-teal-500/80",        // Hair Brush Combs
+    "bg-gray-500/80",        // Hotel Combs
+    "bg-yellow-500/80",      // Printed Combs
+    "bg-blue-600/80",        // Salon Combs
+    "bg-amber-600/80",       // Wooden Combs
+    "bg-orange-600/80",      // Handmade Combs
+  ];
+  return backgrounds[categoryId - 1] || backgrounds[0];
+};
+
+const getCategoryIcon = (categoryId: number): string => {
+  const icons = [
+    "🪮", // 1. Ladies Hair Comb - Hair comb
+    "💎", // 2. Ladies Fancy Combs - Decorative/fancy comb
+    "✨", // 3. Ladies Stylish Combs - Stylish/fashion comb
+    "🧴", // 4. Shampoo Combs - Shampoo bottle
+    "🖐️", // 5. Ladies Handle Combs - Hand with handle
+    "🪮", // 6. Gents Combs - Men's comb
+    "👑", // 7. Premium Combs - Crown for premium
+    "👔", // 8. Gents Pocket Combs - Business/pocket
+    "🔍", // 9. Anti Lice and Tooth Combs - Magnifying glass for fine teeth
+    "🌍", // 10. Export Combs - Globe for international
+    "👨‍👩‍👧‍👦", // 11. Family Pack - Family
+    "🪮", // 12. Hair Brush Combs - Comb and brush
+    "🏨", // 13. Hotel Combs - Hotel building
+    "🎨", // 14. Printed Combs - Paint palette for custom prints
+    "💇‍♀️", // 15. Salon Combs - Hair salon
+    "🪵", // 16. Wooden Combs - Wood
+    "🛠️", // 17. Handmade Combs - Tools for handmade
+  ];
+  return icons[categoryId - 1] || icons[0];
 };
 
 const CategoryCard = ({ category }: CategoryCardProps) => {
   return (
-    <Link to={`/category/${category.slug}`} className="block group focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-2xl">
-      <Card className="group relative overflow-hidden border-0 shadow-xl hover:shadow-2xl transition-all duration-300 bg-white rounded-2xl hover:-translate-y-1 cursor-pointer">
-        <div className="h-36 w-full overflow-hidden flex items-center justify-center bg-gradient-to-tr from-blue-100 to-blue-200">
-          <img
-            src={`https://images.unsplash.com/photo-${getRandomImageId(category.id)}?q=80&w=800&auto=format&fit=crop`}
-            alt={category.name}
-            loading="lazy"
-            width={160}
-            height={120}
-            className="w-auto h-28 object-contain group-hover:scale-105 transition-transform duration-300"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.src = '/placeholder.svg';
-            }}
-          />
+    <Link to={`/category/${category.slug}`} className="block group focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-xl">
+      <Card className="group relative overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 bg-white rounded-xl hover:-translate-y-1 cursor-pointer">
+        {/* Header with category name and gradient background */}
+        <div className={`px-6 py-4 border-b border-gray-100 bg-gradient-to-r ${getCategoryGradient(category.id)}`}>
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-bold text-white group-hover:text-white/90 transition-colors">
+              {category.name}
+            </h3>
+            <div className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center border border-white/30">
+              <span className="text-white text-sm font-semibold">
+                {category.name.split(' ')[0].charAt(0)}
+              </span>
+            </div>
+          </div>
         </div>
-        <CardContent className="p-6 flex flex-col items-center">
-          <h3 className="text-lg font-bold mb-2 text-blue-800 text-center group-hover:text-blue-600 transition-colors">{category.name}</h3>
-          <p className="text-sm text-muted-foreground mb-4 text-center">
+        
+        {/* Content */}
+        <CardContent className="p-6">
+          <p className="text-sm text-gray-600 mb-6 leading-relaxed">
             {category.description}
           </p>
-          <Button className="w-full bg-blue-600 text-white hover:bg-blue-700 border-blue-600 font-semibold rounded-full shadow group-hover:scale-105 transition-transform" tabIndex={-1} type="button" aria-hidden="true">
-            Explore
+          
+          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm hover:shadow-md transition-all duration-200" tabIndex={-1} type="button" aria-hidden="true">
+            View Products
           </Button>
         </CardContent>
-        <div className="absolute top-4 right-4 bg-white/80 rounded-full px-3 py-1 text-xs font-semibold text-blue-700 shadow">
-          {category.name.split(' ')[0]}
-        </div>
+        
+        {/* Subtle accent line */}
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       </Card>
     </Link>
   );

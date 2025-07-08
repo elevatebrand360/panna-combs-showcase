@@ -28,6 +28,10 @@ const ProductDetail = () => {
         const foundProduct = firebaseProducts.find((p: any) => p.slug === productSlug);
         if (foundProduct) {
           setProduct(foundProduct);
+          // Debug logging
+          console.log('Product data:', foundProduct);
+          console.log('Product image:', foundProduct.image);
+          console.log('Product imageUrls:', foundProduct.imageUrls);
         } else {
           setProduct(null);
           setError("Product not found.");
@@ -121,7 +125,8 @@ const ProductDetail = () => {
               
               <ContactSection 
                 productName={product.name} 
-                productCode={product.productCode} 
+                productCode={product.productCode}
+                productImage={product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : product.image}
               />
             </div>
           </div>

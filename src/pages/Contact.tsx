@@ -49,7 +49,7 @@ const Contact = () => {
     <>
       <SEO 
         title="Contact Panna Combs - Hair Comb Manufacturer Kolkata | Get Quote"
-        description="Contact Panna Combs - Leading hair comb manufacturer in Kolkata. Call +913326441277 or email pannacombs@gmail.com for wholesale orders and inquiries."
+        description="Contact Panna Combs - Leading hair comb manufacturer in Howrah, Kolkata. Call +919836599300 or email pannacombs@gmail.com for wholesale orders and inquiries."
         keywords="contact Panna Combs, comb manufacturer contact, wholesale combs Kolkata, comb factory Howrah, Panna Combs phone number"
         canonical="https://pannacombs.com/contact"
       />
@@ -77,7 +77,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-medium">Phone</h3>
-                    <p className="text-muted-foreground">Factory: +9133 2644 1277</p>
+                    <p className="text-muted-foreground">Factory: +91 98365 99300</p>
                   </div>
                 </div>
                 
