@@ -221,9 +221,6 @@ const Admin = () => {
                 {isLocked ? `Locked (${lockTimer}s)` : 'Login'}
               </Button>
             </form>
-            <div className="mt-4 text-sm text-center text-muted-foreground">
-              For demo use password: admin123
-            </div>
           </div>
         ) : adminError ? (
           <AdminErrorFallback error={adminError} onRetry={() => setAdminError(null)} />

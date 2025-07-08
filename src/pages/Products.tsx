@@ -37,14 +37,29 @@ const Products = () => {
           console.log("Products page loaded successfully, categories count:", productCategories.length);
         } else {
           console.warn("No categories found, using fallback");
-          setError("No product categories available");
+          // Don't set error immediately, try to recover
+          setTimeout(() => {
+            if (productCategories && productCategories.length > 0) {
+              setCategories(productCategories);
+            } else {
+              setError("No product categories available");
+            }
+          }, 2000); // Give it 2 seconds to load
         }
         
         setIsLoading(false);
         setIsInitialized(true);
       } catch (err) {
         console.error("Error loading products:", err);
-        setError("Failed to load products");
+        // Don't immediately show error, try to recover
+        setTimeout(() => {
+          if (productCategories && productCategories.length > 0) {
+            setCategories(productCategories);
+            setError(null);
+          } else {
+            setError("Failed to load products");
+          }
+        }, 3000);
         setIsLoading(false);
         setIsInitialized(true);
       }
@@ -128,16 +143,16 @@ const Products = () => {
             </div>
           ) : (
             <>
-              <div className="flex flex-col md:flex-row justify-between items-center mb-6 md:mb-10">
-                <h2 className="mb-4 md:mb-0 text-2xl md:text-3xl">Product Categories</h2>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <div className="w-full sm:w-auto">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 md:mb-10 gap-4">
+                <h2 className="text-2xl md:text-3xl">Product Categories</h2>
+                <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                  <div className="w-full sm:w-40 md:w-44">
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                       <Input 
                         placeholder="Search categories..." 
                         onChange={handleSearchChange}
-                        className="pl-9 pr-9 max-w-md"
+                        className="pl-9 pr-9 w-full text-sm"
                       />
                       {searchQuery && (
                         <button 
@@ -152,7 +167,7 @@ const Products = () => {
                       )}
                     </div>
                   </div>
-                  <Button asChild variant="outline">
+                  <Button asChild variant="outline" className="whitespace-nowrap text-sm px-4">
                     <Link to="/all-products">View All Products</Link>
                   </Button>
                 </div>

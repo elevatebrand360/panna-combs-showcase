@@ -48,8 +48,29 @@ const AllProducts = () => {
         const uniqueCategories = [...new Set(products.map(p => p.category).filter(Boolean))];
         setCategories(uniqueCategories);
       } catch (err) {
-        setError("Failed to load products from database.");
-        setAllProducts([]);
+        console.error("Error loading products:", err);
+        // Don't immediately show error, try to recover
+        setTimeout(async () => {
+          try {
+            const retryData = await getProducts();
+            const products = retryData.map((p: any) => ({
+              id: p.id,
+              name: p.name,
+              description: p.description,
+              category: p.category,
+              productCode: p.productCode,
+              slug: p.slug,
+              imageUrls: p.imageUrls || []
+            }));
+            setAllProducts(products);
+            const uniqueCategories = [...new Set(products.map(p => p.category).filter(Boolean))];
+            setCategories(uniqueCategories);
+            setError(null);
+          } catch (retryErr) {
+            setError("Failed to load products from database. Please try refreshing the page.");
+            setAllProducts([]);
+          }
+        }, 2000);
       } finally {
         setLoading(false);
       }
@@ -128,14 +149,14 @@ const AllProducts = () => {
           {/* Search and Filter Section */}
           <div className="mb-8">
             <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between mb-6">
-              <div className="flex-1 max-w-md">
+              <div className="flex-1 max-w-xs lg:max-w-sm w-full">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <Input 
                     placeholder="Search by product name, code, or description..." 
                     value={searchQuery} 
                     onChange={(e) => setSearchQuery(e.target.value)} 
-                    className="pl-9 pr-9"
+                    className="pl-9 pr-9 w-full text-sm"
                   />
                   {searchQuery && (
                     <button 
@@ -152,12 +173,12 @@ const AllProducts = () => {
                 </p>
               </div>
               
-              <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4 text-muted-foreground" />
+              <div className="flex items-center gap-2 w-full lg:w-auto">
+                <Filter className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                 <select 
                   value={selectedCategory} 
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="border rounded-md px-3 py-2 text-sm bg-white"
+                  className="border rounded-md px-3 py-2 text-sm bg-white w-full lg:w-40"
                 >
                   <option value="">All Categories</option>
                   {categories.map(category => (

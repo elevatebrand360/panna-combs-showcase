@@ -1,8 +1,9 @@
-
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Product } from "@/lib/products";
+import MobileOptimizedImage from "@/components/ui/MobileOptimizedImage";
+import { useMobileOptimization } from "@/hooks/use-mobile-optimization";
 
 interface ProductCardProps {
   product: Product;
@@ -10,6 +11,8 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product, index }: ProductCardProps) => {
+  const { isMobile, isLowEndDevice } = useMobileOptimization();
+  
   // Get the imageUrls if it exists, otherwise use the single image
   const imageUrl = 'imageUrls' in product ? 
     (product.imageUrls as string[])[0] : 
@@ -18,10 +21,13 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
   return (
     <Card className="overflow-hidden border-0 shadow-md transition-shadow hover:shadow-lg">
       <div className="relative aspect-square overflow-hidden">
-        <img
+        <MobileOptimizedImage
           src={imageUrl}
           alt={product.name}
           className="w-full h-full object-cover transition-transform hover:scale-105"
+          width={isMobile ? 300 : 400}
+          priority={index < 4}
+          fallbackSrc="/placeholder-product.jpg"
         />
         <div className="absolute top-2 left-2">
           <span className="bg-brand-DEFAULT text-white text-xs font-medium px-2 py-0.5 rounded-full">
