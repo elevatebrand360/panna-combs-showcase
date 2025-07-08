@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
 import SEO from "@/components/SEO";
 import { debounce } from "@/lib/performance";
+import { Link } from "react-router-dom";
 
 const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -101,9 +102,9 @@ const Products = () => {
   return (
     <>
       <SEO 
-        title="Hair Combs Collection - Premium Combs Manufacturer Kolkata | Panna Combs"
-        description="Browse our complete collection of premium hair combs. Ladies combs, gents combs, salon combs, and premium styling combs. Best quality combs manufacturer in Kolkata since 1980."
-        keywords="hair combs collection, ladies combs, gents combs, salon combs, premium combs, styling combs, comb manufacturer Kolkata, wholesale combs"
+        title="Products - Premium Hair Combs | Panna Combs Manufacturer Kolkata"
+        description="Explore our premium collection of hair combs. Panna Combs - Leading hair comb manufacturer in Howrah, Kolkata. Quality combs for salons, professionals & personal use."
+        keywords="hair combs, comb products, salon combs, professional combs, wholesale combs, 5 inch combs, 7 inch combs, 9 inch combs, comb manufacturer Kolkata"
         canonical="https://pannacombs.com/products"
       />
       <Navbar />
@@ -129,26 +130,31 @@ const Products = () => {
             <>
               <div className="flex flex-col md:flex-row justify-between items-center mb-6 md:mb-10">
                 <h2 className="mb-4 md:mb-0 text-2xl md:text-3xl">Product Categories</h2>
-                <div className="w-full md:w-1/3">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                    <Input 
-                      placeholder="Search categories..." 
-                      onChange={handleSearchChange}
-                      className="pl-9 pr-9 max-w-md"
-                    />
-                    {searchQuery && (
-                      <button 
-                        onClick={() => {
-                          setSearchQuery("");
-                          debouncedSearch("");
-                        }}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    )}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="w-full sm:w-auto">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                      <Input 
+                        placeholder="Search categories..." 
+                        onChange={handleSearchChange}
+                        className="pl-9 pr-9 max-w-md"
+                      />
+                      {searchQuery && (
+                        <button 
+                          onClick={() => {
+                            setSearchQuery("");
+                            debouncedSearch("");
+                          }}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      )}
+                    </div>
                   </div>
+                  <Button asChild variant="outline">
+                    <Link to="/all-products">View All Products</Link>
+                  </Button>
                 </div>
               </div>
               

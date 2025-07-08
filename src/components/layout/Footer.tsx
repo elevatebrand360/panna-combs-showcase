@@ -9,7 +9,7 @@ const Footer = () => {
           <div>
             <h3 className="text-2xl font-bold mb-6 text-white">Panna Combs</h3>
             <p className="text-white/90 text-lg leading-relaxed mb-6">
-              Manufacturing premium quality combs since 1980. Our combs are made with the finest materials
+              Panna Combs is a leading comb manufacturing company based in Howrah, Kolkata. Our combs are made with the finest materials
               and craftsmanship to ensure durability and comfort.
             </p>
             <div className="flex space-x-4">
@@ -70,7 +70,7 @@ const Footer = () => {
                 <Phone size={20} className="flex-shrink-0 mt-1 text-white/80" />
                 <div>
                   <p className="text-white/90 font-medium">Factory</p>
-                  <p className="text-white text-lg">+9133 2644 1277</p>
+                  <p className="text-white text-lg">+91 98365 99300</p>
                 </div>
               </div>
               

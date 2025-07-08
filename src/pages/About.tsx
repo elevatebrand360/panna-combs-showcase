@@ -8,7 +8,7 @@ const About = () => {
     <>
       <SEO 
         title="About Panna Combs - Our Legacy & Founding Fathers | Hair Comb Manufacturer Kolkata"
-        description="Discover the legacy of Panna Combs - Leading hair comb manufacturer in Kolkata since 1980. Learn about our founding fathers, family values, and commitment to quality craftsmanship."
+        description="Discover the legacy of Panna Combs - Leading hair comb manufacturer in Howrah, Kolkata. Learn about our founding fathers, family values, and commitment to quality craftsmanship."
         keywords="Panna Combs history, hair comb manufacturer Kolkata, comb factory Howrah, family business combs, legacy combs, founding fathers Panna Combs"
         canonical="https://pannacombs.com/about"
       />
@@ -59,7 +59,7 @@ const About = () => {
                     className="rounded-lg w-full h-full object-cover"
                   />
                   <div className="absolute bottom-4 right-4 bg-brand-DEFAULT text-white py-2 px-4 rounded">
-                    <p className="font-bold">Est. 1980</p>
+                    <p className="font-bold">Howrah, Kolkata</p>
                   </div>
                 </div>
               </div>

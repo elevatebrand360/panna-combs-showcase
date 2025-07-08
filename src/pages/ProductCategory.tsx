@@ -66,10 +66,16 @@ const ProductCategory = () => {
     loadProducts();
   }, [categorySlug]);
   
-  const filteredProducts = allProducts.filter(product => 
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.productCode.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProducts = allProducts.filter(product => {
+    const query = searchQuery.toLowerCase().trim();
+    if (!query) return true;
+    
+    return (
+      product.name.toLowerCase().includes(query) ||
+      product.productCode.toLowerCase().includes(query) ||
+      (product.description && product.description.toLowerCase().includes(query))
+    );
+  });
 
   if (!category) {
     return (
@@ -134,12 +140,19 @@ const ProductCategory = () => {
 
         <div className="container mx-auto py-8 md:py-12 px-4">
           <div className="flex flex-col md:flex-row justify-between items-center mb-6 md:mb-10">
-            <h2 className="mb-4 md:mb-0 text-brand-dark text-2xl md:text-3xl">Products</h2>
+            <div className="mb-4 md:mb-0">
+              <h2 className="text-brand-dark text-2xl md:text-3xl">Products</h2>
+              {searchQuery && (
+                <p className="text-muted-foreground text-sm mt-1">
+                  {filteredProducts.length} of {allProducts.length} products found
+                </p>
+              )}
+            </div>
             <div className="w-full md:w-1/3">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input 
-                  placeholder="Search products..." 
+                  placeholder="Search by product name or code..." 
                   value={searchQuery} 
                   onChange={(e) => setSearchQuery(e.target.value)} 
                   className="pl-9 pr-9 max-w-md"
@@ -148,11 +161,15 @@ const ProductCategory = () => {
                   <button 
                     onClick={() => setSearchQuery("")}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    title="Clear search"
                   >
                     <X className="h-4 w-4" />
                   </button>
                 )}
               </div>
+              <p className="text-xs text-muted-foreground mt-1 ml-1">
+                Search by product name, code, or description
+              </p>
             </div>
           </div>
           

@@ -1,18 +1,24 @@
-
 import { Button } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/ui/icons";
 
 interface ContactSectionProps {
   productName: string;
   productCode: string;
+  productImage?: string;
 }
 
-const ContactSection = ({ productName, productCode }: ContactSectionProps) => {
+const ContactSection = ({ productName, productCode, productImage }: ContactSectionProps) => {
+  // Debug logging
+  console.log('ContactSection props:', { productName, productCode, productImage });
+  
+  // Determine the image URL to use
+  const imageUrl = productImage || 'Image not available';
+  
   const whatsappMessage = encodeURIComponent(
-    `Hello! I'm interested in ${productName} (Product Code: ${productCode}). Could you please provide more information?`
+    `Hi! I want to enquire about ${productName} (Product Code: ${productCode}). Could you please provide more information about this product and wholesale pricing?\n\nProduct Image: ${imageUrl}`
   );
   
-  const whatsappLink = `https://wa.me/+91332644277?text=${whatsappMessage}`;
+  const whatsappLink = `https://wa.me/+919836599300?text=${whatsappMessage}`;
   
   return (
     <div className="bg-secondary/50 rounded-lg p-6 mt-8">
@@ -21,9 +27,9 @@ const ContactSection = ({ productName, productCode }: ContactSectionProps) => {
       <div className="space-y-4">
         <div className="flex items-center">
           <span className="font-medium w-32">Factory:</span>
-          <a href="tel:+91332644277" className="text-brand-DEFAULT hover:underline">
-            +9133 2644 1277
-          </a>
+                      <a href="tel:+919836599300" className="text-brand-DEFAULT hover:underline">
+              +91 98365 99300
+            </a>
         </div>
         
         <div className="flex items-center">

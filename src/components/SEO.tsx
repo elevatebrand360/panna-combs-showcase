@@ -12,13 +12,13 @@ interface SEOProps {
 }
 
 const SEO: React.FC<SEOProps> = ({
-  title = "Panna Combs - Best Hair Combs Manufacturer in Kolkata | Premium Combs Since 1980",
-  description = "Panna Combs - Leading hair comb manufacturer in Kolkata since 1980. Premium quality combs for salons, professionals & personal use. Wide range of 5\", 7\", 9\" combs. Contact us for wholesale orders.",
-  keywords = "hair combs, combs manufacturer, combs in Kolkata, Panna Combs, hair styling tools, salon combs, premium combs, wholesale combs, Howrah combs, India combs",
+  title = "Panna Combs - Best Hair Combs Manufacturer in Howrah, Kolkata | Premium Combs",
+  description = "Panna Combs - Leading hair comb manufacturer in Howrah, Kolkata. Premium quality combs for salons, professionals & personal use. Wide range of 5\", 7\", 9\" combs. Contact us for wholesale orders.",
+  keywords = "hair combs, comb manufacturer, Kolkata combs, Howrah comb factory, salon combs, professional combs, wholesale combs, 5 inch combs, 7 inch combs, 9 inch combs",
   image = "https://pannacombs.com/logo.png",
   url = "https://pannacombs.com",
   type = "website",
-  canonical
+  canonical = "https://pannacombs.com"
 }) => {
   useEffect(() => {
     // Update page title for better SEO
@@ -27,16 +27,21 @@ const SEO: React.FC<SEOProps> = ({
     // Add structured data for better search results
     const structuredData = {
       "@context": "https://schema.org",
-      "@type": "WebPage",
-      "name": title,
-      "description": description,
-      "url": canonical || url,
-      "mainEntity": {
-        "@type": "Organization",
-        "name": "Panna Combs",
-        "url": "https://pannacombs.com",
-        "logo": "https://pannacombs.com/logo.png",
-        "description": "Leading hair comb manufacturer in Kolkata since 1980"
+      "@type": "Organization",
+      "name": "Panna Combs",
+      "url": "https://pannacombs.com",
+      "logo": "https://pannacombs.com/logo.png",
+      "description": "Leading hair comb manufacturer in Howrah, Kolkata",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Howrah",
+        "addressRegion": "West Bengal",
+        "addressCountry": "IN"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+91-XXXXXXXXXX",
+        "contactType": "customer service"
       }
     };
 
@@ -79,6 +84,8 @@ const SEO: React.FC<SEOProps> = ({
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={image} />
+      <meta name="twitter:site" content="@pannacombs" />
+      <meta name="twitter:creator" content="@pannacombs" />
       
       {/* Additional SEO Meta Tags */}
       <meta name="robots" content="index, follow" />
@@ -92,10 +99,10 @@ const SEO: React.FC<SEOProps> = ({
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
           "name": "Panna Combs",
-          "description": "Leading hair comb manufacturer in Kolkata since 1980",
+          "description": "Leading hair comb manufacturer in Howrah, Kolkata",
           "url": "https://pannacombs.com",
           "logo": "https://pannacombs.com/logo.png",
-          "telephone": "+913326441277",
+          "telephone": "+91-XXXXXXXXXX",
           "email": "pannacombs@gmail.com",
           "address": {
             "@type": "PostalAddress",
@@ -111,10 +118,10 @@ const SEO: React.FC<SEOProps> = ({
             "longitude": "88.3639"
           },
           "areaServed": ["Kolkata", "Howrah", "West Bengal", "India"],
-          "foundingDate": "1980",
+          "foundingDate": "Established",
           "contactPoint": {
             "@type": "ContactPoint",
-            "telephone": "+913326441277",
+            "telephone": "+91-XXXXXXXXXX",
             "contactType": "customer service",
             "availableLanguage": ["English", "Hindi", "Bengali"]
           }

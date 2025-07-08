@@ -12,6 +12,7 @@ import { performanceMonitor, optimizeImages, preloadCriticalResources } from "@/
 const Index = lazy(() => import("./pages/Index").catch(() => ({ default: () => <div>Error loading page</div> })));
 const About = lazy(() => import("./pages/About").catch(() => ({ default: () => <div>Error loading page</div> })));
 const Products = lazy(() => import("./pages/Products").catch(() => ({ default: () => <div>Error loading page</div> })));
+const AllProducts = lazy(() => import("./pages/AllProducts").catch(() => ({ default: () => <div>Error loading page</div> })));
 const ProductCategory = lazy(() => import("./pages/ProductCategory").catch(() => ({ default: () => <div>Error loading page</div> })));
 const ProductDetail = lazy(() => import("./pages/ProductDetail").catch(() => ({ default: () => <div>Error loading page</div> })));
 const Contact = lazy(() => import("./pages/Contact").catch(() => ({ default: () => <div>Error loading page</div> })));
@@ -91,6 +92,7 @@ const App = () => {
                     <Route path="/" element={<Index />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/products" element={<Products />} />
+                    <Route path="/all-products" element={<AllProducts />} />
                     <Route path="/category/:categorySlug" element={<ProductCategory />} />
                     <Route path="/products/:productSlug" element={<ProductDetail />} />
                     <Route path="/contact" element={<Contact />} />

@@ -1,8 +1,15 @@
 import { Phone, Facebook, Instagram, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { WhatsAppIcon } from "@/components/ui/icons";
 
 const ContactCta = () => {
+  const whatsappMessage = encodeURIComponent(
+    "Hi! I want to enquire about your hair combs. Could you please provide more information about your products and wholesale pricing?"
+  );
+  
+  const whatsappLink = `https://wa.me/+919836599300?text=${whatsappMessage}`;
+
   return (
     <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-20">
       <div className="page-container">
@@ -13,19 +20,34 @@ const ContactCta = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 text-center">
           <div className="bg-white/15 rounded-xl p-8 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 hover:-translate-y-1">
             <div className="mx-auto w-16 h-16 bg-white/25 rounded-full flex items-center justify-center mb-6">
               <Phone size={28} className="text-white" />
             </div>
             <h3 className="text-xl font-semibold mb-3">Call Us</h3>
-            <p className="text-white/90 mb-6 text-lg">Factory: +9133 2644 1277</p>
+            <p className="text-white/90 mb-6 text-lg">Factory: +91 98365 99300</p>
             <Button 
               asChild 
               variant="outline"
               className="bg-white text-blue-700 border-2 border-blue-600 hover:bg-blue-50 hover:text-blue-800 font-semibold transition-all duration-300"
             >
-              <a href="tel:+91332644177">Call Now</a>
+              <a href="tel:+919836599300">Call Now</a>
+            </Button>
+          </div>
+          
+          <div className="bg-white/15 rounded-xl p-8 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 hover:-translate-y-1">
+            <div className="mx-auto w-16 h-16 bg-white/25 rounded-full flex items-center justify-center mb-6">
+              <WhatsAppIcon className="w-8 h-8 text-white" />
+            </div>
+            <h3 className="text-xl font-semibold mb-3">WhatsApp</h3>
+            <p className="text-white/90 mb-6 text-lg">Chat with us on WhatsApp</p>
+            <Button 
+              asChild 
+              variant="outline"
+              className="bg-white text-blue-700 border-2 border-blue-600 hover:bg-blue-50 hover:text-blue-800 font-semibold transition-all duration-300"
+            >
+              <a href={whatsappLink} target="_blank" rel="noopener noreferrer">Chat Now</a>
             </Button>
           </div>
           
