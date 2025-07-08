@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useMobileOptimization } from "@/hooks/use-mobile-optimization";
+import MobileOptimizedImage from "@/components/ui/MobileOptimizedImage";
 
 type Slide = {
   id: number;
@@ -41,25 +43,78 @@ const slides: Slide[] = [
 
 const HeroSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const { isMobile, isLowEndDevice } = useMobileOptimization();
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
-  };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      nextSlide();
-    }, 5000);
-
-    return () => clearInterval(interval);
   }, []);
 
+  const prevSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+  }, []);
+
+  // Auto-play functionality with mobile optimization
+  useEffect(() => {
+    if (!isAutoPlaying || isLowEndDevice) return;
+
+    const interval = setInterval(() => {
+      nextSlide();
+    }, isMobile ? 5000 : 4000); // Slower on mobile
+
+    return () => clearInterval(interval);
+  }, [isAutoPlaying, isMobile, isLowEndDevice, nextSlide]);
+
+  // Pause auto-play on touch/click
+  const handleInteraction = useCallback(() => {
+    if (isMobile) {
+      setIsAutoPlaying(false);
+      // Resume after 10 seconds of inactivity
+      setTimeout(() => setIsAutoPlaying(true), 10000);
+    }
+  }, [isMobile]);
+
+  // Touch/swipe support for mobile
+  useEffect(() => {
+    if (!isMobile) return;
+
+    let startX = 0;
+    let endX = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      startX = e.touches[0].clientX;
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      endX = e.changedTouches[0].clientX;
+      const diff = startX - endX;
+
+      if (Math.abs(diff) > 50) { // Minimum swipe distance
+        if (diff > 0) {
+          nextSlide();
+        } else {
+          prevSlide();
+        }
+      }
+      handleInteraction();
+    };
+
+    const slider = document.querySelector('.hero-slider');
+    if (slider) {
+      slider.addEventListener('touchstart', handleTouchStart, { passive: true });
+      slider.addEventListener('touchend', handleTouchEnd, { passive: true });
+    }
+
+    return () => {
+      if (slider) {
+        slider.removeEventListener('touchstart', handleTouchStart);
+        slider.removeEventListener('touchend', handleTouchEnd);
+      }
+    };
+  }, [isMobile, nextSlide, prevSlide, handleInteraction]);
+
   return (
-    <div className="relative w-full h-[500px] md:h-[600px] overflow-hidden">
+    <div className="relative w-full h-[500px] md:h-[600px] overflow-hidden hero-slider">
       {slides.map((slide, index) => (
         <div
           key={slide.id}
@@ -74,7 +129,7 @@ const HeroSlider = () => {
           >
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
           </div>
-          
+
           <div className="relative h-full flex items-center justify-center text-center">
             <div className="max-w-3xl px-4">
               <h1 className="text-white mb-4 drop-shadow-lg font-bold text-4xl md:text-5xl lg:text-6xl">
@@ -96,7 +151,10 @@ const HeroSlider = () => {
       ))}
 
       <button
-        onClick={prevSlide}
+        onClick={() => {
+          prevSlide();
+          handleInteraction();
+        }}
         className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white rounded-full p-3 backdrop-blur-sm transition-colors border border-white/30"
         aria-label="Previous slide"
       >
@@ -104,7 +162,10 @@ const HeroSlider = () => {
       </button>
       
       <button
-        onClick={nextSlide}
+        onClick={() => {
+          nextSlide();
+          handleInteraction();
+        }}
         className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white rounded-full p-3 backdrop-blur-sm transition-colors border border-white/30"
         aria-label="Next slide"
       >
@@ -115,7 +176,10 @@ const HeroSlider = () => {
         {slides.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentSlide(index)}
+            onClick={() => {
+              setCurrentSlide(index);
+              handleInteraction();
+            }}
             className={cn(
               "w-3 h-3 rounded-full transition-all duration-300 border-2 border-white/50",
               currentSlide === index ? "bg-white w-8" : "bg-white/30 hover:bg-white/50"

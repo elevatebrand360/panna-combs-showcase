@@ -1,11 +1,14 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useMobileOptimization } from "@/hooks/use-mobile-optimization";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+  const { isMobile } = useMobileOptimization();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -15,6 +18,24 @@ const Navbar = () => {
     setIsMenuOpen(false);
   };
 
+  // Prevent body scroll when menu is open on mobile
+  useEffect(() => {
+    if (isMenuOpen && isMobile) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMenuOpen, isMobile]);
+
+  // Close menu when route changes
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur-lg shadow-sm">
       <div className="container mx-auto px-4">
@@ -22,8 +43,8 @@ const Navbar = () => {
           {/* Logo and Brand */}
           <div className="flex items-center gap-3">
             <Link to="/" className="flex items-center gap-3" onClick={closeMenu}>
-              <img
-                src="/logo.png"
+              <img 
+                src="/logo.png" 
                 alt="Panna Combs Logo"
                 className="h-14 w-14 md:h-20 md:w-20 object-contain drop-shadow-lg mr-4"
                 style={{ minWidth: 56 }}
@@ -36,7 +57,7 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
-            <Link 
+            <Link
               to="/" 
               className="text-base font-medium text-foreground hover:text-blue-600 transition-colors py-2 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
@@ -86,7 +107,7 @@ const Navbar = () => {
           isMenuOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
         )}>
           <nav className="py-4 space-y-2 border-t">
-            <Link 
+            <Link
               to="/" 
               className="block text-base font-medium text-foreground hover:text-blue-600 transition-colors py-3 px-4 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-400"
               onClick={closeMenu}

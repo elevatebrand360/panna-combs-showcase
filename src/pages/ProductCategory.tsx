@@ -57,8 +57,32 @@ const ProductCategory = () => {
         }));
         setAllProducts(filtered);
       } catch (err) {
-        setError("Failed to load products from database.");
-        setAllProducts([]);
+        console.error("Error loading products:", err);
+        // Don't immediately show error, try to recover
+        setTimeout(async () => {
+          try {
+            const retryData = await getProducts();
+            const matchingCategory = getCategoryBySlug(categorySlug || "");
+            const filtered = retryData.filter((p: any) => {
+              const productCategory = (p.category || "").toLowerCase().trim();
+              const expectedCategory = matchingCategory ? matchingCategory.name.toLowerCase().trim() : "";
+              return productCategory === expectedCategory;
+            }).map((p: any) => ({
+              id: p.id,
+              name: p.name,
+              description: p.description,
+              category: p.category,
+              productCode: p.productCode,
+              slug: p.slug,
+              imageUrls: p.imageUrls || []
+            }));
+            setAllProducts(filtered);
+            setError(null);
+          } catch (retryErr) {
+            setError("Failed to load products from database. Please try refreshing the page.");
+            setAllProducts([]);
+          }
+        }, 2000);
       } finally {
         setLoading(false);
       }
@@ -139,8 +163,8 @@ const ProductCategory = () => {
         </div>
 
         <div className="container mx-auto py-8 md:py-12 px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-6 md:mb-10">
-            <div className="mb-4 md:mb-0">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 md:mb-10 gap-4">
+            <div>
               <h2 className="text-brand-dark text-2xl md:text-3xl">Products</h2>
               {searchQuery && (
                 <p className="text-muted-foreground text-sm mt-1">
@@ -148,14 +172,14 @@ const ProductCategory = () => {
                 </p>
               )}
             </div>
-            <div className="w-full md:w-1/3">
+            <div className="w-full md:w-56 lg:w-60">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input 
                   placeholder="Search by product name or code..." 
                   value={searchQuery} 
                   onChange={(e) => setSearchQuery(e.target.value)} 
-                  className="pl-9 pr-9 max-w-md"
+                  className="pl-9 pr-9 w-full text-sm"
                 />
                 {searchQuery && (
                   <button 

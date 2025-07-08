@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect } from "react";
+import React, { Suspense, lazy, useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,7 +6,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import NetworkStatus from "@/components/NetworkStatus";
 import { performanceMonitor, optimizeImages, preloadCriticalResources } from "@/lib/performance";
+import { useToast } from "@/hooks/use-toast";
+import { useMobileOptimization } from "@/hooks/use-mobile-optimization";
 
 // Lazy load all pages with better error handling
 const Index = lazy(() => import("./pages/Index").catch(() => ({ default: () => <div>Error loading page</div> })));
@@ -77,12 +80,92 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
+  const { toast } = useToast();
+  const { isMobile, isLowEndDevice, isOnline } = useMobileOptimization();
+
+  // Initialize mobile optimizations
+  useEffect(() => {
+    // Add mobile-specific meta tags
+    if (isMobile) {
+      const viewport = document.querySelector('meta[name="viewport"]');
+      if (viewport) {
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+      }
+    }
+
+    // Optimize for low-end devices
+    if (isLowEndDevice) {
+      // Reduce animations
+      document.documentElement.style.setProperty('--animation-duration', '0.1s');
+      
+      // Show performance warning
+      toast({
+        title: "Performance Mode",
+        description: "Optimized for better performance on your device.",
+        duration: 3000,
+      });
+    }
+
+    // Check network status
+    if (!isOnline) {
+      toast({
+        title: "Offline Mode",
+        description: "Some features may be limited while offline.",
+        variant: "destructive",
+        duration: 5000,
+      });
+    }
+  }, [isMobile, isLowEndDevice, isOnline, toast]);
+
+  // Handle mobile-specific errors
+  useEffect(() => {
+    const handleError = (event: ErrorEvent) => {
+      console.error('Global error caught:', event.error);
+      
+      // Prevent crashes on mobile
+      if (isMobile) {
+        event.preventDefault();
+        
+        toast({
+          title: "Something went wrong",
+          description: "Please try refreshing the page.",
+          variant: "destructive",
+          duration: 5000,
+        });
+      }
+    };
+
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      console.error('Unhandled promise rejection:', event.reason);
+      
+      if (isMobile) {
+        event.preventDefault();
+        
+        toast({
+          title: "Connection Error",
+          description: "Please check your internet connection.",
+          variant: "destructive",
+          duration: 5000,
+        });
+      }
+    };
+
+    window.addEventListener('error', handleError);
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+
+    return () => {
+      window.removeEventListener('error', handleError);
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+    };
+  }, [isMobile, toast]);
+
   return (
     <React.StrictMode>
       <ErrorBoundary>
         <HelmetProvider>
           <QueryClientProvider client={queryClient}>
             <TooltipProvider>
+              <NetworkStatus />
               <Toaster />
               <Sonner />
               <BrowserRouter>
