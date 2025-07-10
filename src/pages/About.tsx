@@ -35,7 +35,7 @@ const About = () => {
                   <h2 className="text-3xl font-bold mb-6">Our Legacy</h2>
                   <div className="space-y-6 text-lg leading-relaxed">
                     <p>
-                      Panna Combs was born from the vision of Late Sri Dhanraj Ji Kothari, a pioneering entrepreneur whose belief was simple yet profound: that everyday essentials should embody uncompromising quality.
+                      Panna Combs was born from the vision of Late Sri Dhanraj Kothari, a pioneering entrepreneur whose belief was simple yet profound: that everyday essentials should embody uncompromising quality.
                     </p>
                     <p>
                       Hailing from Churu, Rajasthan, he set out on a journey that led him to Patna, where he laid the cornerstone of what would become our family’s enduring enterprise in comb manufacturing.
@@ -44,7 +44,7 @@ const About = () => {
                       As the business grew, so did his commitment to excellence—a commitment that eventually brought Panna Combs to Kolkata, where our name became synonymous with craftsmanship and trust.
                     </p>
                     <p>
-                      Today, this proud legacy lives on through the next generation—Nitesh Kothari, Nitin Kothari, and Deepak Kothari, who handles the Bombay branch of Panna Combs—carrying forward his passion for creating combs that seamlessly blend tradition, innovation, and care.
+                      Today, this proud legacy lives on through his son, Mr. Nirmal Kothari, and the next generation—Nitesh Kothari, Nitin Kothari, and Deepak Kothari, who handles the Bombay branch carrying forward his passion for creating combs that seamlessly blend tradition, innovation, and care.
                     </p>
                   </div>
                 </div>
@@ -148,7 +148,7 @@ const About = () => {
                     <img 
                       src="/founder-dhanraj-kothari.jpg" 
                       alt="The Founding Father: Shri. Late Dhanraj Kothari" 
-                      className="rounded-lg shadow-lg mb-2 border-4 border-blue-200 w-full max-w-xs sm:max-w-sm mx-auto object-cover aspect-square"
+                      className="rounded-lg shadow-lg mb-2 border-4 border-blue-200 w-full max-w-xs sm:max-w-sm mx-auto object-contain" style={{ maxHeight: '350px', background: '#fff' }}
                     />
                     <p className="font-semibold text-center text-blue-700">The Founding Father: Shri. Late Dhanraj Kothari</p>
                     <p className="text-center text-base text-muted-foreground max-w-md">A visionary entrepreneur whose unwavering commitment to quality and integrity laid the foundation for Panna Combs. His journey from Churu to Patna and then Kolkata continues to inspire generations.</p>
@@ -157,7 +157,7 @@ const About = () => {
                     At the heart of Panna Combs is the enduring spirit of our Founding Fathers, whose dedication, vision, and integrity shaped who we are today.
                   </p>
                   <p>
-                    It all began with Late Sri Dhanraj Ji Kothari, whose entrepreneurial foresight transformed a simple idea into a thriving enterprise. His belief that quality should never be compromised laid the foundation for everything we do.
+                    It all began with Late Sri Dhanraj Kothari, whose entrepreneurial foresight transformed a simple idea into a thriving enterprise. His belief that quality should never be compromised laid the foundation for everything we do.
                   </p>
                   <p>
                     Carrying forward his legacy, his sons—Nirmal Kothari, Prakash Kothari, and Praven Kothari—worked tirelessly to expand the business, uphold the family values, and earn the trust of customers across generations.
