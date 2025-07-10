@@ -226,16 +226,16 @@ const Admin = () => {
           <AdminErrorFallback error={adminError} onRetry={() => setAdminError(null)} />
         ) : (
           <ErrorCatcher onError={setAdminError}>
-            <div className="glass-effect rounded-lg p-6 shadow-md">
-              <div className="flex justify-between items-center mb-8">
-                <h2 className="text-2xl font-semibold">Product Management</h2>
-                <Button variant="outline" onClick={handleLogout} className="hover-lift">
-                  Logout
-                </Button>
-              </div>
+          <div className="glass-effect rounded-lg p-6 shadow-md">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl font-semibold">Product Management</h2>
+              <Button variant="outline" onClick={handleLogout} className="hover-lift">
+                Logout
+              </Button>
+            </div>
               <div>
-                <ProductManagement />
-              </div>
+            <ProductManagement />
+          </div>
             </div>
           </ErrorCatcher>
         )}
