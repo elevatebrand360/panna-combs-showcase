@@ -14,7 +14,7 @@ const Footer = () => {
             </p>
             <div className="flex space-x-4">
               <a 
-                href="https://facebook.com" 
+                href="https://www.facebook.com/share/1Hu1fhVvhZ/?mibextid=wwXIfr" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
@@ -22,7 +22,7 @@ const Footer = () => {
                 <Facebook size={20} className="text-white" />
               </a>
               <a 
-                href="https://instagram.com" 
+                href="https://www.instagram.com/pannacombs?igsh=MTB0eW9iN25uMjBpOQ%3D%3D&utm_source=qr" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"

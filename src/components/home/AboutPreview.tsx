@@ -9,13 +9,13 @@ const AboutPreview = () => {
           <div className="order-2 lg:order-1">
             <h2 className="mb-6 text-foreground">Our Legacy</h2>
             <p className="mb-8 text-muted-foreground text-lg leading-relaxed whitespace-pre-line">
-              Panna Combs was born from the vision of Late Sri Dhanraj Ji Kothari, a pioneering entrepreneur whose belief was simple yet profound: that everyday essentials should embody uncompromising quality.
+              Panna Combs was born from the vision of Late Sri Dhanraj Kothari, a pioneering entrepreneur whose belief was simple yet profound: that everyday essentials should embody uncompromising quality.
 
               Hailing from Churu, Rajasthan, he set out on a journey that led him to Patna, where he laid the cornerstone of what would become our family’s enduring enterprise in comb manufacturing.
 
               As the business grew, so did his commitment to excellence—a commitment that eventually brought Panna Combs to Kolkata, where our name became synonymous with craftsmanship and trust.
 
-              Today, this proud legacy lives on through the next generation—Nitesh Kothari, Nitin Kothari, and Deepak Kothari, who handles the Bombay branch of Panna Combs—carrying forward his passion for creating combs that seamlessly blend tradition, innovation, and care.
+              Today, this proud legacy lives on through his son, Mr. Nirmal Kothari, and the next generation—Nitesh Kothari, Nitin Kothari, and Deepak Kothari, who handles the Bombay branch carrying forward his passion for creating combs that seamlessly blend tradition, innovation, and care.
             </p>
             <div className="space-y-4 sm:space-y-0 sm:space-x-4 flex flex-col sm:flex-row">
               <Button 
