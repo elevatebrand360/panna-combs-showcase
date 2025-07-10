@@ -99,8 +99,7 @@ const Contact = () => {
                   <div>
                     <h3 className="font-medium">Address</h3>
                     <p className="text-muted-foreground">
-                      Duilly, Nimtalla, Andul,<br />
-                      Howrah - 711302
+                      Duilly, Nimtalla, Andul, Howrah - 711302
                     </p>
                   </div>
                 </div>

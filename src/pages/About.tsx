@@ -25,7 +25,7 @@ const About = () => {
             <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
               <TabsTrigger value="about">About Us</TabsTrigger>
               <TabsTrigger value="values">Our Values</TabsTrigger>
-              <TabsTrigger value="founders">Founding Fathers</TabsTrigger>
+              <TabsTrigger value="founders">Founding Father</TabsTrigger>
               <TabsTrigger value="factory">Our Factory</TabsTrigger>
             </TabsList>
             
@@ -37,17 +37,14 @@ const About = () => {
                     <p>
                       Panna Combs was born from the vision of Late Sri Dhanraj Ji Kothari, a pioneering entrepreneur whose belief was simple yet profound: that everyday essentials should embody uncompromising quality.
                     </p>
-                    
                     <p>
-                      Hailing from Churu, Rajasthan, he set out on a journey that led him to Patna, where he laid the cornerstone of what would become our family's enduring enterprise in comb manufacturing.
+                      Hailing from Churu, Rajasthan, he set out on a journey that led him to Patna, where he laid the cornerstone of what would become our family’s enduring enterprise in comb manufacturing.
                     </p>
-                    
                     <p>
                       As the business grew, so did his commitment to excellence—a commitment that eventually brought Panna Combs to Kolkata, where our name became synonymous with craftsmanship and trust.
                     </p>
-                    
                     <p>
-                      Today, this proud legacy lives on through his sons—Nirmal Kothari, Prakash Kothari, and Praven Kothari—and the next generation, Nitesh Kothari and Nitin Kothari, who carry forward his passion for creating combs that seamlessly blend tradition, innovation, and care.
+                      Today, this proud legacy lives on through the next generation—Nitesh Kothari, Nitin Kothari, and Deepak Kothari, who handles the Bombay branch of Panna Combs—carrying forward his passion for creating combs that seamlessly blend tradition, innovation, and care.
                     </p>
                   </div>
                 </div>
@@ -59,7 +56,7 @@ const About = () => {
                     className="rounded-lg w-full h-full object-cover"
                   />
                   <div className="absolute bottom-4 right-4 bg-brand-DEFAULT text-white py-2 px-4 rounded">
-                    <p className="font-bold">Howrah, Kolkata</p>
+                    <p className="font-bold">Howrah - 711302, Kolkata</p>
                   </div>
                 </div>
               </div>
@@ -68,22 +65,28 @@ const About = () => {
             <TabsContent value="values" className="mt-6">
               <div className="flex flex-col items-center">
                 <div className="w-full flex flex-col md:flex-row gap-6 mb-6">
-                  <img 
-                    src="/babosa.webp" 
-                    alt="" 
-                    className="w-full md:w-1/2 aspect-square object-cover rounded-lg shadow" 
-                  />
-                  <img 
-                    src="/baisa.jpg" 
-                    alt="" 
-                    className="w-full md:w-1/2 aspect-square object-cover rounded-lg shadow" 
-                  />
+                  <div className="flex flex-col items-center w-full md:w-1/2">
+                    <img 
+                      src="/babosa.jpg" 
+                      alt="Babosa Bhagwan" 
+                      className="w-full aspect-square object-cover rounded-lg shadow" 
+                    />
+                    <p className="mt-2 text-center font-semibold text-blue-700">Babosa Bhagwan</p>
+                  </div>
+                  <div className="flex flex-col items-center w-full md:w-1/2">
+                    <img 
+                      src="/baisa.jpg" 
+                      alt="HH Manju Baisa" 
+                      className="w-full aspect-square object-cover rounded-lg shadow" 
+                    />
+                    <p className="mt-2 text-center font-semibold text-blue-700">HH Manju Baisa</p>
+                  </div>
                 </div>
                 <div className="max-w-4xl text-center text-lg text-muted-foreground space-y-6">
                   <div className="mb-8">
                     <h3 className="text-2xl font-bold text-blue-600 mb-4">Jai Babosa</h3>
                     <p className="text-lg leading-relaxed">
-                      At Babosa Mandir, our values are rooted in devotion, selfless service, and unwavering faith. Guided by the divine grace of Lord Babosa, we strive to nurture a spiritual community inspired by the life and teachings of Manju Baisa.
+                      At Babosa Mandir, our values are rooted in devotion, selfless service, and unwavering faith. Guided by the divine grace of Lord Babosa, we strive to nurture a spiritual community inspired by the life and teachings of HH Manju Baisa.
                     </p>
                   </div>
                   
@@ -99,7 +102,7 @@ const About = () => {
                       <div>
                         <h4 className="text-xl font-semibold text-blue-700 mb-2">Divine Service (Seva)</h4>
                         <p className="text-base leading-relaxed">
-                          Selfless service is at the core of our mission. Manju Baisa's dedication inspires us to serve humanity with compassion, humility, and purity of intent.
+                          Selfless service is at the core of our mission. HH Manju Baisa's dedication inspires us to serve humanity with compassion, humility, and purity of intent.
                         </p>
                       </div>
                       
@@ -122,7 +125,7 @@ const About = () => {
                       <div>
                         <h4 className="text-xl font-semibold text-blue-700 mb-2">Inspiration to Lead a Spiritual Life</h4>
                         <p className="text-base leading-relaxed">
-                          Following the example set by Manju Baisa, we encourage everyone to live with integrity, gratitude, and devotion, carrying Babosa's blessings into everyday life.
+                          Following the example set by HH Manju Baisa, we encourage everyone to live with integrity, gratitude, and devotion, carrying Babosa's blessings into everyday life.
                         </p>
                       </div>
                     </div>
@@ -138,38 +141,33 @@ const About = () => {
             </TabsContent>
             
             <TabsContent value="founders" className="mt-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                <div>
-                  <h2 className="text-3xl font-bold mb-6">Our Founding Fathers</h2>
-                  <div className="space-y-6 text-lg leading-relaxed">
-                    <p>
-                      At the heart of Panna Combs is the enduring spirit of our Founding Fathers, whose dedication, vision, and integrity shaped who we are today.
-                    </p>
-                    
-                    <p>
-                      It all began with Late Sri Dhanraj Ji Kothari, whose entrepreneurial foresight transformed a simple idea into a thriving enterprise. His belief that quality should never be compromised laid the foundation for everything we do.
-                    </p>
-                    
-                    <p>
-                      Carrying forward his legacy, his sons—Nirmal Kothari, Prakash Kothari, and Praven Kothari—worked tirelessly to expand the business, uphold the family values, and earn the trust of customers across generations.
-                    </p>
-                    
-                    <p>
-                      Together, they not only built a brand but also nurtured a culture rooted in hard work, respect, and an unwavering commitment to excellence.
-                    </p>
-                    
-                    <p>
-                      Today, their example continues to inspire the next generation, ensuring that every comb we create reflects the same care and craftsmanship envisioned by our Founding Fathers.
-                    </p>
+              <div className="flex flex-col items-center w-full">
+                <h2 className="text-3xl font-bold mb-6 text-center w-full">Our Founding Father</h2>
+                <div className="space-y-6 text-lg leading-relaxed w-full max-w-2xl text-center">
+                  <div className="flex flex-col items-center mb-6">
+                    <img 
+                      src="/founder-dhanraj-kothari.jpg" 
+                      alt="The Founding Father: Shri. Late Dhanraj Kothari" 
+                      className="rounded-lg shadow-lg mb-2 border-4 border-blue-200 w-full max-w-xs sm:max-w-sm mx-auto object-cover aspect-square"
+                    />
+                    <p className="font-semibold text-center text-blue-700">The Founding Father: Shri. Late Dhanraj Kothari</p>
+                    <p className="text-center text-base text-muted-foreground max-w-md">A visionary entrepreneur whose unwavering commitment to quality and integrity laid the foundation for Panna Combs. His journey from Churu to Patna and then Kolkata continues to inspire generations.</p>
                   </div>
-                </div>
-                
-                <div className="relative">
-                  <img 
-                    src="https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?q=80&w=1974&auto=format&fit=crop" 
-                    alt="Founding Fathers" 
-                    className="rounded-lg w-full h-full object-cover"
-                  />
+                  <p>
+                    At the heart of Panna Combs is the enduring spirit of our Founding Fathers, whose dedication, vision, and integrity shaped who we are today.
+                  </p>
+                  <p>
+                    It all began with Late Sri Dhanraj Ji Kothari, whose entrepreneurial foresight transformed a simple idea into a thriving enterprise. His belief that quality should never be compromised laid the foundation for everything we do.
+                  </p>
+                  <p>
+                    Carrying forward his legacy, his sons—Nirmal Kothari, Prakash Kothari, and Praven Kothari—worked tirelessly to expand the business, uphold the family values, and earn the trust of customers across generations.
+                  </p>
+                  <p>
+                    Together, they not only built a brand but also nurtured a culture rooted in hard work, respect, and an unwavering commitment to excellence.
+                  </p>
+                  <p>
+                    Today, their example continues to inspire the next generation, ensuring that every comb we create reflects the same care and craftsmanship envisioned by our Founding Fathers.
+                  </p>
                 </div>
               </div>
             </TabsContent>
@@ -178,7 +176,7 @@ const About = () => {
               <div className="space-y-6">
                 <h2 className="text-3xl font-bold">Our Factory</h2>
                 <p>
-                  Located in Duilly, Nimtalla, Andul, Howrah, our factory combines traditional craftsmanship 
+                  Located in Duilly, Nimtalla, Andul, Howrah - 711302, our factory combines traditional craftsmanship 
                   with modern manufacturing technology to produce combs of exceptional quality.
                 </p>
                 
