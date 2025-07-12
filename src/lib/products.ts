@@ -30,94 +30,70 @@ export const productCategories: ProductCategory[] = [
   },
   {
     id: 3,
-    name: "9\" Ladies Stylish Combs",
-    slug: "ladies-stylish-combs",
-    description: "Trendy and stylish combs for the fashion-conscious woman."
-  },
-  {
-    id: 4,
-    name: "9\" Shampoo Combs",
-    slug: "shampoo-combs",
-    description: "Combs specifically designed for use with shampoo and conditioning products."
-  },
-  {
-    id: 5,
-    name: "9\" Ladies Handle Combs",
-    slug: "ladies-handle-combs",
-    description: "Comfortable handle combs for easy styling and grooming."
-  },
-  {
-    id: 6,
     name: "7\" Gents Combs",
     slug: "gents-combs",
     description: "Durable and strong combs designed for men's hair."
   },
   {
-    id: 7,
-    name: "5\" Premium Combs",
-    slug: "premium-combs",
-    description: "High-end premium combs made with the finest materials."
-  },
-  {
-    id: 8,
+    id: 4,
     name: "5\" Gents Pocket Combs",
     slug: "gents-pocket-combs",
     description: "Compact pocket combs for men on the go."
   },
   {
-    id: 9,
+    id: 5,
     name: "Anti Lice and Tooth Combs",
     slug: "anti-lice-tooth-combs",
     description: "Specialized combs for lice treatment and fine tooth combing."
   },
   {
-    id: 10,
-    name: "Export Combs",
-    slug: "export-combs",
-    description: "High-quality combs made specifically for international markets."
-  },
-  {
-    id: 11,
+    id: 6,
     name: "Family Pack",
     slug: "family-pack",
     description: "Value pack of various combs suitable for the whole family."
   },
   {
-    id: 12,
-    name: "Hair Brush Combs",
-    slug: "hair-brush-combs",
+    id: 7,
+    name: "Hair Combs",
+    slug: "hair-combs",
     description: "Combination of brush and comb for versatile hair styling."
   },
   {
-    id: 13,
-    name: "Hotel Combs",
-    slug: "hotel-combs",
-    description: "Disposable and hygienic combs for hotel amenities."
-  },
-  {
-    id: 14,
+    id: 8,
     name: "Printed Combs",
     slug: "printed-combs",
     description: "Combs with custom printed designs and logos."
   },
   {
-    id: 15,
+    id: 9,
     name: "Salon Combs",
     slug: "salon-combs",
     description: "Professional combs used by salons and hairstylists."
   },
   {
-    id: 16,
+    id: 10,
     name: "Wooden Combs",
     slug: "wooden-combs",
     description: "Natural wooden combs that are gentle on the scalp and hair."
   },
   {
-    id: 17,
+    id: 11,
     name: "Handmade Combs",
     slug: "handmade-combs",
     description: "Artisanal handcrafted combs made with traditional techniques."
   },
+  {
+    id: 12,
+    name: "World of Colors",
+    slug: "world-of-colors",
+    description: "A vibrant collection of combs in a variety of colors."
+  },
+  {
+    id: 13,
+    name: "Panna Exclusive Combs",
+    slug: "panna-exclusive-combs",
+    description: "Exclusive range of premium combs by Panna."
+  }
 ];
 
 // Mock products - in a real application, these would come from a database
