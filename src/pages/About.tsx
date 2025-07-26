@@ -14,7 +14,7 @@ const About = () => {
       />
       <Navbar />
       <main>
-        <div className="bg-brand-DEFAULT text-white py-16 px-4">
+        <div className="section-brand text-white py-16 px-4">
           <div className="container mx-auto">
             <h1 className="text-center">About Panna Combs</h1>
           </div>
@@ -44,7 +44,7 @@ const About = () => {
                       As the business grew, so did his commitment to excellence—a commitment that eventually brought Panna Combs to Kolkata, where our name became synonymous with craftsmanship and trust.
                     </p>
                     <p>
-                      Today, this proud legacy lives on through his son, Mr. Nirmal Kothari, and the next generation—Nitesh Kothari, Nitin Kothari, and Deepak Kothari, who handles the Bombay branch carrying forward his passion for creating combs that seamlessly blend tradition, innovation, and care.
+                      Today, his dedication and hardwork lives through the next generation of dedicated and passionate personal, his son Shri Nirmal Kothari, and the succeeding generation- Nitesh Kothari, Nitin Kothari, Owner of kolkata branch and Deepak Kothari, who handles the Bombay branch carrying forward his passion for creating combs that seamlessly blend tradition, innovation, and care.
                     </p>
                   </div>
                 </div>
@@ -55,8 +55,8 @@ const About = () => {
                     alt="Panna Combs History" 
                     className="rounded-lg w-full h-full object-cover"
                   />
-                  <div className="absolute bottom-4 right-4 bg-brand-DEFAULT text-white py-2 px-4 rounded">
-                    <p className="font-bold">Howrah - 711302, Kolkata</p>
+                  <div className="absolute bottom-4 right-4 glass-card py-2 px-4 rounded">
+                    <p className="font-bold text-blue-400">Howrah - 711302, Kolkata</p>
                   </div>
                 </div>
               </div>
@@ -71,43 +71,43 @@ const About = () => {
                       alt="Babosa Bhagwan" 
                       className="w-full aspect-square object-cover rounded-lg shadow" 
                     />
-                    <p className="mt-2 text-center font-semibold text-blue-700">Babosa Bhagwan</p>
+                    <p className="mt-2 text-center font-semibold text-blue-400">Babosa Bhagwan</p>
                   </div>
                   <div className="flex flex-col items-center w-full md:w-1/2">
                     <img 
                       src="/baisa.jpg" 
-                      alt="HH Manju Baisa" 
+                      alt="Param Aradhika Babosa" 
                       className="w-full aspect-square object-cover rounded-lg shadow" 
                     />
-                    <p className="mt-2 text-center font-semibold text-blue-700">HH Manju Baisa</p>
+                    <p className="mt-2 text-center font-semibold text-blue-400">Param Aradhika Babosa</p>
                   </div>
                 </div>
                 <div className="max-w-4xl text-center text-lg text-muted-foreground space-y-6">
                   <div className="mb-8">
-                    <h3 className="text-2xl font-bold text-blue-600 mb-4">Jai Babosa</h3>
+                    <h3 className="text-2xl font-bold text-blue-400 mb-4">Jai Shri Babosa</h3>
                     <p className="text-lg leading-relaxed">
-                      At Babosa Mandir, our values are rooted in devotion, selfless service, and unwavering faith. Guided by the divine grace of Lord Babosa, we strive to nurture a spiritual community inspired by the life and teachings of HH Manju Baisa.
+                      At Babosa Mandir, our values are rooted in devotion, selfless service, and unwavering faith. Guided by the divine grace of Lord Babosa, we strive to nurture a spiritual community inspired by the life and teachings of Param Aradhika Babosa.
                     </p>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
                     <div className="space-y-4">
                       <div>
-                        <h4 className="text-xl font-semibold text-blue-700 mb-2">Devotion and Surrender</h4>
+                        <h4 className="text-xl font-semibold text-blue-400 mb-2">Devotion and Surrender</h4>
                         <p className="text-base leading-relaxed">
                           We believe true devotion begins with surrendering the ego and opening the heart to the boundless love of Babosa Maharaj. Every prayer, Kirtan, and ritual is a step closer to this sacred connection.
                         </p>
                       </div>
                       
                       <div>
-                        <h4 className="text-xl font-semibold text-blue-700 mb-2">Divine Service (Seva)</h4>
+                        <h4 className="text-xl font-semibold text-blue-400 mb-2">Divine Service (Seva)</h4>
                         <p className="text-base leading-relaxed">
-                          Selfless service is at the core of our mission. HH Manju Baisa's dedication inspires us to serve humanity with compassion, humility, and purity of intent.
+                          Selfless service is at the core of our mission. Param Aradhika Babosa's dedication inspires us to serve humanity with compassion, humility, and purity of intent.
                         </p>
                       </div>
                       
                       <div>
-                        <h4 className="text-xl font-semibold text-blue-700 mb-2">Spiritual Awakening</h4>
+                        <h4 className="text-xl font-semibold text-blue-400 mb-2">Spiritual Awakening</h4>
                         <p className="text-base leading-relaxed">
                           Through satsang and kirtan, devotees experience Babosa Maharaj's divine presence—often manifesting in Bala Roop—to awaken higher consciousness and inner transformation.
                         </p>
@@ -116,16 +116,16 @@ const About = () => {
                     
                     <div className="space-y-4">
                       <div>
-                        <h4 className="text-xl font-semibold text-blue-700 mb-2">Community and Belonging</h4>
+                        <h4 className="text-xl font-semibold text-blue-400 mb-2">Community and Belonging</h4>
                         <p className="text-base leading-relaxed">
                           Our Mandirs are spaces of togetherness, where every soul is welcomed with respect, regardless of background. We cherish the bonds formed through shared faith and collective worship.
                         </p>
                       </div>
                       
                       <div>
-                        <h4 className="text-xl font-semibold text-blue-700 mb-2">Inspiration to Lead a Spiritual Life</h4>
+                        <h4 className="text-xl font-semibold text-blue-400 mb-2">Inspiration to Lead a Spiritual Life</h4>
                         <p className="text-base leading-relaxed">
-                          Following the example set by HH Manju Baisa, we encourage everyone to live with integrity, gratitude, and devotion, carrying Babosa's blessings into everyday life.
+                          Following the example set by Param Aradhika Babosa, we encourage everyone to live with integrity, gratitude, and devotion, carrying Babosa's blessings into everyday life.
                         </p>
                       </div>
                     </div>
@@ -150,7 +150,7 @@ const About = () => {
                       alt="The Founding Father: Shri. Late Dhanraj Kothari" 
                       className="rounded-lg shadow-lg mb-2 border-4 border-blue-200 w-full max-w-xs sm:max-w-sm mx-auto object-contain" style={{ maxHeight: '350px', background: '#fff' }}
                     />
-                    <p className="font-semibold text-center text-blue-700">The Founding Father: Shri. Late Dhanraj Kothari</p>
+                    <p className="font-semibold text-center text-blue-400">The Founding Father: Shri. Late Dhanraj Kothari</p>
                     <p className="text-center text-base text-muted-foreground max-w-md">A visionary entrepreneur whose unwavering commitment to quality and integrity laid the foundation for Panna Combs. His journey from Churu to Patna and then Kolkata continues to inspire generations.</p>
                   </div>
                   <p>

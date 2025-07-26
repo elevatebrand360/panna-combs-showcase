@@ -55,7 +55,7 @@ const Contact = () => {
       />
       <Navbar />
       <main>
-        <div className="bg-brand-DEFAULT text-white py-16 px-4">
+        <div className="section-brand text-white py-16 px-4">
           <div className="container mx-auto">
             <h1 className="text-center">Contact Us</h1>
             <p className="text-center mt-4 max-w-2xl mx-auto">
@@ -88,7 +88,6 @@ const Contact = () => {
                   <div>
                     <h3 className="font-medium">Email</h3>
                     <p className="text-muted-foreground">pannacombs@gmail.com</p>
-                    <p className="text-muted-foreground">kothari79.nk@gmail.com</p>
                   </div>
                 </div>
                 
@@ -129,7 +128,7 @@ const Contact = () => {
             </div>
             
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-lg p-6">
+              <div className="glass-card p-6">
                 <h2 className="text-2xl font-bold mb-6">Send us a Message</h2>
                 
                 <form onSubmit={handleSubmit}>

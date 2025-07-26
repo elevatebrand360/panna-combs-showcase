@@ -7,7 +7,6 @@
 - **Website**: https://pannacombs.com
 - **Phone Number**: +913326441277
 - **Email**: pannacombs@gmail.com
-- **Alternate Email**: kothari79.nk@gmail.com
 
 ### **Address Information**
 - **Street Address**: Duilly, Nimtalla, Andul

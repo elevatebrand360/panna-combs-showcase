@@ -80,7 +80,7 @@ const getCategoryIcon = (categoryId: number): string => {
 const CategoryCard = ({ category }: CategoryCardProps) => {
   return (
     <Link to={`/category/${category.slug}`} className="block group focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-xl">
-      <Card className="group relative overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 bg-white rounded-xl hover:-translate-y-1 cursor-pointer">
+      <Card className="group relative overflow-hidden glass-card hover:shadow-2xl transition-all duration-300 rounded-xl hover:-translate-y-1 cursor-pointer">
         {/* Header with category name and gradient background */}
         <div className={`px-6 py-4 border-b border-gray-100 bg-gradient-to-r ${getCategoryGradient(category.id)}`}>
           <div className="flex items-center justify-between">

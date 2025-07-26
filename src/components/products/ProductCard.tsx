@@ -19,7 +19,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
     product.image;
 
   return (
-    <Card className="overflow-hidden border-0 shadow-md transition-shadow hover:shadow-lg">
+    <Card className="overflow-hidden glass-card transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
       <div className="relative aspect-square overflow-hidden">
         <MobileOptimizedImage
           src={imageUrl}
@@ -30,7 +30,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
           fallbackSrc="/placeholder-product.jpg"
         />
         <div className="absolute top-2 left-2">
-          <span className="bg-brand-DEFAULT text-white text-xs font-medium px-2 py-0.5 rounded-full">
+          <span className="bg-blue-600/80 backdrop-blur-sm text-white text-xs font-medium px-2 py-0.5 rounded-full">
             #{index + 1}
           </span>
         </div>

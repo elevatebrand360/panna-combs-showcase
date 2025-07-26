@@ -24,11 +24,11 @@ const Index = () => {
         <AboutPreview />
         <ContactCta />
         
-        <div className="container mx-auto px-4 py-8 text-center bg-blue-50/30">
-          <div className="inline-flex items-center gap-3 text-base text-muted-foreground bg-white/80 backdrop-blur-sm px-6 py-3 rounded-full shadow-sm">
+        <div className="container mx-auto px-4 py-8 text-center">
+          <div className="inline-flex items-center gap-3 text-base text-muted-foreground glass-card px-6 py-3 rounded-full">
             <span className="font-medium">Are you an administrator?</span>
-            <Button variant="link" asChild className="h-auto p-0 text-blue-600 hover:text-blue-700 font-semibold">
-              <Link to="/admin" className="text-blue-600 hover:text-blue-700 underline-offset-4">
+            <Button variant="link" asChild className="h-auto p-0 text-blue-400 hover:text-blue-300 font-semibold">
+              <Link to="/admin" className="text-blue-400 hover:text-blue-300 underline-offset-4">
                 Login to admin panel
               </Link>
             </Button>

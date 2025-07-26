@@ -124,7 +124,7 @@ const Products = () => {
       />
       <Navbar />
       <main>
-        <div className="bg-brand-DEFAULT text-white py-12 px-4">
+        <div className="section-brand text-white py-12 px-4">
           <div className="container mx-auto">
             <h1 className="text-center text-3xl md:text-4xl lg:text-5xl">Our Products</h1>
             <p className="text-center mt-4 max-w-2xl mx-auto text-sm md:text-base">
