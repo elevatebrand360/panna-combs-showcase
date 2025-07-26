@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 const AboutPreview = () => {
   return (
-    <section className="section-padding bg-white">
+    <section className="section-padding section-light">
       <div className="page-container">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="order-2 lg:order-1">
@@ -15,13 +15,13 @@ const AboutPreview = () => {
 
               As the business grew, so did his commitment to excellence—a commitment that eventually brought Panna Combs to Kolkata, where our name became synonymous with craftsmanship and trust.
 
-              Today, this proud legacy lives on through his son, Mr. Nirmal Kothari, and the next generation—Nitesh Kothari, Nitin Kothari, and Deepak Kothari, who handles the Bombay branch carrying forward his passion for creating combs that seamlessly blend tradition, innovation, and care.
+              Today, his dedication and hardwork lives through the next generation of dedicated and passionate personal, his son Shri Nirmal Kothari, and the succeeding generation- Nitesh Kothari, Nitin Kothari, Owner of kolkata branch and Deepak Kothari, who handles the Bombay branch carrying forward his passion for creating combs that seamlessly blend tradition, innovation, and care.
             </p>
             <div className="space-y-4 sm:space-y-0 sm:space-x-4 flex flex-col sm:flex-row">
               <Button 
                 asChild 
                 size="lg"
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300 animate-glow"
               >
                 <Link to="/about">Our Story</Link>
               </Button>
@@ -29,7 +29,7 @@ const AboutPreview = () => {
                 asChild 
                 size="lg" 
                 variant="outline"
-                className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold px-8 py-3 text-lg transition-all duration-300"
+                className="border-2 border-blue-400 text-blue-400 hover:bg-blue-600/20 hover:text-blue-300 font-semibold px-8 py-3 text-lg transition-all duration-300"
               >
                 <Link to="/about/factory">Our Factory</Link>
               </Button>
@@ -44,8 +44,8 @@ const AboutPreview = () => {
                 className="w-full h-[400px] object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              <div className="absolute bottom-6 right-6 bg-blue-600 text-white py-4 px-6 rounded-lg shadow-lg">
-                <p className="font-bold text-xl">40+ Years</p>
+              <div className="absolute bottom-6 right-6 glass-card py-4 px-6 rounded-lg">
+                <p className="font-bold text-xl text-blue-400">40+ Years</p>
                 <p className="text-sm opacity-90">of Excellence</p>
               </div>
             </div>

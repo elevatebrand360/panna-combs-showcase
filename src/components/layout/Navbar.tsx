@@ -37,19 +37,19 @@ const Navbar = () => {
   }, [location.pathname]);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur-lg shadow-sm">
+    <header className="sticky top-0 z-50 w-full glass-navbar">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-20 items-center justify-between">
           {/* Logo and Brand */}
           <div className="flex items-center gap-3">
             <Link to="/" className="flex items-center gap-3" onClick={closeMenu}>
               <img 
                 src="/logo.png" 
                 alt="Panna Combs Logo"
-                className="h-14 w-14 md:h-20 md:w-20 object-contain drop-shadow-lg mr-4"
-                style={{ minWidth: 56 }}
+                className="h-12 w-12 md:h-16 md:w-16 object-contain drop-shadow-lg mr-4"
+                style={{ minWidth: 48 }}
               />
-              <span className="font-bold text-2xl md:text-3xl lg:text-4xl text-blue-600 whitespace-nowrap">
+              <span className="font-bold text-2xl md:text-3xl lg:text-4xl text-blue-400 whitespace-nowrap">
                 PANNA COMBS
               </span>
             </Link>
@@ -59,25 +59,25 @@ const Navbar = () => {
           <nav className="hidden md:flex items-center gap-6">
             <Link
               to="/" 
-              className="text-base font-medium text-foreground hover:text-blue-600 transition-colors py-2 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="text-base font-medium text-foreground hover:text-blue-400 transition-colors py-2 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 hover:bg-blue-600/10"
             >
               Home
             </Link>
             <Link 
               to="/about" 
-              className="text-base font-medium text-foreground hover:text-blue-600 transition-colors py-2 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="text-base font-medium text-foreground hover:text-blue-400 transition-colors py-2 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 hover:bg-blue-600/10"
             >
               About Us
             </Link>
             <Link 
               to="/products" 
-              className="text-base font-medium text-foreground hover:text-blue-600 transition-colors py-2 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="text-base font-medium text-foreground hover:text-blue-400 transition-colors py-2 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 hover:bg-blue-600/10"
             >
               Products
             </Link>
             <Link 
               to="/contact" 
-              className="text-base font-medium text-foreground hover:text-blue-600 transition-colors py-2 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="text-base font-medium text-foreground hover:text-blue-400 transition-colors py-2 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 hover:bg-blue-600/10"
             >
               Contact
             </Link>
@@ -109,28 +109,28 @@ const Navbar = () => {
           <nav className="py-4 space-y-2 border-t">
             <Link
               to="/" 
-              className="block text-base font-medium text-foreground hover:text-blue-600 transition-colors py-3 px-4 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="block text-base font-medium text-foreground hover:text-blue-400 transition-colors py-3 px-4 rounded-md hover:bg-blue-600/10 focus:outline-none focus:ring-2 focus:ring-blue-400"
               onClick={closeMenu}
             >
               Home
             </Link>
             <Link 
               to="/about" 
-              className="block text-base font-medium text-foreground hover:text-blue-600 transition-colors py-3 px-4 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="block text-base font-medium text-foreground hover:text-blue-400 transition-colors py-3 px-4 rounded-md hover:bg-blue-600/10 focus:outline-none focus:ring-2 focus:ring-blue-400"
               onClick={closeMenu}
             >
               About Us
             </Link>
             <Link 
               to="/products" 
-              className="block text-base font-medium text-foreground hover:text-blue-600 transition-colors py-3 px-4 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="block text-base font-medium text-foreground hover:text-blue-400 transition-colors py-3 px-4 rounded-md hover:bg-blue-600/10 focus:outline-none focus:ring-2 focus:ring-blue-400"
               onClick={closeMenu}
             >
               Products
             </Link>
             <Link 
               to="/contact" 
-              className="block text-base font-medium text-foreground hover:text-blue-600 transition-colors py-3 px-4 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="block text-base font-medium text-foreground hover:text-blue-400 transition-colors py-3 px-4 rounded-md hover:bg-blue-600/10 focus:outline-none focus:ring-2 focus:ring-blue-400"
               onClick={closeMenu}
             >
               Contact
