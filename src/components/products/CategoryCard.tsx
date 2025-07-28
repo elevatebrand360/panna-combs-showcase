@@ -83,21 +83,14 @@ const CategoryCard = ({ category }: CategoryCardProps) => {
       <Card className="group relative overflow-hidden glass-card hover:shadow-2xl transition-all duration-300 rounded-xl hover:-translate-y-1 cursor-pointer">
         {/* Header with category name and gradient background */}
         <div className={`px-6 py-4 border-b border-gray-100 bg-gradient-to-r ${getCategoryGradient(category.id)}`}>
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-white group-hover:text-white/90 transition-colors">
-              {category.name}
-            </h3>
-            <div className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center border border-white/30">
-              <span className="text-white text-sm font-semibold">
-                {category.name.split(' ')[0].charAt(0)}
-              </span>
-            </div>
-          </div>
+          <h3 className="text-lg font-bold text-white group-hover:text-white/90 transition-colors">
+            {category.name}
+          </h3>
         </div>
         
         {/* Content */}
         <CardContent className="p-6">
-          <p className="text-sm text-gray-600 mb-6 leading-relaxed">
+          <p className="text-sm text-white mb-6 leading-relaxed">
             {category.description}
           </p>
           

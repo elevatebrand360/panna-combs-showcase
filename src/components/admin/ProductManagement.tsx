@@ -100,18 +100,18 @@ const ProductManagement = () => {
       });
       return;
     }
-    if (imageFiles.some((file) => file === null)) {
+    if (imageFiles.filter((file) => file !== null).length < 1) {
       toast({
-        title: "Missing images",
-        description: "Please provide all four images",
+        title: "Missing image",
+        description: "Please upload at least one product image.",
         variant: "destructive"
       });
       return;
     }
-    if (imageFiles.some((file) => !isValidImageFile(file))) {
+    if (imageFiles.some((file) => file && !isValidImageFile(file))) {
       toast({
         title: "Invalid image files",
-        description: "Please provide all images in JPG or PNG format only",
+        description: "Please provide only JPG or PNG images.",
         variant: "destructive"
       });
       return;
@@ -123,6 +123,8 @@ const ProductManagement = () => {
         if (imageFiles[i]) {
           const url = await uploadImage(imageFiles[i]!);
           uploadedImageUrls[i] = url;
+        } else {
+          uploadedImageUrls[i] = "";
         }
       }
       const slug = generateSlug(newProduct.name);
@@ -229,7 +231,7 @@ const ProductManagement = () => {
       </div>
 
       <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4">{selectedCategory ? `Products in "${selectedCategory}"` : "All Products"}</h2>
+        <h2 className="text-xl font-semibold mb-4 text-gray-900">{selectedCategory ? `Products in "${selectedCategory}"` : "All Products"}</h2>
         {filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.map((product, index) => (
@@ -277,10 +279,10 @@ const ProductManagement = () => {
       </div>
 
       <div className="border-t pt-8 mt-8">
-        <h2 className="text-xl font-semibold mb-4">Add Product</h2>
+        <h2 className="text-xl font-semibold mb-4 text-gray-900">Add Product</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium mb-1">Product Name</label>
+            <label className="block text-sm font-medium mb-1 text-gray-900">Product Name</label>
             <Input
               name="name"
               value={newProduct.name}
@@ -289,7 +291,7 @@ const ProductManagement = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Product Code</label>
+            <label className="block text-sm font-medium mb-1 text-gray-900">Product Code</label>
             <Input
               name="productCode"
               value={newProduct.productCode}
@@ -298,7 +300,7 @@ const ProductManagement = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Category</label>
+            <label className="block text-sm font-medium mb-1 text-gray-900">Category</label>
             <Select value={newProduct.category} onValueChange={handleCategoryChange}>
               <SelectTrigger>
                 <SelectValue placeholder="Select category" />
@@ -312,7 +314,7 @@ const ProductManagement = () => {
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Description</label>
+          <label className="block text-sm font-medium mb-1 text-gray-900">Description</label>
           <Textarea
             name="description"
             value={newProduct.description}
@@ -322,8 +324,8 @@ const ProductManagement = () => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-3">
-            Product Images (4 required - JPG or PNG only)
+          <label className="block text-sm font-medium mb-3 text-gray-900">
+            Product Images (at least 1 required - JPG or PNG only)
           </label>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {Array.from({ length: 4 }).map((_, index) => (

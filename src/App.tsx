@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-ro
 import { HelmetProvider } from "react-helmet-async";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import NetworkStatus from "@/components/NetworkStatus";
+import WhatsAppPopup from "@/components/WhatsAppPopup";
 import { performanceMonitor, optimizeImages, preloadCriticalResources } from "@/lib/performance";
 import { useToast } from "@/hooks/use-toast";
 import { useMobileOptimization } from "@/hooks/use-mobile-optimization";
@@ -170,6 +171,7 @@ const App = () => {
               <Sonner />
               <BrowserRouter>
                 <PerformanceOptimizer />
+                <WhatsAppPopup />
                 <Suspense fallback={<PageLoader />}>
                   <Routes>
                     <Route path="/" element={<Index />} />
