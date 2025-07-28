@@ -320,6 +320,51 @@
   50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.6); }
 }
 
+/* Carousel Animations */
+@keyframes carousel-slide-left {
+  from { 
+    transform: translateX(100%) scale(0.8); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateX(0) scale(1); 
+    opacity: 1; 
+  }
+}
+
+@keyframes carousel-slide-right {
+  from { 
+    transform: translateX(-100%) scale(0.8); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateX(0) scale(1); 
+    opacity: 1; 
+  }
+}
+
+@keyframes carousel-scale-up {
+  from { 
+    transform: scale(0.7) translateX(0); 
+    opacity: 0.5; 
+  }
+  to { 
+    transform: scale(1) translateX(0); 
+    opacity: 1; 
+  }
+}
+
+@keyframes carousel-scale-down {
+  from { 
+    transform: scale(1) translateX(0); 
+    opacity: 1; 
+  }
+  to { 
+    transform: scale(0.7) translateX(0); 
+    opacity: 0.5; 
+  }
+}
+
 .animate-fade-in {
   animation: fade-in 0.3s ease-out forwards;
 }
@@ -334,6 +379,57 @@
 
 .animate-glow {
   animation: glow 2s ease-in-out infinite;
+}
+
+/* Carousel Animation Classes */
+.carousel-slide-left {
+  animation: carousel-slide-left 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.carousel-slide-right {
+  animation: carousel-slide-right 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.carousel-scale-up {
+  animation: carousel-scale-up 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.carousel-scale-down {
+  animation: carousel-scale-down 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* 3D Carousel Styles */
+.perspective-1000 {
+  perspective: 1000px;
+  perspective-origin: center;
+}
+
+.carousel-3d {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.carousel-card-3d {
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+.carousel-card-3d:hover {
+  transform: scale(1.02) translateY(-2px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth carousel transitions */
+.carousel-card {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity, scale;
+}
+
+.carousel-card:hover {
+  transform: scale(1.02) translateY(-2px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Mobile optimizations */

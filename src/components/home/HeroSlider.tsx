@@ -1,9 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { useMobileOptimization } from "@/hooks/use-mobile-optimization";
-import MobileOptimizedImage from "@/components/ui/MobileOptimizedImage";
 
 type Slide = {
   id: number;
@@ -54,136 +51,56 @@ const HeroSlider = () => {
     setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
   }, []);
 
-  // Auto-play functionality with mobile optimization
+  // Auto-play functionality
   useEffect(() => {
     if (!isAutoPlaying || isLowEndDevice) return;
-
     const interval = setInterval(() => {
       nextSlide();
-    }, isMobile ? 5000 : 4000); // Slower on mobile
-
+    }, isMobile ? 5000 : 4000);
     return () => clearInterval(interval);
   }, [isAutoPlaying, isMobile, isLowEndDevice, nextSlide]);
 
-  // Pause auto-play on touch/click
-  const handleInteraction = useCallback(() => {
-    if (isMobile) {
-      setIsAutoPlaying(false);
-      // Resume after 10 seconds of inactivity
-      setTimeout(() => setIsAutoPlaying(true), 10000);
-    }
-  }, [isMobile]);
-
-  // Touch/swipe support for mobile
+  // Keyboard navigation
   useEffect(() => {
-    if (!isMobile) return;
-
-    let startX = 0;
-    let endX = 0;
-
-    const handleTouchStart = (e: TouchEvent) => {
-      startX = e.touches[0].clientX;
-    };
-
-    const handleTouchEnd = (e: TouchEvent) => {
-      endX = e.changedTouches[0].clientX;
-      const diff = startX - endX;
-
-      if (Math.abs(diff) > 50) { // Minimum swipe distance
-        if (diff > 0) {
-          nextSlide();
-        } else {
-          prevSlide();
-        }
-      }
-      handleInteraction();
-    };
-
-    const slider = document.querySelector('.hero-slider');
-    if (slider) {
-      slider.addEventListener('touchstart', handleTouchStart, { passive: true });
-      slider.addEventListener('touchend', handleTouchEnd, { passive: true });
-    }
-
-    return () => {
-      if (slider) {
-        slider.removeEventListener('touchstart', handleTouchStart);
-        slider.removeEventListener('touchend', handleTouchEnd);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        prevSlide();
+      } else if (e.key === 'ArrowRight') {
+        nextSlide();
       }
     };
-  }, [isMobile, nextSlide, prevSlide, handleInteraction]);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [prevSlide, nextSlide]);
 
   return (
-    <div className="relative w-full h-[500px] md:h-[600px] overflow-hidden hero-slider">
-      {slides.map((slide, index) => (
-        <div
-          key={slide.id}
-          className={cn(
-            "absolute inset-0 transition-opacity duration-1000",
-            currentSlide === index ? "opacity-100" : "opacity-0 pointer-events-none"
-          )}
-        >
+    <div className="relative w-full overflow-hidden bg-background">
+      <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px]">
+        {slides.map((slide, index) => (
           <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${slide.image})` }}
+            key={slide.id}
+            className={`absolute inset-0 transition-opacity duration-700 ${currentSlide === index ? 'opacity-100 z-10' : 'opacity-0 z-0'} flex items-center justify-center`}
+            style={{ backgroundImage: `url(${slide.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
           >
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
-          </div>
-
-          <div className="relative h-full flex items-center justify-center text-center">
-            <div className="max-w-3xl px-4">
-              <h1 className="text-white mb-4 drop-shadow-lg font-bold text-4xl md:text-5xl lg:text-6xl">
+            <div className="relative z-10 max-w-2xl mx-auto px-4 text-center">
+              <h1 className="text-white mb-4 drop-shadow-lg font-bold text-3xl md:text-4xl lg:text-5xl">
                 {slide.title}
               </h1>
               <p className="text-white/95 text-lg md:text-xl mb-8 drop-shadow-md font-medium">
                 {slide.subtitle}
               </p>
-              <Button 
-                asChild 
-                size="lg" 
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
-              >
-                <a href={slide.buttonLink}>{slide.buttonText}</a>
-              </Button>
             </div>
           </div>
-        </div>
-      ))}
-
-      <button
-        onClick={() => {
-          prevSlide();
-          handleInteraction();
-        }}
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white rounded-full p-3 backdrop-blur-sm transition-colors border border-white/30"
-        aria-label="Previous slide"
-      >
-        <ChevronLeft className="w-6 h-6" />
-      </button>
-      
-      <button
-        onClick={() => {
-          nextSlide();
-          handleInteraction();
-        }}
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white rounded-full p-3 backdrop-blur-sm transition-colors border border-white/30"
-        aria-label="Next slide"
-      >
-        <ChevronRight className="w-6 h-6" />
-      </button>
-
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3">
+        ))}
+      </div>
+      {/* Pagination Dots */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-1 z-20">
         {slides.map((_, index) => (
           <button
             key={index}
-            onClick={() => {
-              setCurrentSlide(index);
-              handleInteraction();
-            }}
-            className={cn(
-              "w-3 h-3 rounded-full transition-all duration-300 border-2 border-white/50",
-              currentSlide === index ? "bg-white w-8" : "bg-white/30 hover:bg-white/50"
-            )}
+            onClick={() => setCurrentSlide(index)}
+            className={`w-1 h-1 rounded-full border border-white/20 focus:outline-none transition-all duration-150 ${currentSlide === index ? 'bg-blue-500' : 'bg-white/20 hover:bg-white/40'}`}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}

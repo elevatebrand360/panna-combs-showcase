@@ -85,37 +85,32 @@ const FeaturedProducts = () => {
             Discover our complete range of premium combs, crafted for every style and need.
           </p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto">
           {productCategories.map((category) => (
             <Card key={category.id} className="group relative overflow-hidden glass-card hover:shadow-2xl transition-all duration-500 rounded-2xl hover:-translate-y-2 border-0">
               {/* Header with category name and gradient background */}
-              <div className={`px-8 py-6 bg-gradient-to-br ${getCategoryGradient(category.id)} relative overflow-hidden`}>
+              <div className={`px-3 py-3 sm:px-6 sm:py-4 bg-gradient-to-br ${getCategoryGradient(category.id)} relative overflow-hidden`}>
                 {/* Subtle pattern overlay */}
                 <div className="absolute inset-0 bg-black/10"></div>
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16"></div>
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
+                <div className="absolute top-0 right-0 w-16 h-16 sm:w-24 sm:h-24 bg-white/5 rounded-full -translate-y-8 translate-x-8 sm:-translate-y-12 sm:translate-x-12"></div>
+                <div className="absolute bottom-0 left-0 w-12 h-12 sm:w-16 sm:h-16 bg-white/5 rounded-full translate-y-6 -translate-x-6 sm:translate-y-8 sm:-translate-x-8"></div>
                 
-                <div className="relative flex items-center justify-between">
-                  <h3 className="text-xl font-bold text-white group-hover:text-white/90 transition-colors drop-shadow-lg">
+                <div className="relative">
+                  <h3 className="text-sm sm:text-lg font-bold text-white group-hover:text-white/90 transition-colors drop-shadow-lg">
                     {category.name}
                   </h3>
-                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/30 shadow-lg">
-                    <span className="text-white text-lg font-bold">
-                      {getCategoryIcon(category.id)}
-                    </span>
-                  </div>
                 </div>
               </div>
               
               {/* Content */}
-              <CardContent className="p-8">
-                <p className="text-base text-muted-foreground mb-8 leading-relaxed">
+              <CardContent className="p-3 sm:p-6">
+                <p className="text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6 leading-relaxed">
                   {category.description}
                 </p>
                 
                 <Button 
                   asChild 
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 py-3"
+                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 py-1.5 sm:py-2 text-xs sm:text-sm"
                 >
                   <Link to={`/category/${category.slug}`}>
                     View Products
