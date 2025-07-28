@@ -2,6 +2,8 @@ import { Phone, Facebook, Instagram, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { WhatsAppIcon } from "@/components/ui/icons";
+import emailjs from '@emailjs/browser';
+import React, { useRef, useState } from 'react';
 
 const ContactCta = () => {
   const whatsappMessage = encodeURIComponent(
@@ -9,6 +11,35 @@ const ContactCta = () => {
   );
   
   const whatsappLink = `https://wa.me/+919836599300?text=${whatsappMessage}`;
+
+  const formRef = useRef<HTMLFormElement>(null);
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSending(true);
+    setError(null);
+    setSent(false);
+    if (!formRef.current) return;
+    emailjs.sendForm(
+      'YOUR_SERVICE_ID', // <-- replace with your EmailJS service ID
+      'YOUR_TEMPLATE_ID', // <-- replace with your EmailJS template ID
+      formRef.current,
+      'YOUR_PUBLIC_KEY' // <-- replace with your EmailJS public key
+    ).then(
+      () => {
+        setSent(true);
+        setSending(false);
+        formRef.current?.reset();
+      },
+      (err) => {
+        setError('Failed to send message. Please try again.');
+        setSending(false);
+      }
+    );
+  };
 
   return (
     <section className="section-brand text-white py-20">
@@ -107,6 +138,29 @@ const ContactCta = () => {
             <Link to="/contact">Contact Us</Link>
           </Button>
         </div>
+      </div>
+      {/* Send us a Message Form */}
+      <div className="max-w-lg mx-auto mt-16 bg-white/10 rounded-xl p-6 md:p-8 shadow-xl">
+        <h3 className="text-2xl font-bold text-white mb-4 text-center">Send us a Message</h3>
+        <form ref={formRef} onSubmit={handleSendMessage} className="space-y-4">
+          <div>
+            <label className="block text-white/80 mb-1">Name</label>
+            <input name="user_name" type="text" required className="w-full rounded-md px-3 py-2 bg-white/80 text-black focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          </div>
+          <div>
+            <label className="block text-white/80 mb-1">Email</label>
+            <input name="user_email" type="email" required className="w-full rounded-md px-3 py-2 bg-white/80 text-black focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          </div>
+          <div>
+            <label className="block text-white/80 mb-1">Message</label>
+            <textarea name="message" required rows={4} className="w-full rounded-md px-3 py-2 bg-white/80 text-black focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          </div>
+          <button type="submit" disabled={sending} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg py-2 transition-all duration-200">
+            {sending ? 'Sending...' : 'Send Message'}
+          </button>
+          {sent && <p className="text-green-300 text-center mt-2">Message sent successfully!</p>}
+          {error && <p className="text-red-300 text-center mt-2">{error}</p>}
+        </form>
       </div>
     </section>
   );

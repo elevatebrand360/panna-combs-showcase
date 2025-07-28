@@ -31,7 +31,7 @@
 2. Create/claim your business listing
 3. Add complete business information:
    - **Name**: Panna Combs
-   - **Address**: Duilly, Nimtalla, Andul, Howrah - 711302
+   - **Address**: Duillya, Nimtalla, Andul, Howrah - 711302
    - **Phone**: +913326441277
    - **Email**: pannacombs@gmail.com
    - **Hours**: Monday-Friday 9:00 AM - 6:00 PM
@@ -134,7 +134,7 @@ Create blog posts about:
 - **Name**: Panna Combs
 - **Phone**: +913326441277
 - **Email**: pannacombs@gmail.com
-- **Address**: Duilly, Nimtalla, Andul, Howrah - 711302
+- **Address**: Duillya, Nimtalla, Andul, Howrah - 711302
 - **Website**: https://pannacombs.com
 
 ### Social Media:
