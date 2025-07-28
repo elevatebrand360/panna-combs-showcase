@@ -9,7 +9,7 @@
 - **Email**: pannacombs@gmail.com
 
 ### **Address Information**
-- **Street Address**: Duilly, Nimtalla, Andul
+- **Street Address**: Duillya, Nimtalla, Andul
 - **City**: Howrah
 - **State**: West Bengal
 - **Postal Code**: 711302

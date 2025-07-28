@@ -69,8 +69,9 @@ const Footer = () => {
               <div className="flex items-start gap-3">
                 <Phone size={20} className="flex-shrink-0 mt-1 text-white/80" />
                 <div>
-                  <p className="text-white/90 font-medium">Factory</p>
+                  <p className="text-white/90 font-medium">Phone</p>
                   <p className="text-white text-lg">+91 98365 99300</p>
+                  <p className="text-white text-base mt-1">Alt: +91 9330840909</p>
                 </div>
               </div>
               
@@ -86,7 +87,7 @@ const Footer = () => {
                 <MapPin size={20} className="flex-shrink-0 mt-1 text-white/80" />
                 <div>
                   <p className="text-white/90 font-medium">Address</p>
-                  <p className="text-white text-lg">Duilly, Nimtalla, Andul, Howrah - 711302</p>
+                  <p className="text-white text-lg">Duillya, Nimtalla, Andul, Howrah - 711302</p>
                 </div>
               </div>
             </div>
