@@ -25,7 +25,6 @@ const MobileOptimizedImage: React.FC<MobileOptimizedImageProps> = ({
   onError
 }) => {
   const [imageSrc, setImageSrc] = useState(src);
-  const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
   
@@ -34,23 +33,36 @@ const MobileOptimizedImage: React.FC<MobileOptimizedImageProps> = ({
   // Optimize image source for mobile
   const optimizedSrc = optimizeImage(imageSrc, width);
 
+  // Preload image immediately
+  useEffect(() => {
+    if (optimizedSrc && optimizedSrc !== fallbackSrc) {
+      const img = new Image();
+      img.src = optimizedSrc;
+      img.onload = () => {
+        // Image is preloaded, no loading state needed
+      };
+      img.onerror = () => {
+        // If main image fails, preload fallback
+        const fallbackImg = new Image();
+        fallbackImg.src = fallbackSrc;
+      };
+    }
+  }, [optimizedSrc, fallbackSrc]);
+
   // Handle image load
   const handleLoad = () => {
-    setIsLoading(false);
     setHasError(false);
     onLoad?.();
   };
 
   // Handle image error
   const handleError = () => {
-    setIsLoading(false);
     setHasError(true);
     
     // Try fallback image if current image failed
     if (imageSrc !== fallbackSrc) {
       setImageSrc(fallbackSrc);
       setHasError(false);
-      setIsLoading(true);
     } else {
       onError?.();
     }
@@ -59,21 +71,13 @@ const MobileOptimizedImage: React.FC<MobileOptimizedImageProps> = ({
   // Update image source when src prop changes
   useEffect(() => {
     setImageSrc(src);
-    setIsLoading(true);
     setHasError(false);
   }, [src]);
 
   return (
     <div className={`relative overflow-hidden ${className}`}>
-      {/* Loading placeholder */}
-      {isLoading && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-          <div className="w-8 h-8 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
-        </div>
-      )}
-      
-      {/* Error placeholder */}
-      {hasError && (
+      {/* Error placeholder only if both main and fallback failed */}
+      {hasError && imageSrc === fallbackSrc && (
         <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
           <div className="text-center text-gray-500">
             <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,17 +88,17 @@ const MobileOptimizedImage: React.FC<MobileOptimizedImageProps> = ({
         </div>
       )}
       
-      {/* Actual image */}
+      {/* Actual image - always eager loading for instant display */}
       <img
         ref={imgRef}
         src={optimizedSrc}
         alt={alt}
         width={width}
         height={height}
-        className={`w-full h-auto object-cover transition-opacity duration-300 ${
-          isLoading ? 'opacity-0' : 'opacity-100'
+        className={`w-full h-auto object-cover transition-opacity duration-200 ${
+          hasError && imageSrc === fallbackSrc ? 'opacity-0' : 'opacity-100'
         }`}
-        loading={priority ? 'eager' : 'lazy'}
+        loading="eager"
         onLoad={handleLoad}
         onError={handleError}
         style={{

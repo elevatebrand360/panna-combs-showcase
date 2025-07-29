@@ -9,9 +9,10 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import NetworkStatus from "@/components/NetworkStatus";
 import WhatsAppPopup from "@/components/WhatsAppPopup";
 import CallPopup from "@/components/CallPopup";
-import { performanceMonitor, optimizeImages, preloadCriticalResources } from "@/lib/performance";
+import { performanceMonitor, optimizeForInstantLoading, preloadProductImages, trackPageLoad } from "@/lib/performance";
 import { useToast } from "@/hooks/use-toast";
 import { useMobileOptimization } from "@/hooks/use-mobile-optimization";
+import { getProducts } from "@/lib/firebase-crud";
 
 // Lazy load all pages with better error handling
 const Index = lazy(() => import("./pages/Index").catch(() => ({ default: () => <div>Error loading page</div> })));
@@ -38,30 +39,42 @@ const PageLoader = () => (
 // Performance optimization component
 const PerformanceOptimizer = () => {
   useEffect(() => {
-    // Optimize images after DOM is loaded
-    const optimizeAfterLoad = () => {
-      optimizeImages();
-      preloadCriticalResources();
-    };
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', optimizeAfterLoad);
-    } else {
-      optimizeAfterLoad();
-    }
-
+    // Apply instant loading optimizations immediately
+    optimizeForInstantLoading();
+    
+    // Preload all product images in background
+    preloadProductImages(getProducts);
+    
     // Log performance report after page load
     window.addEventListener('load', () => {
       setTimeout(() => {
         performanceMonitor.logPerformanceReport();
       }, 1000);
     });
-
-    return () => {
-      document.removeEventListener('DOMContentLoaded', optimizeAfterLoad);
-    };
   }, []);
 
+  return null;
+};
+
+// Page load tracker component
+const PageLoadTracker = () => {
+  const location = useLocation();
+  
+  useEffect(() => {
+    const startTime = performance.now();
+    
+    const handlePageLoad = () => {
+      const loadTime = performance.now() - startTime;
+      const pageName = location.pathname || 'home';
+      trackPageLoad(pageName, loadTime);
+    };
+    
+    // Track page load after a short delay to allow for component mounting
+    const timer = setTimeout(handlePageLoad, 100);
+    
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
+  
   return null;
 };
 
@@ -162,6 +175,7 @@ const App = () => {
               <Sonner />
               <BrowserRouter>
                 <PerformanceOptimizer />
+                <PageLoadTracker />
                 <CallPopup />
                 <WhatsAppPopup />
                 <Suspense fallback={<PageLoader />}>

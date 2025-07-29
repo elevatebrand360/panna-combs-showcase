@@ -26,7 +26,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
           alt={product.name}
           className="w-full h-full object-cover transition-transform hover:scale-105"
           width={isMobile ? 300 : 400}
-          priority={index < 4}
+          priority={true} // Always prioritize for instant loading
           fallbackSrc="/placeholder-product.svg"
         />
         <div className="absolute top-2 left-2">
