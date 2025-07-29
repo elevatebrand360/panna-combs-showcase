@@ -27,9 +27,15 @@ const ContactSection = ({ productName, productCode, productImage }: ContactSecti
       <div className="space-y-4">
         <div className="flex items-center">
           <span className="font-medium w-32">Factory:</span>
-                      <a href="tel:+919836599300" className="text-brand-DEFAULT hover:underline">
-              +91 98365 99300
-            </a>
+          <a href="tel:+919836599300" className="text-brand-DEFAULT hover:underline">
+            +91 98365 99300
+          </a>
+        </div>
+        <div className="flex items-center">
+          <span className="font-medium w-32">Factory:</span>
+          <a href="tel:+919330840909" className="text-brand-DEFAULT hover:underline">
+            +91 9330840909
+          </a>
         </div>
         
         <div className="flex items-center">

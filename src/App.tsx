@@ -94,6 +94,8 @@ const queryClient = new QueryClient({
   },
 });
 
+let lastErrorToastTime = 0;
+
 const App = () => {
   const { toast } = useToast();
   const { isMobile, isLowEndDevice } = useMobileOptimization();
@@ -125,12 +127,20 @@ const App = () => {
   // Handle mobile-specific errors
   useEffect(() => {
     const handleError = (event: ErrorEvent) => {
-      console.error('Global error caught:', event.error);
-      
-      // Prevent crashes on mobile
+      // Ignore image load errors and warnings
+      if (event.message && event.message.toLowerCase().includes('image') && event.message.toLowerCase().includes('error')) {
+        return;
+      }
+      if (event.filename && event.filename.endsWith('.svg')) {
+        return;
+      }
+      // Throttle error popup
+      const now = Date.now();
+      if (now - lastErrorToastTime < 10000) return;
+      lastErrorToastTime = now;
+      // Only show for real, uncaught errors
       if (isMobile) {
         event.preventDefault();
-        
         toast({
           title: "Something went wrong",
           description: "Please try refreshing the page.",

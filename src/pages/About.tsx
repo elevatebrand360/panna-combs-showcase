@@ -176,7 +176,7 @@ const About = () => {
               <div className="space-y-6">
                 <h2 className="text-3xl font-bold">Our Factory</h2>
                 <p>
-                  Located in Duillya, Nimtalla, Andul, Howrah - 711302, our factory combines traditional craftsmanship 
+                  Located in Duillya, Nimtalla, Andul Road, Howrah - 711302, our factory combines traditional craftsmanship 
                   with modern manufacturing technology to produce combs of exceptional quality.
                 </p>
                 
