@@ -465,3 +465,29 @@
     @apply py-6;
   }
 }
+
+/* Add instant image loading optimizations */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: auto;
+}
+
+/* Optimize for instant display */
+.product-image {
+  opacity: 1 !important;
+  transition: none !important;
+}
+
+/* Force eager loading for all images */
+img[loading] {
+  loading: eager !important;
+}
+
+/* Optimize image containers */
+.image-container {
+  contain: layout style paint;
+  will-change: auto;
+}

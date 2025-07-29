@@ -1,6 +1,7 @@
 import { db, storage } from "./firebase";
 import { collection, addDoc, getDocs, Timestamp, deleteDoc, doc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import { trackFirebaseOperation } from "./performance";
 
 // Cache for products to avoid repeated fetches
 let productsCache: any[] | null = null;
@@ -9,6 +10,8 @@ const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 // Upload an image to Firebase Storage and return its public download URL
 export async function uploadImage(file: File): Promise<string> {
+  const startTime = performance.now();
+  
   try {
     console.log("Starting image upload for:", file.name, "Size:", file.size, "Type:", file.type);
     // Extra validation
@@ -35,9 +38,14 @@ export async function uploadImage(file: File): Promise<string> {
     // Clear cache when new image is uploaded
     productsCache = null;
     
+    const duration = performance.now() - startTime;
+    trackFirebaseOperation('image_upload', duration);
+    
     return downloadURL;
   } catch (error) {
     console.error("Image upload failed:", error);
+    const duration = performance.now() - startTime;
+    trackFirebaseOperation('image_upload_error', duration);
     throw error;
   }
 }
@@ -52,6 +60,8 @@ export async function addProduct(product: {
   slug: string;
   date: string;
 }) {
+  const startTime = performance.now();
+  
   try {
     console.log("Adding product to Firestore:", product);
     
@@ -66,20 +76,29 @@ export async function addProduct(product: {
     // Clear cache when new product is added
     productsCache = null;
     
+    const duration = performance.now() - startTime;
+    trackFirebaseOperation('add_product', duration);
+    
     return docRef;
   } catch (error) {
     console.error("Failed to add product:", error);
+    const duration = performance.now() - startTime;
+    trackFirebaseOperation('add_product_error', duration);
     throw error;
   }
 }
 
 // Get all products from Firestore with caching
 export async function getProducts() {
+  const startTime = performance.now();
+  
   try {
     // Check if we have valid cached data
     const now = Date.now();
     if (productsCache && (now - cacheTimestamp) < CACHE_DURATION) {
       console.log("Returning cached products:", productsCache.length, "products");
+      const duration = performance.now() - startTime;
+      trackFirebaseOperation('get_products_cached', duration);
       return productsCache;
     }
     
@@ -95,9 +114,15 @@ export async function getProducts() {
     cacheTimestamp = now;
     
     console.log("Products fetched successfully:", products.length, "products");
+    
+    const duration = performance.now() - startTime;
+    trackFirebaseOperation('get_products', duration);
+    
     return products;
   } catch (error) {
     console.error("Failed to fetch products:", error);
+    const duration = performance.now() - startTime;
+    trackFirebaseOperation('get_products_error', duration);
     throw error;
   }
 }
@@ -110,6 +135,8 @@ export function clearProductsCache() {
 
 // Delete a product from Firestore
 export async function deleteProduct(id: string) {
+  const startTime = performance.now();
+  
   try {
     console.log("Deleting product with ID:", id);
     const productDocRef = doc(db, "products", id);
@@ -121,8 +148,13 @@ export async function deleteProduct(id: string) {
     
     // Clear cache when product is deleted
     productsCache = null;
+    
+    const duration = performance.now() - startTime;
+    trackFirebaseOperation('delete_product', duration);
   } catch (error) {
     console.error("Failed to delete product:", error);
+    const duration = performance.now() - startTime;
+    trackFirebaseOperation('delete_product_error', duration);
     throw error;
   }
 }

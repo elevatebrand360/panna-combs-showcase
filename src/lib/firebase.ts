@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore, initializeFirestore, connectFirestoreEmulator } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+import { getPerformance } from "firebase/performance";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const firebaseConfig = {
@@ -26,6 +27,17 @@ if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
   }
 }
 
+// Initialize Performance Monitoring
+let perf;
+if (typeof window !== 'undefined') {
+  try {
+    perf = getPerformance(app);
+    console.log('Firebase Performance Monitoring initialized');
+  } catch (error) {
+    console.warn('Performance monitoring initialization failed:', error);
+  }
+}
+
 // Initialize Firestore
 const db = initializeFirestore(app, { 
   // e.g., host: "your-region-firestore.googleapis.com", ssl: true 
@@ -43,7 +55,7 @@ if (window.location.hostname === "localhost") {
 
 const storage = getStorage(app);
 
-export { app, analytics, db, storage };
+export { app, analytics, perf, db, storage };
 
 async function uploadImage(file: File) {
   try {

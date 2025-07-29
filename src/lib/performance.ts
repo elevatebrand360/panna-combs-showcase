@@ -1,212 +1,228 @@
+import { perf } from './firebase';
+import { trace } from 'firebase/performance';
+
 // Performance monitoring and optimization utilities
-
-export interface PerformanceMetrics {
-  pageLoadTime: number;
-  domContentLoaded: number;
-  firstContentfulPaint: number;
-  largestContentfulPaint: number;
-  cumulativeLayoutShift: number;
-  firstInputDelay: number;
-}
-
-// Performance monitoring class
-class PerformanceMonitor {
-  private metrics: PerformanceMetrics = {
-    pageLoadTime: 0,
-    domContentLoaded: 0,
-    firstContentfulPaint: 0,
-    largestContentfulPaint: 0,
-    cumulativeLayoutShift: 0,
-    firstInputDelay: 0,
-  };
-
-  constructor() {
-    this.initializeMonitoring();
-  }
-
-  private initializeMonitoring() {
-    // Monitor page load performance
-    if (typeof window !== 'undefined') {
-      window.addEventListener('load', () => {
-        this.capturePageLoadMetrics();
-      });
-
-      // Monitor Core Web Vitals
-      this.monitorCoreWebVitals();
-      
-      // Monitor navigation performance
-      this.monitorNavigationPerformance();
+export const performanceMonitor = {
+  startTime: performance.now(),
+  marks: new Map<string, number>(),
+  
+  mark(name: string) {
+    this.marks.set(name, performance.now());
+    performance.mark(name);
+  },
+  
+  measure(name: string, startMark: string, endMark: string) {
+    try {
+      performance.measure(name, startMark, endMark);
+    } catch (error) {
+      console.warn('Performance measurement failed:', error);
     }
-  }
-
-  private capturePageLoadMetrics() {
-    const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+  },
+  
+  logPerformanceReport() {
+    const loadTime = performance.now() - this.startTime;
+    console.log(`Page load time: ${loadTime.toFixed(2)}ms`);
     
-    if (navigation) {
-      this.metrics.pageLoadTime = navigation.loadEventEnd - navigation.loadEventStart;
-      this.metrics.domContentLoaded = navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart;
-      
-      console.log('Page Load Performance:', {
-        pageLoadTime: `${this.metrics.pageLoadTime}ms`,
-        domContentLoaded: `${this.metrics.domContentLoaded}ms`,
-        url: window.location.href
-      });
-    }
-  }
-
-  private monitorCoreWebVitals() {
-    // Monitor First Contentful Paint (FCP)
+    // Log Core Web Vitals
     if ('PerformanceObserver' in window) {
-      const fcpObserver = new PerformanceObserver((list) => {
-        const entries = list.getEntries();
-        entries.forEach((entry) => {
-          if (entry.name === 'first-contentful-paint') {
-            this.metrics.firstContentfulPaint = entry.startTime;
-            console.log('First Contentful Paint:', `${entry.startTime}ms`);
-          }
-        });
-      });
-      
-      try {
-        fcpObserver.observe({ entryTypes: ['paint'] });
-      } catch (e) {
-        console.warn('FCP monitoring not supported');
-      }
-
-      // Monitor Largest Contentful Paint (LCP)
-      const lcpObserver = new PerformanceObserver((list) => {
-        const entries = list.getEntries();
-        const lastEntry = entries[entries.length - 1];
-        this.metrics.largestContentfulPaint = lastEntry.startTime;
-        console.log('Largest Contentful Paint:', `${lastEntry.startTime}ms`);
-      });
-      
-      try {
-        lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
-      } catch (e) {
-        console.warn('LCP monitoring not supported');
-      }
-
-      // Monitor Cumulative Layout Shift (CLS)
-      let clsValue = 0;
-      const clsObserver = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
-          // Type assertion for layout shift entry
-          const layoutShiftEntry = entry as PerformanceEntry & { hadRecentInput?: boolean; value?: number };
-          if (!layoutShiftEntry.hadRecentInput) {
-            clsValue += layoutShiftEntry.value || 0;
+          if (entry.entryType === 'largest-contentful-paint') {
+            console.log(`LCP: ${entry.startTime.toFixed(2)}ms`);
+          }
+          if (entry.entryType === 'first-input-delay') {
+            const fidEntry = entry as PerformanceEntry & { processingStart?: number };
+            if (fidEntry.processingStart) {
+              console.log(`FID: ${fidEntry.processingStart - entry.startTime}ms`);
+            }
           }
         }
-        this.metrics.cumulativeLayoutShift = clsValue;
-        console.log('Cumulative Layout Shift:', clsValue);
       });
       
-      try {
-        clsObserver.observe({ entryTypes: ['layout-shift'] });
-      } catch (e) {
-        console.warn('CLS monitoring not supported');
-      }
-
-      // Monitor First Input Delay (FID)
-      const fidObserver = new PerformanceObserver((list) => {
-        const entries = list.getEntries();
-        entries.forEach((entry) => {
-          // Type assertion for first input entry
-          const firstInputEntry = entry as PerformanceEntry & { processingStart?: number };
-          if (firstInputEntry.processingStart) {
-            this.metrics.firstInputDelay = firstInputEntry.processingStart - firstInputEntry.startTime;
-            console.log('First Input Delay:', `${this.metrics.firstInputDelay}ms`);
-          }
-        });
-      });
-      
-      try {
-        fidObserver.observe({ entryTypes: ['first-input'] });
-      } catch (e) {
-        console.warn('FID monitoring not supported');
-      }
+      observer.observe({ entryTypes: ['largest-contentful-paint', 'first-input-delay'] });
     }
   }
+};
 
-  private monitorNavigationPerformance() {
-    // Monitor React Router navigation performance
-    const originalPushState = history.pushState;
-    const originalReplaceState = history.replaceState;
+// Firebase Performance trace utilities
+export const createPerformanceTrace = (traceName: string) => {
+  if (perf) {
+    try {
+      const performanceTrace = trace(perf, traceName);
+      return {
+        start: () => performanceTrace.start(),
+        stop: () => performanceTrace.stop(),
+        putAttribute: (key: string, value: string) => performanceTrace.putAttribute(key, value),
+        putMetric: (metricName: string, value: number) => performanceTrace.putMetric(metricName, value)
+      };
+    } catch (error) {
+      console.warn('Failed to create performance trace:', error);
+      return {
+        start: () => {},
+        stop: () => {},
+        putAttribute: () => {},
+        putMetric: () => {}
+      };
+    }
+  }
+  return {
+    start: () => {},
+    stop: () => {},
+    putAttribute: () => {},
+    putMetric: () => {}
+  };
+};
 
-    history.pushState = function(...args) {
+// Track image loading performance
+export const trackImageLoad = (imageUrl: string, loadTime: number) => {
+  const imageTrace = createPerformanceTrace('image_load');
+  imageTrace.start();
+  imageTrace.putAttribute('image_url', imageUrl);
+  imageTrace.putMetric('load_time_ms', loadTime);
+  imageTrace.stop();
+};
+
+// Track page load performance
+export const trackPageLoad = (pageName: string, loadTime: number) => {
+  const pageTrace = createPerformanceTrace('page_load');
+  pageTrace.start();
+  pageTrace.putAttribute('page_name', pageName);
+  pageTrace.putMetric('load_time_ms', loadTime);
+  pageTrace.stop();
+};
+
+// Track Firebase operations
+export const trackFirebaseOperation = (operation: string, duration: number) => {
+  const firebaseTrace = createPerformanceTrace('firebase_operation');
+  firebaseTrace.start();
+  firebaseTrace.putAttribute('operation', operation);
+  firebaseTrace.putMetric('duration_ms', duration);
+  firebaseTrace.stop();
+};
+
+// Aggressive image preloading for instant loading
+export const preloadImages = (imageUrls: string[]) => {
+  const preloadTrace = createPerformanceTrace('image_preload');
+  preloadTrace.start();
+  
+  imageUrls.forEach((url, index) => {
+    if (url && url !== '/placeholder-product.svg') {
       const startTime = performance.now();
-      const result = originalPushState.apply(this, args);
-      
-      setTimeout(() => {
-        const endTime = performance.now();
-        console.log('Navigation Performance (pushState):', `${endTime - startTime}ms`);
-      }, 0);
-      
-      return result;
-    };
+      const img = new Image();
+      img.src = url;
+      img.onload = () => {
+        const loadTime = performance.now() - startTime;
+        console.log(`Preloaded image ${index + 1}: ${url} (${loadTime.toFixed(2)}ms)`);
+        trackImageLoad(url, loadTime);
+      };
+      img.onerror = () => {
+        console.warn(`Failed to preload image: ${url}`);
+      };
+    }
+  });
+  
+  preloadTrace.stop();
+};
 
-    history.replaceState = function(...args) {
-      const startTime = performance.now();
-      const result = originalReplaceState.apply(this, args);
-      
-      setTimeout(() => {
-        const endTime = performance.now();
-        console.log('Navigation Performance (replaceState):', `${endTime - startTime}ms`);
-      }, 0);
-      
-      return result;
-    };
-  }
-
-  public getMetrics(): PerformanceMetrics {
-    return { ...this.metrics };
-  }
-
-  public logPerformanceReport() {
-    console.log('=== Performance Report ===');
-    console.log('Page Load Time:', `${this.metrics.pageLoadTime}ms`);
-    console.log('DOM Content Loaded:', `${this.metrics.domContentLoaded}ms`);
-    console.log('First Contentful Paint:', `${this.metrics.firstContentfulPaint}ms`);
-    console.log('Largest Contentful Paint:', `${this.metrics.largestContentfulPaint}ms`);
-    console.log('Cumulative Layout Shift:', this.metrics.cumulativeLayoutShift);
-    console.log('First Input Delay:', `${this.metrics.firstInputDelay}ms`);
-    console.log('========================');
-  }
-}
-
-// Global performance monitor instance
-export const performanceMonitor = new PerformanceMonitor();
+// Preload critical resources
+export const preloadCriticalResources = () => {
+  const criticalTrace = createPerformanceTrace('critical_resources_preload');
+  criticalTrace.start();
+  
+  // Preload placeholder image
+  const placeholderImg = new Image();
+  placeholderImg.src = '/placeholder-product.svg';
+  
+  // Preload common UI images
+  const criticalImages = [
+    '/placeholder-product.svg',
+    // Add other critical images here
+  ];
+  
+  criticalImages.forEach(src => {
+    const img = new Image();
+    img.src = src;
+  });
+  
+  criticalTrace.stop();
+};
 
 // Performance optimization utilities
 export const optimizeImages = () => {
+  const optimizeTrace = createPerformanceTrace('image_optimization');
+  optimizeTrace.start();
+  
   const images = document.querySelectorAll('img');
   images.forEach((img) => {
-    // Add loading="lazy" to images below the fold
-    if (!img.hasAttribute('loading')) {
-      img.setAttribute('loading', 'lazy');
-    }
+    // Force eager loading for all images
+    img.setAttribute('loading', 'eager');
     
     // Add error handling
     img.addEventListener('error', () => {
-      img.src = '/placeholder.svg';
+      img.src = '/placeholder-product.svg';
     });
+    
+    // Optimize for instant display
+    img.style.transition = 'opacity 0.1s ease-in-out';
   });
+  
+  optimizeTrace.stop();
 };
 
-export const preloadCriticalResources = () => {
-  // Preload critical CSS and JS
-  const criticalResources = [
-    '/assets/index.css',
-    '/assets/index.js'
-  ];
+// Preload all product images from Firebase
+export const preloadProductImages = async (getProducts: () => Promise<any[]>) => {
+  const productImagesTrace = createPerformanceTrace('product_images_preload');
+  productImagesTrace.start();
+  
+  try {
+    const products = await getProducts();
+    const allImageUrls: string[] = [];
+    
+    products.forEach((product: any) => {
+      if (product.imageUrls && Array.isArray(product.imageUrls)) {
+        product.imageUrls.forEach((url: string) => {
+          if (url && url !== '/placeholder-product.svg') {
+            allImageUrls.push(url);
+          }
+        });
+      }
+      if (product.image && product.image !== '/placeholder-product.svg') {
+        allImageUrls.push(product.image);
+      }
+    });
+    
+    // Preload all images in parallel
+    preloadImages(allImageUrls);
+    
+    productImagesTrace.putMetric('total_images', allImageUrls.length);
+    console.log(`Preloading ${allImageUrls.length} product images`);
+  } catch (error) {
+    console.warn('Failed to preload product images:', error);
+    productImagesTrace.putAttribute('error', error instanceof Error ? error.message : 'Unknown error');
+  } finally {
+    productImagesTrace.stop();
+  }
+};
 
-  criticalResources.forEach((resource) => {
-    const link = document.createElement('link');
-    link.rel = 'preload';
-    link.href = resource;
-    link.as = resource.endsWith('.css') ? 'style' : 'script';
-    document.head.appendChild(link);
+// Optimize for instant loading
+export const optimizeForInstantLoading = () => {
+  const instantLoadingTrace = createPerformanceTrace('instant_loading_optimization');
+  instantLoadingTrace.start();
+  
+  // Disable lazy loading for all images
+  const images = document.querySelectorAll('img');
+  images.forEach(img => {
+    img.setAttribute('loading', 'eager');
+    img.removeAttribute('loading');
   });
+  
+  // Preload critical resources
+  preloadCriticalResources();
+  
+  // Optimize image loading
+  optimizeImages();
+  
+  instantLoadingTrace.stop();
 };
 
 export const debounce = <T extends (...args: any[]) => any>(
