@@ -83,7 +83,7 @@ const queryClient = new QueryClient({
 
 const App = () => {
   const { toast } = useToast();
-  const { isMobile, isLowEndDevice, isOnline } = useMobileOptimization();
+  const { isMobile, isLowEndDevice } = useMobileOptimization();
 
   // Initialize mobile optimizations
   useEffect(() => {
@@ -107,17 +107,7 @@ const App = () => {
         duration: 3000,
       });
     }
-
-    // Check network status
-    if (!isOnline) {
-      toast({
-        title: "Offline Mode",
-        description: "Some features may be limited while offline.",
-        variant: "destructive",
-        duration: 5000,
-      });
-    }
-  }, [isMobile, isLowEndDevice, isOnline, toast]);
+  }, [isMobile, isLowEndDevice, toast]);
 
   // Handle mobile-specific errors
   useEffect(() => {

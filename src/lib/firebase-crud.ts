@@ -2,6 +2,11 @@ import { db, storage } from "./firebase";
 import { collection, addDoc, getDocs, Timestamp, deleteDoc, doc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 
+// Cache for products to avoid repeated fetches
+let productsCache: any[] | null = null;
+let cacheTimestamp: number = 0;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
 // Upload an image to Firebase Storage and return its public download URL
 export async function uploadImage(file: File): Promise<string> {
   try {
@@ -19,16 +24,17 @@ export async function uploadImage(file: File): Promise<string> {
     if (!validTypes.includes(file.type)) {
       throw new Error("Invalid file type: " + file.type);
     }
-    // Log first few bytes for debugging
-    const arrayBuffer = await file.slice(0, 16).arrayBuffer();
-    const bytes = Array.from(new Uint8Array(arrayBuffer));
-    console.log("First 16 bytes of file:", bytes);
+    
     const storageRef = ref(storage, `images/${file.name}-${Date.now()}`);
     console.log("Uploading to storage path:", storageRef.fullPath);
     const snapshot = await uploadBytes(storageRef, file);
     console.log("Upload successful, getting download URL...");
     const downloadURL = await getDownloadURL(storageRef);
     console.log("Download URL obtained:", downloadURL);
+    
+    // Clear cache when new image is uploaded
+    productsCache = null;
+    
     return downloadURL;
   } catch (error) {
     console.error("Image upload failed:", error);
@@ -56,6 +62,10 @@ export async function addProduct(product: {
     });
     
     console.log("Product added successfully with ID:", docRef.id);
+    
+    // Clear cache when new product is added
+    productsCache = null;
+    
     return docRef;
   } catch (error) {
     console.error("Failed to add product:", error);
@@ -63,22 +73,39 @@ export async function addProduct(product: {
   }
 }
 
-// Get all products from Firestore
+// Get all products from Firestore with caching
 export async function getProducts() {
   try {
+    // Check if we have valid cached data
+    const now = Date.now();
+    if (productsCache && (now - cacheTimestamp) < CACHE_DURATION) {
+      console.log("Returning cached products:", productsCache.length, "products");
+      return productsCache;
+    }
+    
     console.log("Fetching products from Firestore...");
     const querySnapshot = await getDocs(collection(db, "products"));
     const products = querySnapshot.docs.map(doc => ({ 
       id: doc.id, 
       ...doc.data() 
     }));
+    
+    // Update cache
+    productsCache = products;
+    cacheTimestamp = now;
+    
     console.log("Products fetched successfully:", products.length, "products");
-    console.log("Fetched products:", products);
     return products;
   } catch (error) {
     console.error("Failed to fetch products:", error);
     throw error;
   }
+}
+
+// Clear the products cache
+export function clearProductsCache() {
+  productsCache = null;
+  cacheTimestamp = 0;
 }
 
 // Delete a product from Firestore
@@ -91,6 +118,9 @@ export async function deleteProduct(id: string) {
     console.log("Attempting to delete product with ID:", id);
     await deleteDoc(productDocRef);
     console.log("Product deleted successfully");
+    
+    // Clear cache when product is deleted
+    productsCache = null;
   } catch (error) {
     console.error("Failed to delete product:", error);
     throw error;

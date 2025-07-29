@@ -1,29 +1,30 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface MobileOptimizationConfig {
-  enableLazyLoading: boolean;
   enableImageOptimization: boolean;
+  enableLazyLoading: boolean;
   enableTouchOptimization: boolean;
   enableScrollOptimization: boolean;
 }
 
-export const useMobileOptimization = (config: MobileOptimizationConfig = {
-  enableLazyLoading: true,
-  enableImageOptimization: true,
-  enableTouchOptimization: true,
-  enableScrollOptimization: true
-}) => {
+export const useMobileOptimization = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [isLowEndDevice, setIsLowEndDevice] = useState(false);
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  // Configuration for mobile optimizations
+  const config: MobileOptimizationConfig = {
+    enableImageOptimization: true,
+    enableLazyLoading: true,
+    enableTouchOptimization: true,
+    enableScrollOptimization: true,
+  };
 
   // Detect mobile device
   useEffect(() => {
     const checkMobile = () => {
       const userAgent = navigator.userAgent.toLowerCase();
-      const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
-      const isSmallScreen = window.innerWidth <= 768;
-      setIsMobile(isMobileDevice || isSmallScreen);
+      const isMobileDevice = /mobile|android|iphone|ipad|phone/i.test(userAgent) || window.innerWidth <= 768;
+      setIsMobile(isMobileDevice);
     };
 
     checkMobile();
@@ -31,7 +32,7 @@ export const useMobileOptimization = (config: MobileOptimizationConfig = {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Detect low-end devices
+  // Detect low-end device
   useEffect(() => {
     const checkLowEndDevice = () => {
       const memory = (navigator as any).deviceMemory || 4;
@@ -41,20 +42,6 @@ export const useMobileOptimization = (config: MobileOptimizationConfig = {
     };
 
     checkLowEndDevice();
-  }, []);
-
-  // Network status monitoring
-  useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
   }, []);
 
   // Optimize images for mobile
@@ -104,50 +91,13 @@ export const useMobileOptimization = (config: MobileOptimizationConfig = {
     optimizeScroll();
   }, [config.enableScrollOptimization]);
 
-  // Memory management for mobile
-  const cleanupMemory = useCallback(() => {
-    if (isMobile || isLowEndDevice) {
-      // Clear image cache periodically
-      const clearImageCache = () => {
-        const images = document.querySelectorAll('img');
-        images.forEach(img => {
-          if (!img.classList.contains('critical-image')) {
-            img.src = '';
-          }
-        });
-      };
-
-      // Clear cache every 5 minutes on low-end devices
-      if (isLowEndDevice) {
-        setInterval(clearImageCache, 5 * 60 * 1000);
-      }
-    }
-  }, [isMobile, isLowEndDevice]);
-
-  // Apply optimizations
-  useEffect(() => {
-    if (isMobile) {
-      const touchCleanup = enableTouchOptimization();
-      enableScrollOptimization();
-      cleanupMemory();
-
-      return () => {
-        if (touchCleanup) touchCleanup();
-      };
-    }
-  }, [isMobile, enableTouchOptimization, enableScrollOptimization, cleanupMemory]);
-
   return {
     isMobile,
     isLowEndDevice,
-    isOnline,
     optimizeImage,
     shouldLazyLoad,
-    mobileConfig: {
-      imageQuality: isLowEndDevice ? 'low' : 'medium',
-      animationReduced: isLowEndDevice,
-      lazyLoadEnabled: shouldLazyLoad(),
-      touchOptimized: config.enableTouchOptimization
-    }
+    enableTouchOptimization,
+    enableScrollOptimization,
+    config,
   };
 }; 

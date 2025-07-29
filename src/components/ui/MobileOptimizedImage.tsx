@@ -20,47 +20,19 @@ const MobileOptimizedImage: React.FC<MobileOptimizedImageProps> = ({
   width = 400,
   height,
   priority = false,
-  fallbackSrc = '/placeholder-image.jpg',
+  fallbackSrc = '/placeholder-product.svg',
   onLoad,
   onError
 }) => {
   const [imageSrc, setImageSrc] = useState(src);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
-  const [isInView, setIsInView] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
   
-  const { isMobile, isLowEndDevice, optimizeImage, shouldLazyLoad } = useMobileOptimization();
+  const { isMobile, optimizeImage } = useMobileOptimization();
 
   // Optimize image source for mobile
   const optimizedSrc = optimizeImage(imageSrc, width);
-
-  // Intersection Observer for lazy loading
-  useEffect(() => {
-    if (!shouldLazyLoad() || priority) {
-      setIsInView(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsInView(true);
-          observer.disconnect();
-        }
-      },
-      {
-        rootMargin: '50px',
-        threshold: 0.1
-      }
-    );
-
-    if (imgRef.current) {
-      observer.observe(imgRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, [shouldLazyLoad, priority]);
 
   // Handle image load
   const handleLoad = () => {
@@ -74,42 +46,22 @@ const MobileOptimizedImage: React.FC<MobileOptimizedImageProps> = ({
     setIsLoading(false);
     setHasError(true);
     
-    // Try fallback image
+    // Try fallback image if current image failed
     if (imageSrc !== fallbackSrc) {
       setImageSrc(fallbackSrc);
+      setHasError(false);
+      setIsLoading(true);
+    } else {
+      onError?.();
     }
-    
-    onError?.();
   };
 
-  // Preload critical images
+  // Update image source when src prop changes
   useEffect(() => {
-    if (priority && isMobile) {
-      const link = document.createElement('link');
-      link.rel = 'preload';
-      link.as = 'image';
-      link.href = optimizedSrc;
-      document.head.appendChild(link);
-      
-      return () => {
-        document.head.removeChild(link);
-      };
-    }
-  }, [priority, isMobile, optimizedSrc]);
-
-  // Memory optimization for low-end devices
-  useEffect(() => {
-    if (isLowEndDevice && !priority) {
-      const cleanup = () => {
-        if (imgRef.current && !isInView) {
-          imgRef.current.src = '';
-        }
-      };
-
-      const timeout = setTimeout(cleanup, 30000); // 30 seconds
-      return () => clearTimeout(timeout);
-    }
-  }, [isLowEndDevice, priority, isInView]);
+    setImageSrc(src);
+    setIsLoading(true);
+    setHasError(false);
+  }, [src]);
 
   return (
     <div className={`relative overflow-hidden ${className}`}>
@@ -135,24 +87,18 @@ const MobileOptimizedImage: React.FC<MobileOptimizedImageProps> = ({
       {/* Actual image */}
       <img
         ref={imgRef}
-        src={isInView ? optimizedSrc : ''}
+        src={optimizedSrc}
         alt={alt}
         width={width}
         height={height}
         className={`w-full h-auto object-cover transition-opacity duration-300 ${
           isLoading ? 'opacity-0' : 'opacity-100'
-        } ${isLowEndDevice ? 'critical-image' : ''}`}
-        loading={shouldLazyLoad() && !priority ? 'lazy' : 'eager'}
+        }`}
+        loading={priority ? 'eager' : 'lazy'}
         onLoad={handleLoad}
         onError={handleError}
         style={{
-          // Prevent layout shift
           aspectRatio: height && width ? `${width}/${height}` : undefined,
-          // Optimize for mobile
-          ...(isMobile && {
-            willChange: 'auto',
-            transform: 'translateZ(0)'
-          })
         }}
       />
     </div>

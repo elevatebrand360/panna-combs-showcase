@@ -11,12 +11,12 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product, index }: ProductCardProps) => {
-  const { isMobile, isLowEndDevice } = useMobileOptimization();
+  const { isMobile } = useMobileOptimization();
   
   // Get the imageUrls if it exists, otherwise use the single image
-  const imageUrl = 'imageUrls' in product ? 
-    (product.imageUrls as string[])[0] : 
-    product.image;
+  const imageUrl = 'imageUrls' in product && Array.isArray(product.imageUrls) && product.imageUrls.length > 0 ? 
+    product.imageUrls[0] : 
+    (product.image || '');
 
   return (
     <Card className="overflow-hidden glass-card transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
@@ -27,7 +27,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
           className="w-full h-full object-cover transition-transform hover:scale-105"
           width={isMobile ? 300 : 400}
           priority={index < 4}
-          fallbackSrc="/placeholder-product.jpg"
+          fallbackSrc="/placeholder-product.svg"
         />
         <div className="absolute top-2 left-2">
           <span className="bg-blue-600/80 backdrop-blur-sm text-white text-xs font-medium px-2 py-0.5 rounded-full">
