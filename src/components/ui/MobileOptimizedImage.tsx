@@ -17,9 +17,9 @@ const MobileOptimizedImage: React.FC<MobileOptimizedImageProps> = ({
   src,
   alt,
   className = '',
-  width = 400,
+  width = 150, // Use small width for previews
   height,
-  priority = false,
+  priority = true, // Always prioritize for instant loading
   fallbackSrc = '/placeholder-product.svg',
   onLoad,
   onError
@@ -30,22 +30,14 @@ const MobileOptimizedImage: React.FC<MobileOptimizedImageProps> = ({
   
   const { isMobile, optimizeImage } = useMobileOptimization();
 
-  // Optimize image source for mobile
+  // Optimize image source for mobile and use smallest size for preview
   const optimizedSrc = optimizeImage(imageSrc, width);
 
   // Preload image immediately
   useEffect(() => {
     if (optimizedSrc && optimizedSrc !== fallbackSrc) {
-      const img = new Image();
+      const img = new window.Image();
       img.src = optimizedSrc;
-      img.onload = () => {
-        // Image is preloaded, no loading state needed
-      };
-      img.onerror = () => {
-        // If main image fails, preload fallback
-        const fallbackImg = new Image();
-        fallbackImg.src = fallbackSrc;
-      };
     }
   }, [optimizedSrc, fallbackSrc]);
 
@@ -58,8 +50,6 @@ const MobileOptimizedImage: React.FC<MobileOptimizedImageProps> = ({
   // Handle image error
   const handleError = () => {
     setHasError(true);
-    
-    // Try fallback image if current image failed
     if (imageSrc !== fallbackSrc) {
       setImageSrc(fallbackSrc);
       setHasError(false);
@@ -87,22 +77,19 @@ const MobileOptimizedImage: React.FC<MobileOptimizedImageProps> = ({
           </div>
         </div>
       )}
-      
-      {/* Actual image - always eager loading for instant display */}
       <img
         ref={imgRef}
         src={optimizedSrc}
         alt={alt}
         width={width}
         height={height}
-        className={`w-full h-auto object-cover transition-opacity duration-200 ${
-          hasError && imageSrc === fallbackSrc ? 'opacity-0' : 'opacity-100'
-        }`}
+        className={`w-full h-auto object-cover ${hasError && imageSrc === fallbackSrc ? 'opacity-0' : 'opacity-100'}`}
         loading="eager"
         onLoad={handleLoad}
         onError={handleError}
         style={{
           aspectRatio: height && width ? `${width}/${height}` : undefined,
+          transition: 'none', // Remove transition delays
         }}
       />
     </div>

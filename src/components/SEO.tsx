@@ -106,7 +106,7 @@ const SEO: React.FC<SEOProps> = ({
           "email": "pannacombs@gmail.com",
           "address": {
             "@type": "PostalAddress",
-            "streetAddress": "Duillya, Nimtalla, Andul, Howrah - 711302",
+            "streetAddress": "Duillya, Nimtalla, Andul Road, Howrah - 711302",
             "addressLocality": "Howrah",
             "addressRegion": "West Bengal",
             "postalCode": "711302",

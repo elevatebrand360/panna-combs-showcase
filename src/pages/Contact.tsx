@@ -78,6 +78,7 @@ const Contact = () => {
                   <div>
                     <h3 className="font-medium">Phone</h3>
                     <p className="text-muted-foreground">Factory: +91 98365 99300</p>
+                    <p className="text-muted-foreground">Factory: +91 9330840909</p>
                   </div>
                 </div>
                 
@@ -98,7 +99,7 @@ const Contact = () => {
                   <div>
                     <h3 className="font-medium">Address</h3>
                     <p className="text-muted-foreground">
-                      Duillya, Nimtalla, Andul, Howrah - 711302
+                      Duillya, Nimtalla, Andul Road, Howrah - 711302
                     </p>
                   </div>
                 </div>
@@ -213,10 +214,9 @@ const Contact = () => {
         
         <div className="w-full h-96 mt-10">
           <iframe
-            title="Panna Combs Location"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d29493.02692699088!2d88.2441667!3d22.5413888!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a0279a2a4b31c91%3A0xb78f2474a6a9c8e8!2sAndul%2C%20Howrah%2C%20West%20Bengal%2C%20India!5e0!3m2!1sen!2sus!4v1716658725374!5m2!1sen!2sus"
-            width="100%"
-            height="100%"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3684.0895723428125!2d88.25682151086836!3d22.57575297940388!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a02790066ed2bb7%3A0xf5345851d0138be6!2sPanna%20combs!5e0!3m2!1sen!2sin!4v1753795072562!5m2!1sen!2sin"
+            width="600"
+            height="450"
             style={{ border: 0 }}
             allowFullScreen={true}
             loading="lazy"
