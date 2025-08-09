@@ -2,10 +2,12 @@ import { useState, useEffect, ReactNode } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ProductManagement from "@/components/admin/ProductManagement";
+import ImageManagement from "@/components/admin/ImageManagement";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
-import { Eye, EyeOff, Lock } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Eye, EyeOff, Lock, Package, Image as ImageIcon } from "lucide-react";
 
 // Enhanced error boundary for admin panel
 function AdminErrorFallback({ error, onRetry }: { error: Error; onRetry: () => void }) {
@@ -28,6 +30,7 @@ const Admin = () => {
   const [lockTimer, setLockTimer] = useState<number | null>(null);
   const { toast } = useToast();
   const [adminError, setAdminError] = useState<Error | null>(null);
+  const [activeTab, setActiveTab] = useState<string>("products");
 
   // Session timeout (15 minutes)
   useEffect(() => {
@@ -226,16 +229,34 @@ const Admin = () => {
           <AdminErrorFallback error={adminError} onRetry={() => setAdminError(null)} />
         ) : (
           <ErrorCatcher onError={setAdminError}>
-          <div className="glass-effect rounded-lg p-6 shadow-md">
-            <div className="flex justify-between items-center mb-8">
-              <h2 className="text-2xl font-semibold">Product Management</h2>
-              <Button variant="outline" onClick={handleLogout} className="hover-lift">
-                Logout
-              </Button>
-            </div>
-              <div>
-            <ProductManagement />
-          </div>
+            <div className="glass-effect rounded-lg p-6 shadow-md">
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="text-2xl font-semibold">Admin Dashboard</h2>
+                <Button variant="outline" onClick={handleLogout} className="hover-lift">
+                  Logout
+                </Button>
+              </div>
+              
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <TabsList className="grid w-full grid-cols-2 mb-6">
+                  <TabsTrigger value="products" className="flex items-center gap-2">
+                    <Package className="h-4 w-4" />
+                    Product Management
+                  </TabsTrigger>
+                  <TabsTrigger value="images" className="flex items-center gap-2">
+                    <ImageIcon className="h-4 w-4" />
+                    Image Management
+                  </TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="products" className="mt-0">
+                  <ProductManagement />
+                </TabsContent>
+                
+                <TabsContent value="images" className="mt-0">
+                  <ImageManagement />
+                </TabsContent>
+              </Tabs>
             </div>
           </ErrorCatcher>
         )}
