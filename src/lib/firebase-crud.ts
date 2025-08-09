@@ -1,6 +1,6 @@
 import { db, storage } from "./firebase";
-import { collection, addDoc, getDocs, Timestamp, deleteDoc, doc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import { collection, addDoc, getDocs, Timestamp, deleteDoc, doc, query, where, orderBy } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL, deleteObject, listAll } from "firebase/storage";
 import { trackFirebaseOperation } from "./performance";
 
 // Cache for products to avoid repeated fetches
@@ -153,6 +153,206 @@ export async function deleteProduct(id: string) {
     console.error("Failed to delete product:", error);
     const duration = performance.now() - startTime;
     trackFirebaseOperation('delete_product_error', duration);
+    throw error;
+  }
+}
+
+// Image Management Functions
+
+export interface ImageMetadata {
+  id: string;
+  name: string;
+  url: string;
+  category: string;
+  size: number;
+  type: string;
+  uploadedAt: Date;
+  productId?: string;
+  storagePath: string;
+}
+
+// Get all images from Firebase Storage with metadata
+export async function getAllImages(): Promise<ImageMetadata[]> {
+  const startTime = performance.now();
+  
+  try {
+    console.log("Fetching all images from storage...");
+    
+    // Get all products to map images to categories
+    const products = await getProducts();
+    const imageMap = new Map<string, { category: string; productId: string }>();
+    
+    products.forEach(product => {
+      if (product.imageUrls && Array.isArray(product.imageUrls)) {
+        product.imageUrls.forEach(url => {
+          if (url) {
+            imageMap.set(url, { 
+              category: product.category || 'Uncategorized', 
+              productId: product.id 
+            });
+          }
+        });
+      }
+    });
+
+    // List all files in the images folder
+    const imagesRef = ref(storage, 'images');
+    const result = await listAll(imagesRef);
+    
+    const images: ImageMetadata[] = [];
+    
+    for (const itemRef of result.items) {
+      try {
+        const url = await getDownloadURL(itemRef);
+        
+        // Find category and product info
+        const imageInfo = imageMap.get(url) || { category: 'Uncategorized', productId: undefined };
+        
+        images.push({
+          id: itemRef.name,
+          name: itemRef.name,
+          url,
+          category: imageInfo.category,
+          size: 0, // We'll get this from the image itself if needed
+          type: 'image/*',
+          uploadedAt: new Date(),
+          productId: imageInfo.productId,
+          storagePath: itemRef.fullPath
+        });
+      } catch (error) {
+        console.warn(`Failed to get metadata for ${itemRef.name}:`, error);
+      }
+    }
+    
+    // Sort by upload date (newest first)
+    images.sort((a, b) => b.uploadedAt.getTime() - a.uploadedAt.getTime());
+    
+    const duration = performance.now() - startTime;
+    trackFirebaseOperation('get_all_images', duration);
+    
+    console.log(`Successfully fetched ${images.length} images`);
+    return images;
+  } catch (error) {
+    console.error("Failed to fetch images:", error);
+    const duration = performance.now() - startTime;
+    trackFirebaseOperation('get_all_images_error', duration);
+    throw error;
+  }
+}
+
+// Get images by category
+export async function getImagesByCategory(category: string): Promise<ImageMetadata[]> {
+  const startTime = performance.now();
+  
+  try {
+    const allImages = await getAllImages();
+    const filteredImages = allImages.filter(img => 
+      img.category.toLowerCase() === category.toLowerCase()
+    );
+    
+    const duration = performance.now() - startTime;
+    trackFirebaseOperation('get_images_by_category', duration);
+    
+    return filteredImages;
+  } catch (error) {
+    console.error("Failed to fetch images by category:", error);
+    const duration = performance.now() - startTime;
+    trackFirebaseOperation('get_images_by_category_error', duration);
+    throw error;
+  }
+}
+
+// Delete an image from Firebase Storage
+export async function deleteImage(imagePath: string): Promise<void> {
+  const startTime = performance.now();
+  
+  try {
+    console.log("Deleting image from storage:", imagePath);
+    
+    const imageRef = ref(storage, imagePath);
+    await deleteObject(imageRef);
+    
+    console.log("Image deleted successfully from storage");
+    
+    // Clear cache when image is deleted
+    productsCache = null;
+    
+    const duration = performance.now() - startTime;
+    trackFirebaseOperation('delete_image', duration);
+  } catch (error) {
+    console.error("Failed to delete image:", error);
+    const duration = performance.now() - startTime;
+    trackFirebaseOperation('delete_image_error', duration);
+    throw error;
+  }
+}
+
+// Delete multiple images by category
+export async function deleteImagesByCategory(category: string): Promise<number> {
+  const startTime = performance.now();
+  
+  try {
+    console.log(`Deleting all images in category: ${category}`);
+    
+    const images = await getImagesByCategory(category);
+    let deletedCount = 0;
+    
+    for (const image of images) {
+      try {
+        await deleteImage(image.storagePath);
+        deletedCount++;
+      } catch (error) {
+        console.warn(`Failed to delete image ${image.name}:`, error);
+      }
+    }
+    
+    console.log(`Successfully deleted ${deletedCount} images from category: ${category}`);
+    
+    const duration = performance.now() - startTime;
+    trackFirebaseOperation('delete_images_by_category', duration);
+    
+    return deletedCount;
+  } catch (error) {
+    console.error("Failed to delete images by category:", error);
+    const duration = performance.now() - startTime;
+    trackFirebaseOperation('delete_images_by_category_error', duration);
+    throw error;
+  }
+}
+
+// Get image statistics
+export async function getImageStats(): Promise<{
+  totalImages: number;
+  totalSize: number;
+  categories: { [key: string]: { count: number; size: number } };
+}> {
+  const startTime = performance.now();
+  
+  try {
+    const allImages = await getAllImages();
+    
+    const stats = {
+      totalImages: allImages.length,
+      totalSize: allImages.reduce((sum, img) => sum + img.size, 0),
+      categories: {} as { [key: string]: { count: number; size: number } }
+    };
+    
+    allImages.forEach(img => {
+      if (!stats.categories[img.category]) {
+        stats.categories[img.category] = { count: 0, size: 0 };
+      }
+      stats.categories[img.category].count++;
+      stats.categories[img.category].size += img.size;
+    });
+    
+    const duration = performance.now() - startTime;
+    trackFirebaseOperation('get_image_stats', duration);
+    
+    return stats;
+  } catch (error) {
+    console.error("Failed to get image stats:", error);
+    const duration = performance.now() - startTime;
+    trackFirebaseOperation('get_image_stats_error', duration);
     throw error;
   }
 }
