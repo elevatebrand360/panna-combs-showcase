@@ -5,9 +5,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { productCategories } from "@/lib/products";
-import { AlertCircle, Upload } from "lucide-react";
+import { AlertCircle, Upload, FileImage } from "lucide-react";
 import { uploadImage, addProduct, getProducts, deleteProduct } from "@/lib/firebase-crud";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
+import { optimizeImageToSize, isValidImageFile, formatFileSize } from "@/utils/imageOptimizer";
 
 const ProductManagement = () => {
   const { toast } = useToast();
@@ -25,6 +26,17 @@ const ProductManagement = () => {
   const [imageFiles, setImageFiles] = useState<(File | null)[]>([null, null, null, null]);
   const [imageErrors, setImageErrors] = useState<boolean[]>([false, false, false, false]);
   const [imagePreviews, setImagePreviews] = useState<string[]>(["", "", "", ""]);
+  const [imageOptimizationInfo, setImageOptimizationInfo] = useState<Array<{
+    originalSize: string;
+    optimizedSize: string;
+    compressionRatio: number;
+    isOptimizing: boolean;
+  }>>([
+    { originalSize: "", optimizedSize: "", compressionRatio: 0, isOptimizing: false },
+    { originalSize: "", optimizedSize: "", compressionRatio: 0, isOptimizing: false },
+    { originalSize: "", optimizedSize: "", compressionRatio: 0, isOptimizing: false },
+    { originalSize: "", optimizedSize: "", compressionRatio: 0, isOptimizing: false }
+  ]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
@@ -58,33 +70,124 @@ const ProductManagement = () => {
     setNewProduct(prev => ({ ...prev, category: value }));
   };
 
-  const isValidImageFile = (file: File | null): boolean => {
+  const validateImageFile = (file: File | null): boolean => {
     if (!file) return false;
-    const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    return validTypes.includes(file.type);
+    return isValidImageFile(file);
   };
 
-  const handleImageFileChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {
+  const handleImageFileChange = async (index: number, e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0] ? e.target.files[0] : null;
-    const updatedFiles = [...imageFiles];
-    updatedFiles[index] = file;
-    const isValid = isValidImageFile(file);
-    const updatedErrors = [...imageErrors];
-    updatedErrors[index] = !isValid && file !== null;
-    const updatedPreviews = [...imagePreviews];
-    if (file && isValid) {
+    
+    if (!file) {
+      // Clear the image slot
+      const updatedFiles = [...imageFiles];
+      updatedFiles[index] = null;
+      const updatedErrors = [...imageErrors];
+      updatedErrors[index] = false;
+      const updatedPreviews = [...imagePreviews];
+      updatedPreviews[index] = "";
+      const updatedOptimizationInfo = [...imageOptimizationInfo];
+      updatedOptimizationInfo[index] = { originalSize: "", optimizedSize: "", compressionRatio: 0, isOptimizing: false };
+      
+      setImageFiles(updatedFiles);
+      setImageErrors(updatedErrors);
+      setImagePreviews(updatedPreviews);
+      setImageOptimizationInfo(updatedOptimizationInfo);
+      return;
+    }
+
+    const isValid = validateImageFile(file);
+    if (!isValid) {
+      const updatedErrors = [...imageErrors];
+      updatedErrors[index] = true;
+      setImageErrors(updatedErrors);
+      return;
+    }
+
+    // Set optimizing state
+    const updatedOptimizationInfo = [...imageOptimizationInfo];
+    updatedOptimizationInfo[index] = { 
+      ...updatedOptimizationInfo[index], 
+      isOptimizing: true,
+      originalSize: formatFileSize(file.size)
+    };
+    setImageOptimizationInfo(updatedOptimizationInfo);
+
+    try {
+      // Optimize the image
+      const optimizedImage = await optimizeImageToSize(file, 5);
+      
+      // Update files and previews
+      const updatedFiles = [...imageFiles];
+      updatedFiles[index] = optimizedImage.file;
+      
+      const updatedPreviews = [...imagePreviews];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updatedPreviews[index] = reader.result as string;
+        setImagePreviews(updatedPreviews);
+      };
+      reader.readAsDataURL(optimizedImage.file);
+
+      // Update optimization info
+      updatedOptimizationInfo[index] = {
+        originalSize: formatFileSize(optimizedImage.originalSize),
+        optimizedSize: formatFileSize(optimizedImage.optimizedSize),
+        compressionRatio: optimizedImage.compressionRatio,
+        isOptimizing: false
+      };
+
+      // Clear any previous errors
+      const updatedErrors = [...imageErrors];
+      updatedErrors[index] = false;
+
+      setImageFiles(updatedFiles);
+      setImageErrors(updatedErrors);
+      setImageOptimizationInfo(updatedOptimizationInfo);
+
+      // Show optimization success toast
+      if (optimizedImage.compressionRatio > 0) {
+        toast({
+          title: "Image optimized",
+          description: `Image compressed by ${optimizedImage.compressionRatio.toFixed(1)}% (${formatFileSize(optimizedImage.originalSize)} → ${formatFileSize(optimizedImage.optimizedSize)})`,
+        });
+      }
+    } catch (error) {
+      console.error('Image optimization failed:', error);
+      
+      // Fallback to original file if optimization fails
+      const updatedFiles = [...imageFiles];
+      updatedFiles[index] = file;
+      
+      const updatedPreviews = [...imagePreviews];
       const reader = new FileReader();
       reader.onloadend = () => {
         updatedPreviews[index] = reader.result as string;
         setImagePreviews(updatedPreviews);
       };
       reader.readAsDataURL(file);
-    } else {
-      updatedPreviews[index] = "";
+
+      // Update optimization info
+      updatedOptimizationInfo[index] = {
+        originalSize: formatFileSize(file.size),
+        optimizedSize: formatFileSize(file.size),
+        compressionRatio: 0,
+        isOptimizing: false
+      };
+
+      const updatedErrors = [...imageErrors];
+      updatedErrors[index] = false;
+
+      setImageFiles(updatedFiles);
+      setImageErrors(updatedErrors);
+      setImageOptimizationInfo(updatedOptimizationInfo);
+
+      toast({
+        title: "Image optimization failed",
+        description: "Using original image. Please ensure image is under 5MB.",
+        variant: "destructive"
+      });
     }
-    setImageFiles(updatedFiles);
-    setImageErrors(updatedErrors);
-    setImagePreviews(updatedPreviews);
   };
 
   const generateSlug = (name: string) => {
@@ -108,10 +211,10 @@ const ProductManagement = () => {
       });
       return;
     }
-    if (imageFiles.some((file) => file && !isValidImageFile(file))) {
+    if (imageFiles.some((file) => file && !validateImageFile(file))) {
       toast({
         title: "Invalid image files",
-        description: "Please provide only JPG or PNG images.",
+        description: "Please provide only JPG, PNG, or WebP images.",
         variant: "destructive"
       });
       return;
@@ -150,6 +253,12 @@ const ProductManagement = () => {
       setImageFiles([null, null, null, null]);
       setImageErrors([false, false, false, false]);
       setImagePreviews(["", "", "", ""]);
+      setImageOptimizationInfo([
+        { originalSize: "", optimizedSize: "", compressionRatio: 0, isOptimizing: false },
+        { originalSize: "", optimizedSize: "", compressionRatio: 0, isOptimizing: false },
+        { originalSize: "", optimizedSize: "", compressionRatio: 0, isOptimizing: false },
+        { originalSize: "", optimizedSize: "", compressionRatio: 0, isOptimizing: false }
+      ]);
       await loadProducts();
     } catch (error) {
       toast({
@@ -325,24 +434,35 @@ const ProductManagement = () => {
         </div>
         <div>
           <label className="block text-sm font-medium mb-3 text-gray-900">
-            Product Images (at least 1 required - JPG or PNG only)
+            Product Images (at least 1 required - JPG, PNG, or WebP only)
           </label>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {Array.from({ length: 4 }).map((_, index) => (
               <div key={index} className="space-y-2">
                 <div className="relative">
                   <div className={`border-2 ${imageErrors[index] ? 'border-red-500' : 'border-gray-300'} border-dashed rounded-md p-6 flex flex-col items-center justify-center hover:border-primary transition-colors`}>
-                    <Upload className={`${imageFiles[index] ? 'text-primary' : 'text-gray-400'} mb-2`} size={24} />
-                    <label htmlFor={`image-${index}`} className="cursor-pointer text-center">
-                      <span className="text-sm font-medium text-primary block">Upload image {index + 1}</span>
-                      <span className="text-xs text-muted-foreground block mt-1">JPG or PNG only</span>
-                    </label>
+                    {imageOptimizationInfo[index].isOptimizing ? (
+                      <div className="flex flex-col items-center">
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mb-2"></div>
+                        <span className="text-sm text-primary">Optimizing...</span>
+                      </div>
+                    ) : (
+                      <>
+                        <Upload className={`${imageFiles[index] ? 'text-primary' : 'text-gray-400'} mb-2`} size={24} />
+                        <label htmlFor={`image-${index}`} className="cursor-pointer text-center">
+                          <span className="text-sm font-medium text-primary block">Upload image {index + 1}</span>
+                          <span className="text-xs text-muted-foreground block mt-1">JPG, PNG, or WebP only</span>
+                          <span className="text-xs text-muted-foreground block mt-1">Auto-optimized to &lt;5MB</span>
+                        </label>
+                      </>
+                    )}
                     <input
                       id={`image-${index}`}
                       type="file"
                       className="hidden"
-                      accept="image/jpeg,image/jpg,image/png"
+                      accept="image/jpeg,image/jpg,image/png,image/webp"
                       onChange={(e) => handleImageFileChange(index, e)}
+                      disabled={imageOptimizationInfo[index].isOptimizing}
                     />
                   </div>
                   {imageErrors[index] && (
@@ -352,15 +472,37 @@ const ProductManagement = () => {
                   )}
                 </div>
                 {imageErrors[index] && (
-                  <p className="text-xs text-red-500">JPG or PNG format only</p>
+                  <p className="text-xs text-red-500">JPG, PNG, or WebP format only</p>
                 )}
                 {imagePreviews[index] && (
-                  <div className="h-24 w-full bg-gray-100 rounded overflow-hidden">
-                    <img
-                      src={imagePreviews[index]}
-                      alt={`Preview ${index + 1}`}
-                      className="h-full w-full object-cover"
-                    />
+                  <div className="space-y-2">
+                    <div className="h-24 w-full bg-gray-100 rounded overflow-hidden">
+                      <img
+                        src={imagePreviews[index]}
+                        alt={`Preview ${index + 1}`}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    {imageOptimizationInfo[index].originalSize && (
+                      <div className="text-xs text-gray-600 space-y-1">
+                        <div className="flex justify-between">
+                          <span>Original:</span>
+                          <span>{imageOptimizationInfo[index].originalSize}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Optimized:</span>
+                          <span className="text-green-600 font-medium">{imageOptimizationInfo[index].optimizedSize}</span>
+                        </div>
+                        {imageOptimizationInfo[index].compressionRatio > 0 && (
+                          <div className="flex justify-between">
+                            <span>Compression:</span>
+                            <span className="text-green-600 font-medium">
+                              {imageOptimizationInfo[index].compressionRatio.toFixed(1)}%
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
