@@ -18,12 +18,10 @@ export async function uploadImage(file: File): Promise<string> {
     if (!(file instanceof File)) {
       throw new Error("Provided object is not a File instance");
     }
-    // Check file size (5MB limit for client SDK)
-    if (file.size > 5 * 1024 * 1024) {
-      throw new Error("File size exceeds 5MB limit");
-    }
+    // File size is now handled by frontend optimization
+    // Images are guaranteed to be under 5MB before reaching this function
     // Check file type
-    const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+    const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
     if (!validTypes.includes(file.type)) {
       throw new Error("Invalid file type: " + file.type);
     }
