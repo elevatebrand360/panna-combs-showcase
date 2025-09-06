@@ -1,6 +1,6 @@
 import { db, storage } from "./firebase";
 import { collection, addDoc, getDocs, Timestamp, deleteDoc, doc, query, where, orderBy } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL, deleteObject, listAll } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, deleteObject, listAll, getMetadata } from "firebase/storage";
 import { trackFirebaseOperation } from "./performance";
 
 // Cache for products to avoid repeated fetches
@@ -205,6 +205,9 @@ export async function getAllImages(): Promise<ImageMetadata[]> {
       try {
         const url = await getDownloadURL(itemRef);
         
+        // Get file metadata to get actual size
+        const metadata = await itemRef.getMetadata();
+        
         // Find category and product info
         const imageInfo = imageMap.get(url) || { category: 'Uncategorized', productId: undefined };
         
@@ -213,9 +216,9 @@ export async function getAllImages(): Promise<ImageMetadata[]> {
           name: itemRef.name,
           url,
           category: imageInfo.category,
-          size: 0, // We'll get this from the image itself if needed
-          type: 'image/*',
-          uploadedAt: new Date(),
+          size: metadata.size || 0, // Get actual file size from metadata
+          type: metadata.contentType || 'image/*',
+          uploadedAt: new Date(metadata.timeCreated || Date.now()),
           productId: imageInfo.productId,
           storagePath: itemRef.fullPath
         });
