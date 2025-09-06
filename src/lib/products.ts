@@ -24,7 +24,7 @@ export const productCategories: ProductCategory[] = [
   },
   {
     id: 2,
-    name: "9\" Ladies Fancy Combs",
+    name: "9\" Ladies Designer Combs",
     slug: "ladies-fancy-combs",
     description: "Elegantly designed fancy combs for women with decorative elements."
   },
@@ -111,7 +111,7 @@ export const products: Product[] = [
     id: 2,
     name: "Elegant Fancy Comb",
     description: "A decorative 9-inch fancy comb with elegant detailing for special occasions.",
-    category: "9\" Ladies Fancy Combs",
+    category: "9\" Ladies Designer Combs",
     image: "https://images.unsplash.com/photo-1622429499146-bc47772d8a52?q=80&w=1788&auto=format&fit=crop",
     productCode: "FC002",
     slug: "elegant-fancy-comb"

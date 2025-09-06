@@ -19,7 +19,7 @@ class CategorySeeder extends Seeder
                 'description' => 'Premium quality hair combs designed specifically for women\'s hair.'
             ],
             [
-                'name' => '9" Ladies Fancy Combs',
+                'name' => '9" Ladies Designer Combs',
                 'description' => 'Elegantly designed fancy combs for women with decorative elements.'
             ],
             [

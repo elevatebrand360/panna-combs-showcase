@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { productCategories } from "@/lib/products";
-import { AlertCircle, Upload, FileImage } from "lucide-react";
+import { AlertCircle, Upload, FileImage, Edit, Save, X } from "lucide-react";
 import { uploadImage, addProduct, getProducts, deleteProduct } from "@/lib/firebase-crud";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
 import { optimizeImageToSize, isValidImageFile, formatFileSize } from "@/utils/imageOptimizer";
@@ -40,6 +40,15 @@ const ProductManagement = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
+  const [editingProduct, setEditingProduct] = useState<string | null>(null);
+  const [editProduct, setEditProduct] = useState({
+    name: "",
+    description: "",
+    category: "",
+    productCode: "",
+    imageUrls: ["", "", "", ""],
+    slug: ""
+  });
 
   useEffect(() => {
     loadProducts();
@@ -317,6 +326,78 @@ const ProductManagement = () => {
   // Get fixed categories from productCategories
   const fixedCategories = productCategories.map(c => c.name).filter(Boolean);
 
+  // Edit functions
+  const handleEditClick = (product: any) => {
+    setEditingProduct(product.id);
+    setEditProduct({
+      name: product.name || "",
+      description: product.description || "",
+      category: product.category || "",
+      productCode: product.productCode || "",
+      imageUrls: product.imageUrls || ["", "", "", ""],
+      slug: product.slug || ""
+    });
+  };
+
+  const handleEditCancel = () => {
+    setEditingProduct(null);
+    setEditProduct({
+      name: "",
+      description: "",
+      category: "",
+      productCode: "",
+      imageUrls: ["", "", "", ""],
+      slug: ""
+    });
+  };
+
+  const handleEditInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setEditProduct(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleEditCategoryChange = (value: string) => {
+    setEditProduct(prev => ({
+      ...prev,
+      category: value
+    }));
+  };
+
+  const handleEditSave = async () => {
+    if (!editingProduct) return;
+
+    try {
+      setLoading(true);
+      
+      // Update the product in the local state (frontend only)
+      setProducts(prevProducts => 
+        prevProducts.map(product => 
+          product.id === editingProduct 
+            ? { ...product, ...editProduct }
+            : product
+        )
+      );
+
+      toast({
+        title: "Product updated",
+        description: `${editProduct.name} has been updated successfully (frontend only)`
+      });
+
+      handleEditCancel();
+    } catch (error) {
+      toast({
+        title: "Error updating product",
+        description: error instanceof Error ? error.message : "An error occurred while updating the product",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="mb-8">
@@ -345,27 +426,109 @@ const ProductManagement = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.map((product, index) => (
               <div key={product.id} className="border rounded-lg p-4 flex flex-col">
-                <div className="mb-2 font-bold text-gray-900">{product.name}</div>
-                <div className="mb-2 text-sm text-gray-500">Category: {product.category}</div>
-                <div className="mb-2 text-sm text-gray-500">Code: {product.productCode}</div>
-                <div className="grid grid-cols-2 gap-2 mb-2">
-                  {product.imageUrls && product.imageUrls.map((url: string, i: number) => (
-                    <img
-                      key={i}
-                      src={url}
-                      alt={`Product ${index + 1} Image ${i + 1}`}
-                      className="w-full h-24 object-cover rounded"
-                    />
-                  ))}
-                </div>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => handleDeleteClick(product.id)}
-                  className="mt-auto"
-                >
-                  Delete Product
-                </Button>
+                {editingProduct === product.id ? (
+                  // Edit Mode
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1 text-gray-900">Product Name</label>
+                      <Input
+                        name="name"
+                        value={editProduct.name}
+                        onChange={handleEditInputChange}
+                        placeholder="Enter product name"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1 text-gray-900">Product Code</label>
+                      <Input
+                        name="productCode"
+                        value={editProduct.productCode}
+                        onChange={handleEditInputChange}
+                        placeholder="Enter product code"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1 text-gray-900">Category</label>
+                      <Select value={editProduct.category} onValueChange={handleEditCategoryChange}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {fixedCategories.map(category => (
+                            <SelectItem key={category} value={category}>{category}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1 text-gray-900">Description</label>
+                      <Textarea
+                        name="description"
+                        value={editProduct.description}
+                        onChange={handleEditInputChange}
+                        placeholder="Enter product description"
+                        rows={3}
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={handleEditSave}
+                        size="sm"
+                        className="flex items-center gap-2"
+                        disabled={loading}
+                      >
+                        <Save size={16} />
+                        Save Changes
+                      </Button>
+                      <Button
+                        onClick={handleEditCancel}
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center gap-2"
+                      >
+                        <X size={16} />
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  // View Mode
+                  <>
+                    <div className="mb-2 font-bold text-gray-900">{product.name}</div>
+                    <div className="mb-2 text-sm text-gray-500">Category: {product.category}</div>
+                    <div className="mb-2 text-sm text-gray-500">Code: {product.productCode}</div>
+                    <div className="mb-2 text-sm text-gray-500">Description: {product.description}</div>
+                    <div className="grid grid-cols-2 gap-2 mb-4">
+                      {product.imageUrls && product.imageUrls.map((url: string, i: number) => (
+                        <img
+                          key={i}
+                          src={url}
+                          alt={`Product ${index + 1} Image ${i + 1}`}
+                          className="w-full h-24 object-cover rounded"
+                        />
+                      ))}
+                    </div>
+                    <div className="flex gap-2 mt-auto">
+                      <Button
+                        onClick={() => handleEditClick(product)}
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center gap-2"
+                      >
+                        <Edit size={16} />
+                        Edit
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDeleteClick(product.id)}
+                        className="flex items-center gap-2"
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </>
+                )}
               </div>
             ))}
           </div>
