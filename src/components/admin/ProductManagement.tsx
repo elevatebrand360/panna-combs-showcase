@@ -345,7 +345,7 @@ const ProductManagement = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.map((product, index) => (
               <div key={product.id} className="border rounded-lg p-4 flex flex-col">
-                <div className="mb-2 font-bold">{product.name}</div>
+                <div className="mb-2 font-bold text-gray-900">{product.name}</div>
                 <div className="mb-2 text-sm text-gray-500">Category: {product.category}</div>
                 <div className="mb-2 text-sm text-gray-500">Code: {product.productCode}</div>
                 <div className="grid grid-cols-2 gap-2 mb-2">
@@ -371,7 +371,7 @@ const ProductManagement = () => {
           </div>
         ) : (
           <div className="text-center py-10 border rounded-lg">
-            <p className="text-muted-foreground">No products found</p>
+            <p className="text-gray-600">No products found</p>
           </div>
         )}
         <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
@@ -451,8 +451,8 @@ const ProductManagement = () => {
                         <Upload className={`${imageFiles[index] ? 'text-primary' : 'text-gray-400'} mb-2`} size={24} />
                         <label htmlFor={`image-${index}`} className="cursor-pointer text-center">
                           <span className="text-sm font-medium text-primary block">Upload image {index + 1}</span>
-                          <span className="text-xs text-muted-foreground block mt-1">JPG, PNG, or WebP only</span>
-                          <span className="text-xs text-muted-foreground block mt-1">Auto-optimized to &lt;5MB</span>
+                          <span className="text-xs text-gray-600 block mt-1">JPG, PNG, or WebP only</span>
+                          <span className="text-xs text-gray-600 block mt-1">Auto-optimized to &lt;5MB</span>
                         </label>
                       </>
                     )}

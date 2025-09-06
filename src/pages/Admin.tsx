@@ -14,7 +14,7 @@ function AdminErrorFallback({ error, onRetry }: { error: Error; onRetry: () => v
   return (
     <div className="max-w-lg mx-auto my-12 p-8 bg-white rounded shadow text-center border border-red-200">
       <h2 className="text-xl font-bold text-red-600 mb-2">Admin Panel Error</h2>
-      <p className="text-muted-foreground mb-4">Something went wrong in the admin panel. Please try again or contact support.</p>
+      <p className="text-gray-600 mb-4">Something went wrong in the admin panel. Please try again or contact support.</p>
       <pre className="text-xs bg-gray-100 p-2 rounded overflow-auto mb-4 text-left max-h-40">{error.message}\n{error.stack}</pre>
       <Button onClick={onRetry} className="bg-blue-600 text-white w-full">Try Again</Button>
     </div>
@@ -184,7 +184,7 @@ const Admin = () => {
       <div className="container mx-auto py-12 px-4">
         {!isAuthenticated ? (
           <div className="max-w-md mx-auto glass-effect p-8 shadow-md rounded-lg">
-            <h2 className="text-2xl font-semibold mb-6 text-center">Admin Login</h2>
+            <h2 className="text-2xl font-semibold mb-6 text-center text-gray-900">Admin Login</h2>
             <div className="mb-4 flex justify-center">
               <div className="w-16 h-16 rounded-full bg-brand-DEFAULT/10 flex items-center justify-center">
                 <Lock className="text-brand-DEFAULT" size={24} />
@@ -193,7 +193,7 @@ const Admin = () => {
             
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label htmlFor="password" className="block text-sm font-medium mb-1">
+                <label htmlFor="password" className="block text-sm font-medium mb-1 text-gray-700">
                   Password
                 </label>
                 <div className="relative">
@@ -231,7 +231,7 @@ const Admin = () => {
           <ErrorCatcher onError={setAdminError}>
             <div className="glass-effect rounded-lg p-6 shadow-md">
               <div className="flex justify-between items-center mb-8">
-                <h2 className="text-2xl font-semibold">Admin Dashboard</h2>
+                <h2 className="text-2xl font-semibold text-gray-900">Admin Dashboard</h2>
                 <Button variant="outline" onClick={handleLogout} className="hover-lift">
                   Logout
                 </Button>
