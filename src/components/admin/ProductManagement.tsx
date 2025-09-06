@@ -498,15 +498,25 @@ const ProductManagement = () => {
                     <div className="mb-2 text-sm text-gray-500">Category: {product.category}</div>
                     <div className="mb-2 text-sm text-gray-500">Code: {product.productCode}</div>
                     <div className="mb-2 text-sm text-gray-500">Description: {product.description}</div>
-                    <div className="grid grid-cols-2 gap-2 mb-4">
-                      {product.imageUrls && product.imageUrls.map((url: string, i: number) => (
-                        <img
-                          key={i}
-                          src={url}
-                          alt={`Product ${index + 1} Image ${i + 1}`}
-                          className="w-full h-24 object-cover rounded"
-                        />
-                      ))}
+                    <div className="mb-4">
+                      {product.imageUrls && product.imageUrls.filter((url: string) => url && url.trim() !== '').length > 0 ? (
+                        <div className="grid grid-cols-2 gap-2">
+                          {product.imageUrls
+                            .filter((url: string) => url && url.trim() !== '')
+                            .map((url: string, i: number) => (
+                              <img
+                                key={i}
+                                src={url}
+                                alt={`Product ${index + 1} Image ${i + 1}`}
+                                className="w-full h-24 object-cover rounded"
+                              />
+                            ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-4 text-gray-500 text-sm">
+                          No images uploaded
+                        </div>
+                      )}
                     </div>
                     <div className="flex gap-2 mt-auto">
                       <Button
